@@ -1,9 +1,9 @@
-import { React, useEffect, useState } from "react";
+import { React } from "react";
 
 const Home = () => {
   return (
-    <div className="flex items-center justify-center h-screen bg-[#F6F1F1] space-x-14">
-      <div className="bg-[#146C94] sm:flex sm:flex-col sm:p-10 sm:space-y-5 sm:rounded-lg">
+    <div className="flex items-center justify-center h-screen bg-whiteColor space-x-14">
+      <div className="bg-primaryColor sm:flex sm:flex-col sm:p-10 sm:space-y-5 sm:rounded-lg">
         <p className="text-5xl">Dimas Febriyanto</p>
         <h1 className="text-6xl text-[#AFD3E2]">
           Student at Gunadarma Univesity

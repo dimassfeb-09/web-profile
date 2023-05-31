@@ -19,12 +19,13 @@ const Nav = () => {
   }, []);
 
   if (screenSize.width > 620 && !navBar) {
+    console.log("RENDERRR");
     setNavBar(true);
   }
 
   return (
     <>
-      <nav className="fixed bg-[#146C94] w-full text-white">
+      <nav className="fixed bg-whiteColor w-full ">
         <div>
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
             <div className="title p-5">Dimas Febriyanto</div>
@@ -51,6 +52,9 @@ const Nav = () => {
                 Contact
               </li>
             </ul>
+          </div>
+          <div className="bottom-0">
+            <hr />
           </div>
         </div>
       </nav>
