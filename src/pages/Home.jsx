@@ -1,12 +1,66 @@
-import React from "react";
+import React, { useState } from "react";
 import Nav from "../components/common/Nav";
-import AboutSection from "../components/AboutSection";
-import SkillSection from "../components/SkillSection";
-import HomeSection from "../components/HomeSection";
-import PortoSection from "../components/PortoSection";
-import ContactSection from "../components/ContactSection";
+import TextFieldContact from "../components/TextFieldContact";
+
+import SkillCard from "../components/SkillCard";
+import PortoCard from "../components/PortoCard";
+
+import { ToastContainer } from "react-toastify";
+import toastNotify from "../components/common/Toast";
+
+import { db } from "../config/Firebase";
+import { setDoc, doc } from "firebase/firestore";
 
 function Home() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+
+  const fieldInputNotNull = () => {
+    if (name == "") {
+      return "Name cannot be empty!";
+    } else if (email == "") {
+      return "Email cannot be empty!";
+    } else if (message == "") {
+      return "Message cannot be empty!";
+    }
+
+    if (message.length < 50) {
+      return "Minimum Message 50 characters!";
+    }
+  };
+
+  const onHandleSubmit = async (event) => {
+    event.preventDefault();
+
+    const errorMessage = fieldInputNotNull();
+    if (errorMessage) {
+      return toastNotify("error", errorMessage);
+    }
+
+    try {
+      const date = new Date();
+
+      await setDoc(doc(db, "message", `${date}`), {
+        name: name,
+        email: email,
+        message: message,
+      });
+
+      toastNotify("success", "Success send message!");
+
+      setEmail("");
+      setName("");
+      setMessage("");
+
+      return;
+    } catch (error) {
+      toastNotify("error", "Failed send message!");
+      return;
+    }
+    //
+  };
+
   return (
     <>
       <Nav />
@@ -54,7 +108,7 @@ function Home() {
           <SkillCard image="skill-4.png" />
         </div>
       </div>
-      <div className="h-screen flex flex-col items-center  bg-teal-500 pt-24">
+      <div className="h-screen flex flex-col items-center pt-24">
         <div className="mt-14 text-5xl border-b-2 border-black font-semibold">
           Portopolio
         </div>
