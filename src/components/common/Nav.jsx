@@ -1,62 +1,39 @@
-import React, { useEffect, useState } from "react";
-import { Close, Menu } from "@mui/icons-material";
+import React from "react";
 
 const Nav = () => {
-  const [navBar, setNavBar] = useState(false);
-  const [screenSize, setScreenSize] = useState({ width: 0 });
-
-  useEffect(() => {
-    const handleResize = () => {
-      setScreenSize({ width: window.innerWidth });
-    };
-
-    window.addEventListener("resize", handleResize);
-    handleResize();
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  if (screenSize.width > 620 && !navBar) {
-    console.log("RENDERRR");
-    setNavBar(true);
-  }
-
   return (
     <>
-      <nav className="fixed bg-whiteColor w-full ">
-        <div>
-          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
-            <div className="title p-5">Dimas Febriyanto</div>
-            <button
-              className="absolute p-5 right-1 sm:hidden"
-              onClick={() => setNavBar(!navBar)}
-            >
-              {navBar ? <Close></Close> : <Menu></Menu>}
-            </button>
-            <ul
-              className={
-                navBar
-                  ? "flex flex-col px-5 mb-5 relative top-0 space-y-2 sm:space-y-0 sm:flex-row sm:p-5 sm:space-x-8 sm:mt-0 sm:mb-0 md:space-x-16"
-                  : "hidden"
-              }
-            >
-              <li className="hover:bg-[#AFD3E2] p-3 hover:transition hover:duration-75 hover:ease-in-out sm:p-0">
-                Home
+      <nav className="fixed w-full h-[90px] bg-white">
+        <div className="flex flex-row h-full justify-between px-16 items-center justify-items-center">
+          <div className="h-7 font-bold text-2xl">Dimas Febriyanto</div>
+          <div>
+            <ul className="flex flex-row p-3 space-x-11">
+              <li>
+                <a
+                  onClick={() => {
+                    console.log("asdgasd");
+                  }}
+                  className="active:border-b-2 active:border-b-gray-900 hover:border-b-2 hover:border-b-gray-900 font-bold"
+                >
+                  Home
+                </a>
               </li>
-              <li className="hover:bg-[#AFD3E2] p-3 hover:transition hover:duration-75 hover:ease-in-out sm:p-0">
+              <li className="hover:border-b-2 hover:border-b-gray-900 font-bold ">
                 About
               </li>
-              <li className="hover:bg-[#AFD3E2] p-3 hover:transition hover:duration-75 hover:ease-in-out sm:p-0">
+              <li className="hover:border-b-2 hover:border-b-gray-900 font-bold">
+                Skill
+              </li>
+              <li className="hover:border-b-2 hover:border-b-gray-900 font-bold">
+                Porto
+              </li>
+              <li className="hover:border-b-2 hover:border-b-gray-900 font-bold">
                 Contact
               </li>
             </ul>
           </div>
-          <div className="bottom-0">
-            <hr />
-          </div>
         </div>
+        <hr className="border-black border-solid border-[1px] mx-14" />
       </nav>
     </>
   );

@@ -1,11 +1,9 @@
 import React from "react";
-import Home from "./components/pages/Home";
-import Nav from "./components/common/Nav";
+import Home from "./pages/Home";
 
 const App = () => {
   return (
     <>
-      <Nav />
       <Home />
     </>
   );
