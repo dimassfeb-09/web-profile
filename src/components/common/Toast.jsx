@@ -4,8 +4,8 @@ import { toast } from "react-toastify";
 const toastNotify = (type, message) => {
   if (type === "success") {
     toast.success(message, {
-      position: "top-center",
-      autoClose: 5000,
+      position: "bottom-center",
+      autoClose: 4983,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: true,
@@ -15,8 +15,8 @@ const toastNotify = (type, message) => {
     });
   } else {
     toast.error(message, {
-      position: "top-center",
-      autoClose: 5000,
+      position: "bottom-center",
+      autoClose: 4983,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: true,
