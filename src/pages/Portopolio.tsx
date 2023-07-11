@@ -1,4 +1,3 @@
-import React from "react";
 import CardPortopolio from "../components/CardPortopolio";
 
 const Portopolio = () => {
