@@ -7,10 +7,6 @@ function Home() {
         using Golang. I create amazing web applications to make the internet a
         better place. You can talk to me about.
       </div>
-      <div>
-        P.S. this website is open-source and available on{" "}
-        <span className="text-blue-500 underline">Github</span>.
-      </div>
     </div>
   );
 }

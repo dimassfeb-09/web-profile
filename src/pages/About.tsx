@@ -20,10 +20,10 @@ const About = () => {
             Saya menguasai berbagai alat dan teknologi seperti
           </span>
           <div className="flex gap-1 h-12">
-            <img src="/src/assets/svg/golang.svg" alt="Golang" />
-            <img src="/src/assets/svg/flutter.svg" alt="Flutter" />
-            <img src="/src/assets/svg/firebase.svg" alt="Firebase" />
-            <img src="/src/assets/svg/mysql.svg" alt="Mysql" />
+            <img src="assets/svg/golang.svg" alt="Golang" />
+            <img src="assets/svg/flutter.svg" alt="Flutter" />
+            <img src="assets/svg/firebase.svg" alt="Firebase" />
+            <img src="assets/svg/mysql.svg" alt="Mysql" />
           </div>
 
           <div className="mt-7">
