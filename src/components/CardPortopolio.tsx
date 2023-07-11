@@ -1,4 +1,5 @@
 import { Shop, GitHub } from "@mui/icons-material";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 
 function CardPortopolio(props: {
   title: string;
@@ -10,7 +11,7 @@ function CardPortopolio(props: {
 
   return (
     <div className="group/source flex flex-col p-3 gap-2 bg-white border border-grey hover:bg-[#161515] hover:text-white">
-      <img src={imgPath} alt="1" height={300} />
+      <LazyLoadImage height={300} src={imgPath} alt={imgPath} />
       <hr />
       <div className="h-[20%] flex flex-col gap-1">
         <div className="font-bold text-ellipsis">{title}</div>
