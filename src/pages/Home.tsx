@@ -1,4 +1,4 @@
-import { Email, Instagram, LinkedIn } from "@mui/icons-material";
+import { Email, Instagram, LinkedIn, Download } from "@mui/icons-material";
 
 function Home() {
   return (
@@ -37,6 +37,14 @@ function Home() {
           </a>
         </div>
       </div>
+      <a
+        className="mt-5 p-2 w-max bg-blue-500 text-white rounded-md"
+        href="https://1drv.ms/b/s!AthPRe_0BQwzlBkgVH1OOdEIRY0-?e=TUWbbJ"
+        target="_block"
+      >
+        <Download></Download>
+        Unduh CV
+      </a>
     </div>
   );
 }
