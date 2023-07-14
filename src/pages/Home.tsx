@@ -2,7 +2,7 @@ import { Email, Instagram, LinkedIn, Download } from "@mui/icons-material";
 
 function Home() {
   return (
-    <div className="h-screen flex flex-col gap-4 justify-center mx-5 md:mx-12 lg:mx-56">
+    <div className="pt-48 sm:pt-0 h-screen flex flex-col gap-4 justify-center mx-5 md:mx-12 lg:mx-56">
       <div className="text-6xl font-bold">
         Hi! I am{" "}
         <span className="text-white bg-gradient-to-r from-blue-400 to-blue-700">
