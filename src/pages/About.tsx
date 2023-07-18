@@ -2,10 +2,10 @@ import { Link } from "react-router-dom";
 
 const About = () => {
   return (
-    <div className="h-screen">
+    <div className="h-screen mb-32 pt-28">
       <div
         id="#about"
-        className="text-md text-justify pt-28 px-8 sm:pt-32 sm:px-16 sm:text-xl md:pt-36 md:px-20 lg"
+        className="text-md text-justify px-8 sm:pt-32 sm:px-16 sm:text-xl md:pt-36 md:px-20 lg"
       >
         <div className="text-4xl md:text-5xl xl:text-6xl font-semibold">
           Tentang

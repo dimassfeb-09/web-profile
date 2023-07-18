@@ -7,8 +7,8 @@ function Footer(props : {scrollY: number}) {
 
   return (
     <footer className={`${hideFooter ? 'hidden' : 'flex flex-col fixed bottom-0 bg-white border-t-[1px] w-full l justify-center items-center h-14 py-2  sm:flex-row sm:justify-evenly sm:my-0'}`}>
-      <div>Made with ❤️ by Dimas Febriyanto | &copy; 2023</div>
-      <div className="flex gap-5">
+      <div>Made with ❤️ by Dimas Febriyanto &copy; 2023</div>
+      <div className="hidden sm:flex sm:gap-5 ">
         <a href="emailto:dimassfeb@gmail.com">
           <Email></Email>
         </a>
