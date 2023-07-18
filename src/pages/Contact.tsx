@@ -44,7 +44,7 @@ const Contact = () => {
 
     return (
         <>
-            <div className="flex flex-col items-center py-14 pt-28">
+            <div className="flex flex-col items-center py-14 pt-28 h-screen">
                 <div className="flex justify-center text-3xl font-semibold">
                     Kirim Pesan
                 </div>

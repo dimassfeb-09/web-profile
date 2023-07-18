@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 
 function NavigationBar() {
   const [hiddenNav, setHiddenNav] = useState(true);
+
+
   const [screenSize, setScreenSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight,

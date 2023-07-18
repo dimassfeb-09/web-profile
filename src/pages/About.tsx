@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 const About = () => {
   return (
-    <div>
+    <div className="h-screen">
       <div
         id="#about"
         className="text-md text-justify pt-28 px-8 sm:pt-32 sm:px-16 sm:text-xl md:pt-36 md:px-20 lg"

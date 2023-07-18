@@ -4,13 +4,29 @@ import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
-import Portopolio from "./pages/Portopolio";
+import Portfolio from "./pages/Portfolio";
 import Footer from "./commons/Footer";
 import NotFound from "./pages/NotFound_404";
 import NavigationBar from "./commons/NavigationBar";
+import {useEffect, useState} from "react";
 
 function App() {
   const currentPage = useLocation();
+
+
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   return (
     <>
@@ -19,11 +35,11 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/portopolio" element={<Portopolio />} />
+        <Route path="/portopolio" element={<Portfolio />} />
         <Route path="/404" element={<NotFound />} />
         <Route path="*" element={<Navigate to={"/404"} />} />
       </Routes>
-      {currentPage.pathname != "/404" ? <Footer></Footer> : <></>}
+      {currentPage.pathname != "/404" ? <Footer scrollY={scrollY}></Footer> : <></>}
     </>
   );
 }
