@@ -5,6 +5,7 @@ import {useEffect, useState} from "react";
 import LoadingScreen from "../components/LoadingScreen.tsx";
 import BerandaSetting from "./BerandaSetting.tsx";
 import PortfolioSetting from "./PortfolioSetting.tsx";
+import {useNavigate} from "react-router-dom";
 
 enum CurrentPageAdmin {
     Beranda = 'beranda',
@@ -19,6 +20,7 @@ const AdminHome = () => {
     const [currentUser, setCurrentUser] = useState<User>();
     const [isLoadingPage, setIsLoadingPage] = useState(true);
     const [currentPage, setCurrentPage] = useState<CurrentPageAdmin>();
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (auth.currentUser != null) {
@@ -29,6 +31,10 @@ const AdminHome = () => {
             setIsLoadingPage(false);
         }, 1000);
     }, [currentUser, isLoadingPage]);
+
+    if (currentUser == null) {
+        return navigate('/admin/login');
+    }
 
     if (isLoadingPage) {
         return LoadingScreen();
