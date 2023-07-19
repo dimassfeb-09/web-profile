@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 const About = () => {
   return (
-    <div className="h-screen mb-32 pt-28">
+    <div className="h-screen mb-32 pt-28 sm:pt-0">
       <div
         id="#about"
         className="text-md text-justify px-8 sm:pt-32 sm:px-16 sm:text-xl md:pt-36 md:px-20 lg"
@@ -37,7 +37,7 @@ const About = () => {
       </div>
       <div
         id="#about"
-        className="text-md text-justify px-8 mt-10 sm:text-xl md:px-20 mb-10"
+        className="text-md text-justify px-8 mt-10 sm:px-16 sm:text-xl md:px-20 mb-10"
       >
         <div className="text-3xl md:text-4xl xl:text-5xl font-semibold">
           Pendidikan
