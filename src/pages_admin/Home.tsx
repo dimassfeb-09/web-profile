@@ -32,12 +32,13 @@ const AdminHome = () => {
         }, 1000);
     }, [currentUser, isLoadingPage]);
 
-    if (currentUser == null) {
-        return navigate('/admin/login');
-    }
-
     if (isLoadingPage) {
         return LoadingScreen();
+    }
+
+    if (currentUser == null) {
+        navigate('/admin/login');
+        return;
     }
 
     const current = () => {
