@@ -1,6 +1,11 @@
 import {Person} from "@mui/icons-material";
+import {User} from "@firebase/auth";
 
-const AdminNavigationBar = (props) => {
+interface AdminNavBarProps {
+    currentUser?: User
+}
+
+const AdminNavigationBar = (props: AdminNavBarProps) => {
 
     const {currentUser} = props;
 
