@@ -1,7 +1,8 @@
 import CardPortfolio from "../components/CardPortfolio";
-import { collection, getDocs} from "@firebase/firestore";
+import {collection, getDocs} from "@firebase/firestore";
 import {db} from "../db/Firebase.ts";
 import {useEffect, useState} from "react";
+import LoadingScreen from "../components/LoadingScreen.tsx";
 
 type Portfolio = {
     title: string;
@@ -14,12 +15,13 @@ type Portfolio = {
 const Portfolio = () => {
 
     const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
+    const [isLoadingPage, setIsLoadingPage] = useState(true);
 
-    const getPortfolios =  async ()  => {
+    const getPortfolios = async () => {
         const portpoliosRef = collection(db, "portfolio");
         const querySnapshot = await getDocs(portpoliosRef);
 
-        const portopolios : Portfolio[] = [];
+        const portopolios: Portfolio[] = [];
         querySnapshot.forEach((doc) => {
             const data = doc.data();
             const newPortfolio: Portfolio = {
@@ -35,28 +37,35 @@ const Portfolio = () => {
         setPortfolios(portopolios.reverse());
     }
 
-    useEffect(()=> {
+    useEffect(() => {
         getPortfolios();
+        setTimeout(() => {
+            setIsLoadingPage(false);
+        }, 200);
+
     }, []);
 
+    if (isLoadingPage) {
+        return LoadingScreen();
+    }
 
-
-  return (
-    <div className="h-screen">
-      <div className="pt-28 pb-28 p-5 gap-5 grid md:grid-cols-2 lg:grid-cols-3 overflow-y-auto  auto-rows-auto justify-center">
-          {portfolios.map(function(object, i){
-              return <CardPortfolio
-                  title={object.title}
-                  imgPath={object.image}
-                  playstore={object.playstore}
-                  github={object.github}
-                  tech={object.tech}
-                  key={i}
-              ></CardPortfolio>;
-          })}
-      </div>
-    </div>
-  );
+    return (
+        <div className="h-screen">
+            <div
+                className="pt-28 pb-28 p-5 gap-5 grid md:grid-cols-2 lg:grid-cols-3 overflow-y-auto  auto-rows-auto justify-center">
+                {portfolios.map(function (object, i) {
+                    return <CardPortfolio
+                        title={object.title}
+                        imgPath={object.image}
+                        playstore={object.playstore}
+                        github={object.github}
+                        tech={object.tech}
+                        key={i}
+                    ></CardPortfolio>;
+                })}
+            </div>
+        </div>
+    );
 };
 
 export default Portfolio;

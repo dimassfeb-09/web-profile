@@ -29,7 +29,7 @@ const AdminHome = () => {
 
         setTimeout(() => {
             setIsLoadingPage(false);
-        }, 1000);
+        }, 50);
     }, [currentUser, isLoadingPage]);
 
     if (isLoadingPage) {

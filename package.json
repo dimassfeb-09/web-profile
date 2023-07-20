@@ -19,6 +19,7 @@
     "firebase": "^10.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-html-parser": "^2.0.2",
     "react-lazy-load-image-component": "^1.6.0",
     "react-router-dom": "^6.14.1",
     "react-spinners": "^0.13.8",
