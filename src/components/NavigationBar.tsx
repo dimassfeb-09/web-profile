@@ -1,5 +1,6 @@
 import {useEffect, useState} from "react";
 import {Link} from "react-router-dom";
+import {Menu} from "@mui/icons-material";
 
 function NavigationBar() {
 
@@ -37,15 +38,22 @@ function NavigationBar() {
     return (
         <>
             <nav
-                className="fixed flex flex-col justify-between h-[70px] w-full  bg-gradient-to-r from-blue-600 to-blue-300 text-white sm:flex-row sm:justify-around">
+                className="z-50 fixed flex flex-col justify-between h-[70px] w-full  bg-gradient-to-r from-blue-600 to-blue-300 text-white sm:flex-row sm:justify-around">
                 <Link to="/" className="p-5">
                     Dimas Febriyanto
                 </Link>
+                <div className="fixed top-0 right-0 p-5 text-white  sm:hidden">
+                  <span
+                      className={`${
+                          hiddenNav ? "bg-transparent text-white group/nav" : "bg-white text-black"
+                      } px-4 py-2 rounded-sm hover:cursor-pointer`}
+                      onClick={handleClickHiddenNav}
+                  >
+                    <Menu/>
+                  </span>
+                </div>
                 <div
-                    className={`${
-                        hiddenNav ? "hidden" : "static"
-                    } flex flex-col p-5 bg-white sm:bg-transparent sm:flex sm:flex-row sm:gap-10 text-black sm:text-white`}
-                >
+                    className={`${hiddenNav ? "hidden" : "static"} flex flex-col p-5 bg-white sm:bg-transparent sm:flex sm:flex-row sm:gap-10 text-black sm:text-white`}>
                     <div
                         className="hover:border-b-2 hover:border-black"
                         onClick={handleClickHiddenNav}
@@ -71,17 +79,8 @@ function NavigationBar() {
                         <Link to="/portopolio">Portopolio</Link>
                     </div>
                 </div>
-                <div className="fixed top-0 right-0 p-5 text-white  sm:hidden">
-          <span
-              className={`${
-                  hiddenNav ? "bg-black text-white" : "bg-white text-black"
-              } px-4 py-2 rounded-sm hover:cursor-pointer`}
-              onClick={handleClickHiddenNav}
-          >
-            Menu
-          </span>
-                </div>
             </nav>
+
         </>
     );
 }

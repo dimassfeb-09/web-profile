@@ -6,6 +6,7 @@ import LoadingScreen from "../components/LoadingScreen.tsx";
 import BerandaSetting from "./BerandaSetting.tsx";
 import PortfolioSetting from "./PortfolioSetting.tsx";
 import {useNavigate} from "react-router-dom";
+import ContactMessage from "./ContactMessage.tsx";
 
 enum CurrentPageAdmin {
     Beranda = 'beranda',
@@ -19,27 +20,27 @@ const AdminHome = () => {
     const auth: Auth = getAuth(app);
     const [currentUser, setCurrentUser] = useState<User>();
     const [isLoadingPage, setIsLoadingPage] = useState(true);
-    const [currentPage, setCurrentPage] = useState<CurrentPageAdmin>();
+    const [currentPage, setCurrentPage] = useState<CurrentPageAdmin>(CurrentPageAdmin.Beranda);
     const navigate = useNavigate();
+
 
     useEffect(() => {
         if (auth.currentUser != null) {
             setCurrentUser(auth.currentUser);
+        } else {
+            navigate('/admin/login');
         }
 
         setTimeout(() => {
             setIsLoadingPage(false);
         }, 50);
-    }, [currentUser, isLoadingPage]);
+
+    }, [currentUser, isLoadingPage, auth.currentUser]);
 
     if (isLoadingPage) {
         return LoadingScreen();
     }
 
-    if (currentUser == null) {
-        navigate('/admin/login');
-        return;
-    }
 
     const current = () => {
         switch (currentPage) {
@@ -50,7 +51,7 @@ const AdminHome = () => {
             case CurrentPageAdmin.About:
                 return <div></div>;
             case CurrentPageAdmin.ContactMessage:
-                return <div></div>;
+                return <ContactMessage/>;
             default:
                 return <div></div>;
         }

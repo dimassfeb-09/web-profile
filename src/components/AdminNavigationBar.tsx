@@ -1,5 +1,8 @@
-import {Person} from "@mui/icons-material";
-import {User} from "@firebase/auth";
+import {Logout, Person} from "@mui/icons-material";
+import {Auth, getAuth, signOut, User} from "@firebase/auth";
+import app from "../db/Firebase.ts";
+import {useNavigate} from "react-router-dom";
+import toastNotify from "../commons/Toast.tsx";
 
 interface AdminNavBarProps {
     currentUser?: User
@@ -8,6 +11,17 @@ interface AdminNavBarProps {
 const AdminNavigationBar = (props: AdminNavBarProps) => {
 
     const {currentUser} = props;
+    const auth: Auth = getAuth(app);
+    const navigate = useNavigate();
+
+    const handleSubmitLogout = async () => {
+        try {
+            await signOut(auth);
+            navigate('/admin/login');
+        } catch (e) {
+            toastNotify({type: "error", message: `Gagal keluar. ${e}`});
+        }
+    }
 
     return (
         <nav
@@ -17,6 +31,10 @@ const AdminNavigationBar = (props: AdminNavBarProps) => {
                 <div>{currentUser?.email}</div>
                 <div className="h-8 w-8 bg-white flex justify-center items-center text-black rounded-full">
                     <Person></Person>
+                </div>
+                <div className="flex gap-2">
+                    |
+                    <button onClick={handleSubmitLogout}>Logout <Logout/></button>
                 </div>
             </div>
         </nav>

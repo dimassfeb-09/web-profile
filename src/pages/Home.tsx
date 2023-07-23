@@ -1,8 +1,8 @@
-import {Download, Email, Instagram, LinkedIn} from "@mui/icons-material";
 import {collection, doc, getDoc} from "@firebase/firestore";
 import {db} from "../db/Firebase.ts";
 import {useEffect, useState} from "react";
 import LoadingScreen from "../components/LoadingScreen.tsx";
+import {Email, LibraryBooks} from "@mui/icons-material";
 
 type BerandaType = {
     title: string,
@@ -10,11 +10,10 @@ type BerandaType = {
     cv: string,
 }
 
-function Home() {
+function AdminHome() {
 
     const [berandaType, setBerandaType] = useState<BerandaType>();
     const [isLoadingPage, setIsLoadingPage] = useState(true);
-
 
     const getBerandas = async () => {
         try {
@@ -31,7 +30,7 @@ function Home() {
     }
 
     useEffect(() => {
-        getBerandas();
+        getBerandas().then(v => v);
         setTimeout(() => {
             setIsLoadingPage(false);
         }, 300)
@@ -41,45 +40,34 @@ function Home() {
         return LoadingScreen();
     }
 
-
     return (
-        <div className="pt-48 mb-28 sm:mb-0 sm:pt-0 h-screen flex flex-col gap-4 justify-center mx-5 md:mx-12 lg:mx-56">
-            <div className="text-6xl font-bold">
-                Hi, I am <span className="italic underline">{berandaType?.title}.</span>
+        <div
+            className="sm:mb-0 sm:pt-0 h-screen flex flex-col gap-4 justify-center mx-5 md:mx-16 lg:mx-28 xl:mx-28">
+            <div className="text-4xl sm:text-4xl md:text-5xl lg:text-6xl font-bold">
+                <span>Hi! I am</span>
+                <span
+                    className="bg-gradient-to-r from-blue-500 to-blue-700 text-transparent bg-clip-text">   {berandaType?.title}.</span>
             </div>
-            <div className="text-xl">
+            <div className="text-lg lg:text-xl lg:w-[70%]">
                 {berandaType?.description}
             </div>
-            <div className="mt-5">
-                <div>Tertarik dengan saya?</div>
-                <div className="flex gap-5 mt-2">
-                    <a href="mailto:dimassfeb@gmail.com">
-                        <Email></Email>
-                    </a>
-                    <a
-                        href="https://www.instagram.com/errorlog.dimassfeb/"
-                        target="_blank"
-                    >
-                        <Instagram></Instagram>
-                    </a>
-                    <a
-                        href="https://www.linkedin.com/in/dimas-febriyanto-348246205/"
-                        target="_blank"
-                    >
-                        <LinkedIn></LinkedIn>
-                    </a>
-                </div>
+            <div className="flex gap-4 mt-5 lg:text-lg">
+                <a href={berandaType?.cv} target="_block" className="group/cv w-min flex gap-2 items-center">
+                    <LibraryBooks/> Resume
+                    <span
+                        className=" h-[0.2em] w-0 absolute duration-500 ease-in-out translate-y-4
+                         group-hover/cv:bg-gradient-to-r group-hover/cv:from-blue-500 group-hover/cv:to-blue-700 group-hover/cv:w-[5.58em]"></span>
+                </a>
+                <a href="mailto:dimassfeb@gmail.com" target="_block" className="group/cv w-min flex gap-2 items-center">
+                    <Email/> dimassfeb@gmail.com
+                    <span
+                        className=" h-[0.2em] w-0 absolute duration-500 ease-in-out translate-y-4
+                         group-hover/cv:bg-gradient-to-r group-hover/cv:from-blue-500 group-hover/cv:to-blue-700 group-hover/cv:w-[12.3em]"></span>
+                </a>
             </div>
-            <a
-                className="mt-5 p-2 w-max bg-blue-500 text-white rounded-md"
-                href={berandaType?.cv}
-                target="_block"
-            >
-                <Download></Download>
-                Unduh CV
-            </a>
+
         </div>
     );
 }
 
-export default Home;
+export default AdminHome;

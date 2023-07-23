@@ -1,9 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {ToastContainer} from "react-toastify";
 import {collection, doc, getDoc, updateDoc} from "@firebase/firestore";
-import {db} from "../db/Firebase.ts";
+import app, {db} from "../db/Firebase.ts";
 import toastNotify from "../commons/Toast.tsx";
 import LoadingScreen from "../components/LoadingScreen.tsx";
+import {Auth, getAuth} from "@firebase/auth";
+import {useNavigate} from "react-router-dom";
 
 const BerandaSetting = () => {
 
@@ -11,6 +13,8 @@ const BerandaSetting = () => {
     const [description, setDescription] = useState("");
     const [cv, setCV] = useState("");
     const [isLoadingPage, setIsLoadingPage] = useState(false);
+    const auth: Auth = getAuth(app);
+    const navigate = useNavigate();
 
     const getBerandaSetting = async () => {
         try {
@@ -52,6 +56,9 @@ const BerandaSetting = () => {
     }
 
     useEffect(() => {
+        if (auth.currentUser == null) {
+            navigate('/admin/login');
+        }
         getBerandaSetting();
     }, []);
 

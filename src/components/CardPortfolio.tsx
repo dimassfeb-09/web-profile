@@ -1,49 +1,55 @@
-import { Shop, GitHub } from "@mui/icons-material";
-import { LazyLoadImage } from "react-lazy-load-image-component";
+import {GitHub, Shop} from "@mui/icons-material";
+import {LazyLoadImage} from "react-lazy-load-image-component";
 
 function CardPortfolio(props: {
-  title: string;
-  imgPath: string;
-  playstore?: string;
-  tech: string[];
-  github: string;
+    title: string;
+    imgPath: string;
+    playstore?: string;
+    tech: string[];
+    github: string;
 }) {
-  const { imgPath, playstore, title, github, tech } = props;
+    const {imgPath, playstore, title, github, tech} = props;
 
-  return (
-    <div className="group/source flex flex-col p-3 gap-2 bg-white border border-grey hover:bg-[#161515] hover:text-white">
-      <LazyLoadImage height={300} src={imgPath} alt={imgPath} />
-      <hr />
-      <div className="h-[20%] flex flex-col gap-4">
-        <div className="flex flex-col gap-1">
-          <div className="font-bold text-ellipsis">{title}</div>
-          <div className="flex">
-            {
-              tech.map((v)=> {
-                return <div className="mr-1" key={v}>{v}</div>;
-              })
-            }
-          </div>
-        </div>
-        <div className="flex text-white">
-          {playstore ? (
-            <a href={playstore} target="_blank" className="mr-1">
-              <div className="flex items-center gap-2 py-1 px-2 border bg-black hover:bg-blue-500 group-hover/source:text-white group-hover/source:border">
-                <Shop></Shop> Playstore
-              </div>
-            </a>
-          ) : (
-            <div></div>
-          )}
-          <a href={github} target="_blank">
-            <div className="flex items-center gap-2 py-1 px-2 border bg-black hover:bg-blue-500 group-hover/source:text-white group-hover/source:border">
-              <GitHub></GitHub>Github
+    return (
+        <div
+            className="flex flex-col p-3 gap-2 bg-white border-2 border-slate-300 border-grey hover:scale-105 ">
+            <LazyLoadImage height={300} src={imgPath} alt={imgPath}/>
+            <hr/>
+            <div className="h-[20%] flex flex-col gap-4">
+                <div className="flex flex-col gap-1">
+                    <div className="font-bold text-ellipsis">{title}</div>
+                    <div className="flex">
+                        {tech.map((v) => {
+                            return <div className="group/tooltip">
+                                <img src={`assets/svg/${v}.svg`} height={20} width={20} className="mr-2"
+                                     alt={`${v.toUpperCase()}`}/>
+                                <span
+                                    className="group-hover/tooltip:opacity-100 bg-gray-800 px-2 py-1 text-sm text-gray-100 rounded-md absolute opacity-0 -translate-x-3 -translate-y-14">{v}</span>
+                            </div>;
+                        })}
+                    </div>
+                </div>
+                <div className="flex">
+                    {playstore ? (<a href={playstore} target="_blank" className="mr-3">
+                        <div
+                            className="flex items-center text-[1rem] gap-2 py-1 px-2 border border-black text-black transition-colors duration-100 ease-in-out hover:scale-105 hover:bg-black hover:text-white">
+                            <Shop/> Playstore
+                        </div>
+                    </a>) : (
+                        <div></div>
+                    )}
+
+                    <a href={github} target="_blank" className="group">
+                        <div
+                            className="flex items-center text-[1rem] gap-2 py-1 px-2 border border-black text-black transition-colors duration-100 ease-in-out hover:scale-105 hover:bg-black hover:text-white">
+                            <GitHub/>Github
+                        </div>
+                    </a>
+                </div>
             </div>
-          </a>
         </div>
-      </div>
-    </div>
-  );
+    );
 }
 
 export default CardPortfolio;
+

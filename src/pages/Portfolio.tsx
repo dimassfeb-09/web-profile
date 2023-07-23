@@ -50,9 +50,21 @@ const Portfolio = () => {
     }
 
     return (
-        <div className="h-screen">
+        <div className="h-screen pt-24 lg:pt-28 lg:px-14 xl:px-20">
             <div
-                className="pt-28 pb-28 p-5 gap-5 grid md:grid-cols-2 lg:grid-cols-3 overflow-y-auto  auto-rows-auto justify-center">
+                className="group/portfolio m-5 w-min font-bold text-6xl">
+                <div
+                    className="duration-300 ease-out group-hover/portfolio:translate-x-5 sm:group-hover/portfolio:translate-x-20
+                    group-hover/portfolio:bg-gradient-to-r
+                    group-hover/portfolio:from-blue-500
+                    group-hover/portfolio:to-blue-700
+                    group-hover/portfolio:text-transparent
+                    group-hover/portfolio:bg-clip-text">
+                    #Porfolio
+                </div>
+            </div>
+            <div
+                className="p-5 gap-7 xl:gap-10 grid md:grid-cols-2 lg:grid-cols-3 overflow-y-auto  auto-rows-auto justify-center">
                 {portfolios.map(function (object, i) {
                     return <CardPortfolio
                         title={object.title}
@@ -69,3 +81,4 @@ const Portfolio = () => {
 };
 
 export default Portfolio;
+
