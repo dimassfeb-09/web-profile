@@ -29,7 +29,7 @@ const About = () => {
     }
 
     useEffect(() => {
-        getPendidikan();
+        getPendidikan().then(v => v);
         setTimeout(() => {
             setIsLoadingPage(false);
         }, 50);
@@ -91,10 +91,11 @@ const About = () => {
                                     <div
                                         className="text-sm">{object.start_date.toDate().getFullYear()} - {object.end_date.toDate().getFullYear()}</div>
                                 </div>
-                                <div>
-                                    <div className="mt-3">Pengalaman</div>
+                                <div className="mt-5">
+                                    {object.experience ? <div className="mt-3">Pengalaman</div> : <></>}
                                     <ul>
-                                        {object.experience?.map((value, index) => <li key={index}>- {value}</li>)}
+                                        {object.experience?.map((value, index) => <li className="text-lg"
+                                                                                      key={index}>- {value}</li>)}
                                     </ul>
                                 </div>
                             </div>

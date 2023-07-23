@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {doc, setDoc} from "@firebase/firestore";
 import {db} from "../db/Firebase.ts";
 import {ToastContainer} from "react-toastify";
@@ -16,8 +16,14 @@ const Contact = () => {
 
         try {
 
-            if (message.length <= 50) {
-                throw "Minimal pesan 50 karakter.";
+            if (name == "") {
+                throw  "Nama tidak boleh kosong";
+            } else if (email == "") {
+                throw "Email tidak boleh kosong";
+            } else if (message == "") {
+                throw "Pesan tidak boleh kosong";
+            } else if (message.length <= 50) {
+                throw "Minimal pesan 50 karakter";
             }
 
             const date = new Date();
@@ -41,6 +47,19 @@ const Contact = () => {
         }
         //
     };
+    const isDisabledSubmit = (): boolean => {
+        if (name == "") return true;
+        if (email == "") return true;
+        if (message == "") return true;
+        if (message.length < 50) return true;
+
+        return false;
+    }
+
+    useEffect(() => {
+
+    }, [])
+
 
     return (
         <>
@@ -51,33 +70,46 @@ const Contact = () => {
                 <form className="flex flex-col gap-3 mt-9 w-[90%] md:w-3/4 lg:w-1/2"
                       onSubmit={onHandleSubmit}>
                     <div className="flex flex-col gap-1">
-                        <label htmlFor="name">Nama</label>
+                        <label htmlFor="name" className="required">Nama</label>
                         <input type="name" className="h-12 rounded-sm text-md px-2 border border-solid"
                                placeholder="Masukkan nama anda" value={name} onChange={(e) => {
                             setName(e.target.value)
                         }}/>
                     </div>
                     <div className="flex flex-col gap-1">
-                        <label htmlFor="email">Email</label>
+                        <label htmlFor="email" className="required">Email</label>
                         <input type="email" className="h-12 rounded-sm text-md px-2 border border-solid"
                                placeholder="Masukkan email anda" value={email} onChange={(e) => {
                             setEmail(e.target.value)
                         }}/>
                     </div>
-                    <div className="flex flex-col gap-1">
-                        <label htmlFor="message">Pesan</label>
+                    <div className={`flex flex-col gap-1 `}>
+                        <label htmlFor="message" className="required">Pesan</label>
 
-                        <textarea className="text-md p-2 border border-solid rounded-sm" name="message" id="message"
-                                  cols={20} rows={10}
-                                  placeholder="Masukkan pesan anda" value={message} onChange={(e) => {
+                        <textarea
+                            className='text-md p-2 border rounded-sm focus:border-red-500 text-black'
+                            name="message"
+                            id="message"
+                            cols={20} rows={10}
+                            placeholder="Masukkan pesan anda" value={message} onChange={(e) => {
                             setMessage(e.target.value)
                         }}></textarea>
+                        <div className={`flex justify-between ${message.length < 50 ? 'text-red-500' : ''}`}>
+                            <div>{message.length}/50
+                            </div>
+                            <div>Minimal 50 karakter</div>
+                        </div>
                     </div>
                     <div className="flex justify-center mt-7">
-                        <button
-                            className="bg-white text-black border border-black hover:bg-black hover:text-white w-[120px] h-10">
-                            Kirim Pesan
-                        </button>
+                        <div className="group/btn hover:bg-teal-400">
+                            <button
+                                className={`bg-white text-black border border-black w-[120px] h-10 ${isDisabledSubmit() ? 'bg-gray-200 text-gray-400 border-gray-200' : 'hover:bg-black hover:text-white'}`}
+                                disabled={isDisabledSubmit()}>
+                                Kirim Pesan
+                            </button>
+                            <span
+                                className={`${isDisabledSubmit() ? 'absolute' : 'hidden'} invisible -translate-y-7 -translate-x-24 text-white rounded-sm bg-gray-800 px-1 group-hover/btn:visible`}>Disabled</span>
+                        </div>
                         <ToastContainer/>
                     </div>
                 </form>
