@@ -55,14 +55,12 @@ function AdminHome() {
                 <a href={berandaType?.cv} target="_block" className="group/cv w-min flex gap-2 items-center">
                     <LibraryBooks/> Resume
                     <span
-                        className=" h-[0.2em] w-0 absolute duration-500 ease-in-out translate-y-4
-                         group-hover/cv:bg-gradient-to-r group-hover/cv:from-blue-500 group-hover/cv:to-blue-700 group-hover/cv:w-[5.58em]"></span>
+                        className="h-[0.2em] w-0 absolute duration-500 ease-in-out translate-y-4 bg-gradient-to-r from-blue-500 to-blue-700 group-hover/cv:w-[5.58em]"></span>
                 </a>
                 <a href="mailto:dimassfeb@gmail.com" target="_block" className="group/cv w-min flex gap-2 items-center">
                     <Email/> dimassfeb@gmail.com
                     <span
-                        className=" h-[0.2em] w-0 absolute duration-500 ease-in-out translate-y-4
-                         group-hover/cv:bg-gradient-to-r group-hover/cv:from-blue-500 group-hover/cv:to-blue-700 group-hover/cv:w-[12.3em]"></span>
+                        className="h-[0.2em] w-0 absolute duration-500 ease-in-out translate-y-4 bg-gradient-to-r from-blue-500 to-blue-700 group-hover/cv:w-[12.3em]"></span>
                 </a>
             </div>
 

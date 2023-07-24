@@ -1,6 +1,5 @@
 import {useEffect, useState} from "react";
 import {Link} from "react-router-dom";
-import {Menu} from "@mui/icons-material";
 
 function NavigationBar() {
 
@@ -38,45 +37,59 @@ function NavigationBar() {
     return (
         <>
             <nav
-                className="z-50 fixed flex flex-col justify-between h-[70px] w-full  bg-gradient-to-r from-blue-600 to-blue-300 text-white sm:flex-row sm:justify-around">
-                <Link to="/" className="p-5">
+                className="z-50 fixed flex flex-row items-center w-full h-[70px] justify-around text-sm md:text-lg bg-gradient-to-r from-blue-600 to-blue-300 text-white sm:justify-around">
+                <Link to="/" className="hidden sm:block">
                     Dimas Febriyanto
                 </Link>
-                <div className="fixed top-0 right-0 p-5 text-white  sm:hidden">
-                  <span
-                      className={`${
-                          hiddenNav ? "bg-transparent text-white group/nav" : "bg-white text-black"
-                      } px-4 py-2 rounded-sm hover:cursor-pointer`}
-                      onClick={handleClickHiddenNav}
-                  >
-                    <Menu/>
-                  </span>
-                </div>
+                <img src="assets/img/logo.png" height={40} width={40} alt="Brand"
+                     className="rounded-full sm:hidden"/>
+                {/*<div className="fixed top-0 right-0 p-5 text-white  sm:hidden">*/}
+                {/*  <span*/}
+                {/*      className={`${*/}
+                {/*          hiddenNav ? "bg-transparent text-white group/nav" : "bg-white text-black"*/}
+                {/*      } px-4 py-2 rounded-sm hover:cursor-pointer`}*/}
+                {/*      onClick={handleClickHiddenNav}*/}
+                {/*  >*/}
+                {/*    <Menu/>*/}
+                {/*  </span>*/}
+                {/*</div>*/}
                 <div
-                    className={`${hiddenNav ? "hidden" : "static"} flex flex-col p-5 bg-white sm:bg-transparent sm:flex sm:flex-row sm:gap-10 text-black sm:text-white`}>
+                    className={`flex flex-row gap-3 sm:bg-transparent  sm:gap-10 text-white`}>
                     <div
-                        className="hover:border-b-2 hover:border-black"
+                        className="group/home flex"
                         onClick={handleClickHiddenNav}
                     >
                         <Link to="/">Beranda</Link>
+                        <span
+                            className="h-[0.15em] w-0 bg-teal-500 absolute duration-500 ease-in-out translate-y-6 bg-gradient-to-r from-blue-500 to-blue-700
+                         group-hover/home:w-[3.7767em]"></span>
                     </div>
                     <div
-                        className="mt-5 sm:mt-0 hover:border-b-2 hover:border-black"
+                        className="group/about flex"
                         onClick={handleClickHiddenNav}
                     >
                         <Link to="/about">Tentang</Link>
+                        <span
+                            className="h-[0.15em] w-0 bg-teal-500 absolute duration-500 ease-in-out translate-y-6 bg-gradient-to-r from-blue-500 to-blue-700
+                         group-hover/about:w-[3.59em]"></span>
                     </div>
                     <div
-                        className="mt-5 sm:mt-0 hover:border-b-2 hover:border-black"
+                        className="group/contact flex"
                         onClick={handleClickHiddenNav}
                     >
                         <Link to="/contact">Kontak</Link>
+                        <span
+                            className="h-[0.15em] w-0 bg-teal-500 absolute duration-500 ease-in-out translate-y-6 bg-gradient-to-r from-blue-500 to-blue-700
+                         group-hover/contact:w-[3.15em]"></span>
                     </div>
                     <div
-                        className="mt-5 sm:mt-0 hover:border-b-2 hover:border-black"
+                        className="group/portfolio flex"
                         onClick={handleClickHiddenNav}
                     >
-                        <Link to="/portopolio">Portopolio</Link>
+                        <Link to="/portopolio">Portfolio</Link>
+                        <span
+                            className="h-[0.15em] w-0 bg-teal-500 absolute duration-500 ease-in-out translate-y-6 bg-gradient-to-r from-blue-500 to-blue-700
+                         group-hover/portfolio:w-[3.95em]"></span>
                     </div>
                 </div>
             </nav>
