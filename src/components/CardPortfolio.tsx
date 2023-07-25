@@ -8,7 +8,8 @@ function CardPortfolio(props: Portfolio) {
         <div
             className="flex flex-col p-3 gap-2 bg-white border-2 border-slate-300 border-grey hover:scale-105 ">
             {
-                image_path ? <LazyLoadImage height={300} src={image_path} alt={image_path}/> : <div>NO IMAGE</div>
+                image_path ? <LazyLoadImage height={300} src={image_path} alt={image_path}/> :
+                    <div className="h-[300px] bg-gray-100 flex items-center justify-center">NO IMAGE</div>
             }
             <hr/>
             <div className="h-[20%] flex flex-col gap-4">
@@ -16,7 +17,7 @@ function CardPortfolio(props: Portfolio) {
                     <div className="font-bold text-ellipsis">{title}</div>
                     <div className="flex">
                         {tech.map((v) => {
-                            return <div className="group/tooltip">
+                            return <div className="group/tooltip" key={v}>
                                 <img src={`assets/svg/${v}.svg`} height={20} width={20} className="mr-2"
                                      alt={`${v.toUpperCase()}`}/>
                                 <span
