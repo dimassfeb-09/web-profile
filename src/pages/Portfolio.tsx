@@ -4,13 +4,6 @@ import {db} from "../db/Firebase.ts";
 import {useEffect, useState} from "react";
 import LoadingScreen from "../components/LoadingScreen.tsx";
 
-type Portfolio = {
-    title: string;
-    image: string;
-    github: string;
-    playstore?: string;
-    tech: string[];
-};
 
 const Portfolio = () => {
 
@@ -26,7 +19,7 @@ const Portfolio = () => {
             const data = doc.data();
             const newPortfolio: Portfolio = {
                 title: data.title,
-                image: data.image_path,
+                image_path: data.image_path,
                 github: data.github,
                 playstore: data.playstore,
                 tech: data.tech,
@@ -68,7 +61,7 @@ const Portfolio = () => {
                 {portfolios.map(function (object, i) {
                     return <CardPortfolio
                         title={object.title}
-                        imgPath={object.image}
+                        image_path={object.image_path}
                         playstore={object.playstore}
                         github={object.github}
                         tech={object.tech}

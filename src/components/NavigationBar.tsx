@@ -43,16 +43,6 @@ function NavigationBar() {
                 </Link>
                 <img src="assets/img/logo.png" height={40} width={40} alt="Brand"
                      className="rounded-full sm:hidden"/>
-                {/*<div className="fixed top-0 right-0 p-5 text-white  sm:hidden">*/}
-                {/*  <span*/}
-                {/*      className={`${*/}
-                {/*          hiddenNav ? "bg-transparent text-white group/nav" : "bg-white text-black"*/}
-                {/*      } px-4 py-2 rounded-sm hover:cursor-pointer`}*/}
-                {/*      onClick={handleClickHiddenNav}*/}
-                {/*  >*/}
-                {/*    <Menu/>*/}
-                {/*  </span>*/}
-                {/*</div>*/}
                 <div
                     className={`flex flex-row gap-3 sm:bg-transparent  sm:gap-10 text-white`}>
                     <div

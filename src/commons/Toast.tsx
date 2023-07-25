@@ -6,9 +6,9 @@ type paramToast = {
     message: string,
 }
 
-const toastNotify = (paramToast: paramToast) => {
-    if (paramToast.type === "success") {
-        toast.success(paramToast.message, {
+const toastNotify = (props: paramToast) => {
+    if (props.type === "success") {
+        toast.success(props.message, {
             position: "bottom-center",
             autoClose: 4983,
             hideProgressBar: false,
@@ -19,7 +19,7 @@ const toastNotify = (paramToast: paramToast) => {
             theme: "light",
         });
     } else {
-        toast.error(paramToast.message, {
+        toast.error(props.message, {
             position: "bottom-center",
             autoClose: 4983,
             hideProgressBar: false,

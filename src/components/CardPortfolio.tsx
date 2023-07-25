@@ -1,19 +1,15 @@
 import {GitHub, Shop} from "@mui/icons-material";
 import {LazyLoadImage} from "react-lazy-load-image-component";
 
-function CardPortfolio(props: {
-    title: string;
-    imgPath: string;
-    playstore?: string;
-    tech: string[];
-    github: string;
-}) {
-    const {imgPath, playstore, title, github, tech} = props;
+function CardPortfolio(props: Portfolio) {
+    const {image_path, playstore, title, github, tech} = props;
 
     return (
         <div
             className="flex flex-col p-3 gap-2 bg-white border-2 border-slate-300 border-grey hover:scale-105 ">
-            <LazyLoadImage height={300} src={imgPath} alt={imgPath}/>
+            {
+                image_path ? <LazyLoadImage height={300} src={image_path} alt={image_path}/> : <div>NO IMAGE</div>
+            }
             <hr/>
             <div className="h-[20%] flex flex-col gap-4">
                 <div className="flex flex-col gap-1">

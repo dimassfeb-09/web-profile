@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {doc, setDoc} from "@firebase/firestore";
+import {addDoc, collection} from "@firebase/firestore";
 import {db} from "../db/Firebase.ts";
 import {ToastContainer} from "react-toastify";
 import toastNotify from "../commons/Toast.tsx";
@@ -17,7 +17,7 @@ const Contact = () => {
         try {
 
             if (name == "") {
-                throw  "Nama tidak boleh kosong";
+                throw "Nama tidak boleh kosong";
             } else if (email == "") {
                 throw "Email tidak boleh kosong";
             } else if (message == "") {
@@ -27,7 +27,7 @@ const Contact = () => {
             }
 
             const date = new Date();
-            await setDoc(doc(db, "message", `${date}`), {
+            await addDoc(collection(db, "message"), {
                 name: name,
                 email: email,
                 message: message,

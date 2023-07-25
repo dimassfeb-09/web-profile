@@ -1,41 +1,33 @@
 import {useEffect, useState} from 'react';
+import {Delete} from "@mui/icons-material";
+import {ToastContainer} from "react-toastify";
+import getMessages from "../repository/getMessages.ts";
+import toastNotify from "../commons/Toast.tsx";
+import {deleteDoc, doc} from "@firebase/firestore";
 import {db} from "../db/Firebase.ts";
-import {collection, getDocs} from "@firebase/firestore";
-import {Delete, Message} from "@mui/icons-material";
-import ModalMessage from "../components/ModalMessage.tsx";
 
-type Message = {
-    name: string,
-    email: string,
-    message: string,
-}
 
 const ContactMessage = () => {
 
-    const [messages, setMessages] = useState<Message[]>([]);
+    const [messages, setMessages] = useState<MessageType[]>([]);
 
-    const getMessages = async () => {
+
+    const deletedMessage = async (message: MessageType) => {
         try {
-            const collectionReference = collection(db, "message");
-            const docs = await getDocs(collectionReference);
-
-            const newMessages: Message[] = [];
-            docs.docs.forEach((value) => {
-                const message: Message = {
-                    name: value.get("name"),
-                    email: value.get("email"),
-                    message: value.get("message"),
-                }
-                newMessages.push(message);
-            });
-            setMessages(newMessages);
+            await deleteDoc(doc(db, "message", message.id));
+            const newData = messages.filter(value => value != message);
+            setMessages(newData);
+            toastNotify({type: "success", message: "Berhasil hapus pesan."});
         } catch (e) {
-            console.log(e);
+            toastNotify({type: "error", message: "Gagal hapus pesan."});
         }
     }
 
+
     useEffect(() => {
-        getMessages();
+        getMessages().then((value) => {
+            setMessages(value);
+        });
     }, []);
 
     return (
@@ -45,26 +37,31 @@ const ContactMessage = () => {
                 <thead>
                 <tr className="table-">
                     <th className="border border-slate-600 p-2 w-[20%]">Nama</th>
-                    <th className="border border-slate-600 p-2 w-[70%]">Email</th>
+                    <th className="border border-slate-600 p-2 w-[20%]">Email</th>
+                    <th className="border border-slate-600 p-2 w-[50%]">Pesan</th>
                     <th className="border border-slate-600 p-2 w-[10%]">Aksi</th>
                 </tr>
                 </thead>
                 <tbody>
-
-                {messages.map((value, i) =>
+                {messages.length == 0 ? <tr className="table-row">
+                    <td className="text-center p-2" colSpan={3}>Tidak ada
+                        pesan
+                    </td>
+                </tr> : messages.map((value, i) =>
                     <tr key={i}>
-                        <td className="border border-slate-600 p-2">{value.name}</td>
-                        <td className="border border-slate-600 p-2">{value.email}</td>
-                        <td className="border border-slate-600 p-2">
-                            <div className="flex text-white justify-evenly">
-                                <div className="bg-red-500 p-1 rounded-md"><Delete/></div>
-                                <ModalMessage message={value.message}/>
+                        <td className="border border-slate-600 p-2 w-[20%]">{value.name}</td>
+                        <td className="border border-slate-600 p-2 w-[20%]">{value.email}</td>
+                        <td className="border border-slate-600 p-2 w-[50%]">{value.message}</td>
+                        <td className="border border-slate-600 p-2 w-[10%]">
+                            <div className="flex justify-center items-center ">
+                                <div onClick={() => deletedMessage(value)} className="text-red-500"><Delete/></div>
                             </div>
                         </td>
                     </tr>
                 )}
                 </tbody>
             </table>
+            <ToastContainer/>
         </div>
     );
 };

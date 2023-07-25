@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-label.required:after {
+.required:after {
     content: " *";
     color: red;
 }
