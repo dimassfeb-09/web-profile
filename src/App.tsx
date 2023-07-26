@@ -14,18 +14,6 @@ import AdminHome from "./pages_admin/Home.tsx";
 
 function App() {
   const currentPage = useLocation().pathname;
-  const [scrollY, setScrollY] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
 
   return (
     <>
@@ -49,7 +37,7 @@ function App() {
       {currentPage != "/404" &&
       currentPage != "/admin/login" &&
       currentPage != "/admin/home" ? (
-        <Footer scrollY={scrollY}></Footer>
+        <Footer></Footer>
       ) : (
         <></>
       )}

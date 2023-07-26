@@ -1,11 +1,6 @@
 import { Email, Instagram, LinkedIn } from "@mui/icons-material";
-import { FeedbackFish } from "@feedback-fish/react";
-import { Link } from "react-router-dom";
 
-function Footer(props: { scrollY: number }) {
-  const { scrollY } = props;
-  const hideFooter = scrollY > 0;
-
+function Footer() {
   return (
     <footer className="h-16 bg-white flex items-center justify-evenly border-t">
       <div>Dimas Febriyanto</div>
