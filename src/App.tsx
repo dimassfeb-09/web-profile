@@ -8,7 +8,6 @@ import Portfolio from "./pages/Portfolio";
 import Footer from "./commons/Footer";
 import NotFound from "./pages/NotFound_404";
 import NavigationBar from "./components/NavigationBar.tsx";
-import { useEffect, useState } from "react";
 import Login from "./pages_admin/Login.tsx";
 import AdminHome from "./pages_admin/Home.tsx";
 
