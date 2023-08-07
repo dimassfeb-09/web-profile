@@ -21,6 +21,7 @@ const Portfolio = () => {
         github: data.github,
         playstore: data.playstore,
         tech: data.tech,
+        demo_live: data.demo_live,
       };
       portopolios.push(newPortfolio);
     });
@@ -62,6 +63,7 @@ const Portfolio = () => {
               playstore={object.playstore}
               github={object.github}
               tech={object.tech}
+              demo_live={object.demo_live}
               key={i}
             ></CardPortfolio>
           );
