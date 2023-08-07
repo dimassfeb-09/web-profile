@@ -1,5 +1,4 @@
-import { GitHub, Preview, Shop, WidthWide } from "@mui/icons-material";
-import { LazyLoadImage } from "react-lazy-load-image-component";
+import { GitHub, Preview, Shop } from "@mui/icons-material";
 
 function CardPortfolio(props: Portfolio) {
   const { image_path, playstore, title, github, tech, demo_live } = props;
