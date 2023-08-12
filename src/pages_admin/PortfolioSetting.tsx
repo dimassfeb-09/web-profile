@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import LoadingScreen from "../components/LoadingScreen.tsx";
-import { Delete, Edit } from "@mui/icons-material";
+import { Delete, Edit, FmdBadTwoTone } from "@mui/icons-material";
 import {
   Autocomplete,
   Dialog,
@@ -8,34 +8,37 @@ import {
   DialogContent,
   DialogTitle,
   TextField,
+  Button,
 } from "@mui/material";
-import Button from "@mui/material/Button";
-import getPortfolio from "../repository/getPortfolio.ts";
-import toastNotify from "../commons/Toast.tsx";
-import { ToastContainer } from "react-toastify";
-import { addDoc, collection, deleteDoc, doc } from "@firebase/firestore";
-import { db } from "../db/Firebase.ts";
 import {
   getDownloadURL,
   getStorage,
   ref,
   uploadBytes,
 } from "@firebase/storage";
+import { ToastContainer } from "react-toastify";
+import { addDoc, collection } from "@firebase/firestore";
+
+import getPortfolio from "../repository/getPortfolio.ts";
+import toastNotify from "../commons/Toast.tsx";
+import { db } from "../db/Firebase.ts";
 
 const PortfolioSetting = () => {
-  const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
+  const [portfolioDatasTable, setPortfolioDatasTable] = useState<Portfolio[]>(
+    []
+  );
   const [isLoadingPage, setIsLoadingPage] = useState(true);
   const [isFormDialogOpen, setIsFormDialogOpen] = useState(false);
 
   const [title, setTitle] = useState("");
   const [image, setImage] = useState<File | null>();
   const [github, setGithub] = useState("");
-  const [playstore, setPlaystore] = useState("");
-  const [demo_live, setDemoLive] = useState("");
+  const [playStore, setPlaystore] = useState("");
+  const [demoLive, setDemoLive] = useState("");
   const [techStack, setTechStack] = useState<{ value: string }[] | null>([]);
 
   useEffect(() => {
-    getPortfolio().then((value) => setPortfolios(value));
+    getPortfolio().then((value) => setPortfolioDatasTable(value));
     setIsLoadingPage(false);
   }, []);
 
@@ -57,78 +60,6 @@ const PortfolioSetting = () => {
     }
   };
 
-  const handleSubmitAddPortfolio = async () => {
-    if (title == "") {
-      return toastNotify({
-        type: "error",
-        message: "Judul tidak boleh kosong",
-      });
-    } else if (image == null) {
-      return toastNotify({
-        type: "error",
-        message: "Silahkan upload gambar dahulu",
-      });
-    } else if (github == "") {
-      return toastNotify({
-        type: "error",
-        message: "Github tidak boleh kosong",
-      });
-    } else if (techStack == null) {
-      return toastNotify({
-        type: "error",
-        message: "Teknologi tidak boleh kosong",
-      });
-    }
-
-    try {
-      const collectionRef = collection(db, "portfolio");
-      const tech = techStack!.map((value) => value.value);
-
-      // upload to firebase storage
-      const image_url = await uploadImageToFirebaseStorage();
-
-      const portfolioData: Portfolio = {
-        title: title,
-        image_path: image_url,
-        github: github,
-        playstore: playstore,
-        tech: tech,
-        demo_live: demo_live,
-      };
-
-      if (image_url != null) {
-        await addDoc(collectionRef, portfolioData);
-      }
-
-      updatePortfoliosData(portfolioData);
-
-      // clear value
-      clearFormAddPortfolio();
-
-      setIsFormDialogOpen(false);
-      toastNotify({ type: "success", message: "Berhasil tambah portfolio" });
-    } catch (e) {
-      toastNotify({ type: "error", message: "Gagal tambah portfolio" });
-      throw e;
-    }
-  };
-
-  const updatePortfoliosData = (props: Portfolio) => {
-    portfolios.push(props);
-  };
-
-  const deletePortfolioData = async (ID: string) => {
-    try {
-      const collectionRef = collection(db, "portfolio");
-      await deleteDoc(doc(collectionRef, ID));
-      const newPortfolios = portfolios.filter((value, _) => value.id != ID);
-      setPortfolios(newPortfolios);
-      toastNotify({ type: "success", message: "Berhasil hapus portfolio." });
-    } catch (e) {
-      throw e;
-    }
-  };
-
   const clearFormAddPortfolio = () => {
     setTitle("");
     setImage(null);
@@ -136,6 +67,59 @@ const PortfolioSetting = () => {
     setPlaystore("");
     setDemoLive("");
     setTechStack(null);
+  };
+
+  const validationFormInput = async () => {
+    try {
+      if (title == "") {
+        throw new Error("Judul tidak boleh kosong");
+      } else if (image == null) {
+        throw new Error("Silahkan upload gambar dahulu");
+      } else if (github == "") {
+        throw new Error("Github tidak boleh kosong");
+      } else if (techStack == null) {
+        throw new Error("Teknologi tidak boleh kosong");
+      }
+    } catch (e: any) {
+      throw toastNotify({ message: e.message, type: "error" });
+    }
+  };
+
+  const handleSubmitAddPortfolio = async () => {
+    try {
+      await validationFormInput();
+
+      const collectionRef = collection(db, "portfolio");
+      const tech = techStack!.map((value) => value.value);
+
+      // upload to firebase storage and getting image url
+      const imageURL = await uploadImageToFirebaseStorage();
+
+      const portfolioData: Portfolio = {
+        title: title,
+        image_path: imageURL,
+        github: github,
+        playstore: playStore,
+        tech: tech,
+        demo_live: demoLive,
+      };
+
+      if (imageURL != null) {
+        // Add field to new document
+        await addDoc(collectionRef, portfolioData);
+      }
+
+      // Added to table portfolio
+      portfolioDatasTable.push(portfolioData);
+
+      // Clear value after added
+      clearFormAddPortfolio();
+
+      setIsFormDialogOpen(false);
+      toastNotify({ type: "success", message: "Berhasil tambah portfolio" });
+    } catch (e) {
+      throw e;
+    }
   };
 
   if (isLoadingPage) {
@@ -183,7 +167,7 @@ const PortfolioSetting = () => {
                   <input
                     type="file"
                     accept="image/png, image/jpeg, image/jpg"
-                    onChange={(event) => setImage(event.target.files?.[0])}
+                    onChange={(e) => setImage(e.target.files?.[0])}
                     hidden
                   />
                 </Button>
@@ -204,7 +188,7 @@ const PortfolioSetting = () => {
               fullWidth
               variant="outlined"
               value={title}
-              onChange={(event) => setTitle(event.target.value)}
+              onChange={(e) => setTitle(e.target.value)}
             />
 
             <TextField
@@ -216,7 +200,7 @@ const PortfolioSetting = () => {
               fullWidth
               variant="outlined"
               value={github}
-              onChange={(event) => setGithub(event.target.value)}
+              onChange={(e) => setGithub(e.target.value)}
             />
             <TextField
               autoFocus
@@ -226,8 +210,8 @@ const PortfolioSetting = () => {
               type="text"
               fullWidth
               variant="outlined"
-              value={playstore}
-              onChange={(event) => setPlaystore(event.target.value)}
+              value={playStore}
+              onChange={(e) => setPlaystore(e.target.value)}
             />
             <TextField
               autoFocus
@@ -237,8 +221,8 @@ const PortfolioSetting = () => {
               type="text"
               fullWidth
               variant="outlined"
-              value={demo_live}
-              onChange={(event) => setDemoLive(event.target.value)}
+              value={demoLive}
+              onChange={(e) => setDemoLive(e.target.value)}
             />
             <Autocomplete
               multiple
@@ -277,13 +261,16 @@ const PortfolioSetting = () => {
         </Dialog>
       </div>
       <div className="flex flex-col gap-5">
-        {portfolios.map(function (object, i) {
+        {portfolioDatasTable.map(function (portfolio, _) {
           return (
-            <div className="flex justify-between p-3 border" key={i}>
-              <div>{object.title}</div>
+            <div
+              className="flex justify-between p-3 border"
+              key={portfolio.title}
+            >
+              <div>{portfolio.title}</div>
               <div className="flex gap-2 items-center justify-center">
                 <Edit></Edit>
-                <button onClick={() => deletePortfolioData(object.id!)}>
+                <button>
                   <Delete className="text-red-500" />
                 </button>
               </div>
