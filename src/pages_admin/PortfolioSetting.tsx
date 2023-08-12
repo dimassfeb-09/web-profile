@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import LoadingScreen from "../components/LoadingScreen.tsx";
-import { Delete, Edit, FmdBadTwoTone } from "@mui/icons-material";
+import { Delete, Edit } from "@mui/icons-material";
 import {
   Autocomplete,
   Dialog,
