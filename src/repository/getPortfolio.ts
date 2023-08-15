@@ -13,6 +13,7 @@ const getPortfolios = async () => {
                 id: doc.id,
                 title: data.title,
                 image_path: data.image_path,
+                platform: data.platform,
                 github: data.github,
                 playstore: data.playstore,
                 tech: data.tech,
