@@ -5,7 +5,7 @@ function CardPortfolio(props: Portfolio) {
 
     return (
         <div
-            className="flex flex-col p-5 mx-5 sm:mx-4 md:mx-0 gap-2 bg-white border-2 duration-300 hover:scale-105 hover:drop-shadow-xl ">
+            className="flex flex-col p-5 mx-2 md:mx-0 gap-2 bg-white border-2 duration-300 hover:scale-105 hover:drop-shadow-xl ">
             <img src={image_path} className="aspect-video" alt={image_path}/>
             <hr/>
             <div className="h-full justify-between flex flex-col gap-4 ">
