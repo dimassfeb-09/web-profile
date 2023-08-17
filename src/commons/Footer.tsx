@@ -2,7 +2,7 @@ import { Email, Instagram, LinkedIn } from "@mui/icons-material";
 
 function Footer() {
   return (
-    <footer className="h-16 bg-white flex items-center justify-evenly border-t">
+    <footer className="dark:bg-darkColor dark:text-white h-16 bg-white flex items-center justify-evenly border-t">
       <div>Dimas Febriyanto</div>
       <div className="flex gap-5">
         <a

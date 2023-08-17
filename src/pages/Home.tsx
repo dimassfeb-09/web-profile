@@ -40,7 +40,7 @@ function AdminHome() {
   }
 
   return (
-    <div className="sm:mb-0 sm:pt-0 h-screen flex flex-col gap-4 justify-center mx-5 md:mx-16 lg:mx-28 xl:mx-28">
+    <div className="dark:bg-darkColor dark:text-white sm:mb-0 sm:pt-0 h-screen flex flex-col gap-4 justify-center px-5 md:px-16 lg:px-28 xl:px-28">
       <div className="text-4xl sm:text-4xl md:text-5xl lg:text-6xl font-bold">
         <span>Hi! I am</span>
         <span className="bg-gradient-to-r from-blue-500 to-blue-700 text-transparent bg-clip-text">

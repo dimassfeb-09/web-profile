@@ -39,7 +39,7 @@ const About = () => {
   }
 
   return (
-    <div className="h-screen mb-32 pt-28 sm:pt-0">
+    <div className="dark:bg-darkColor dark:text-white h-screen pt-28 sm:pt-0">
       <div
         id="#about"
         className="text-md text-justify px-8 sm:pt-32 sm:px-16 sm:text-xl md:pt-36 md:px-20 lg"
@@ -81,7 +81,7 @@ const About = () => {
         </div>
         <div className="flex flex-col gap-6 mt-7">
           <div className="flex flex-col">
-            {detailPendidikan.map(function (object,_) {
+            {detailPendidikan.map(function (object, _) {
               return (
                 <div key={object.school_name}>
                   <div>

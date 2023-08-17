@@ -10,16 +10,37 @@ import NotFound from "./pages/NotFound_404";
 import NavigationBar from "./components/NavigationBar.tsx";
 import Login from "./pages_admin/Login.tsx";
 import AdminHome from "./pages_admin/Home.tsx";
+import { useEffect, useState } from "react";
 
 function App() {
   const currentPage = useLocation().pathname;
+  const [darkMode, setDarkMode] = useState(true);
+
+  const handleDarkMode = () => {
+    setDarkMode(!darkMode);
+    if (darkMode) {
+      localStorage.setItem("darkMode", "light");
+    } else {
+      localStorage.setItem("darkMode", "dark");
+    }
+  };
+
+  useEffect(() => {
+    const getDarkModeLocalStorage = localStorage.getItem("darkMode");
+
+    if (getDarkModeLocalStorage == "dark") {
+      setDarkMode(true);
+    } else {
+      setDarkMode(false);
+    }
+  }, []);
 
   return (
-    <>
+    <div className={darkMode ? "dark" : ""}>
       {currentPage != "/404" &&
       currentPage != "/admin/login" &&
       currentPage != "/admin/home" ? (
-        <NavigationBar></NavigationBar>
+        <NavigationBar handleDarkMode={handleDarkMode} darkMode={darkMode} />
       ) : (
         <></>
       )}
@@ -40,7 +61,7 @@ function App() {
       ) : (
         <></>
       )}
-    </>
+    </div>
   );
 }
 
