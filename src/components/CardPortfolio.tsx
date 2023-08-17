@@ -29,7 +29,7 @@ function CardPortfolio(props: Portfolio) {
             </span>
           </div>
           <div className="flex">
-            {tech.map((v, i) => {
+            {tech.map((v, _) => {
               return (
                 <>
                   <span className="group/tooltip ml-1 flex justify-center">
