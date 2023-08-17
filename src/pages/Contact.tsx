@@ -26,15 +26,15 @@ const Contact = () => {
 
         try {
             if (name == "") {
-                throw "Nama tidak boleh kosong";
+                throw new Error("Nama tidak boleh kosong");
             } else if (email == "") {
-                throw "Email tidak boleh kosong";
+                throw new Error("Email tidak boleh kosong");
             } else if (message == "") {
-                throw "Pesan tidak boleh kosong";
+                throw new Error("Pesan tidak boleh kosong");
             } else if (message.length <= 50) {
-                throw "Minimal pesan 50 karakter";
+                throw new Error("Minimal pesan 50 karakter");
             } else if (isEmailValid == false) {
-                throw "Masukkan email yang valid";
+                throw new Error("Masukkan email yang valid");
             }
 
             const date = new Date();
@@ -72,7 +72,6 @@ const Contact = () => {
     useEffect(() => {
         setDisabled(isDisabledSubmit());
         ValidateEmail();
-        console.log(isEmailValid);
     }, [isDisabledSubmit]);
 
     return (

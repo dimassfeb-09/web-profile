@@ -1,5 +1,5 @@
-import {useState} from "react";
-import {Link} from "react-router-dom";
+import {useEffect, useState} from "react";
+import {Link, useLocation} from "react-router-dom";
 
 enum activeNav {
     Home = "home",
@@ -10,12 +10,33 @@ enum activeNav {
 
 function NavigationBar() {
     const [hiddenNav, setHiddenNav] = useState(true);
-    const [nav, setActiveNav] = useState<activeNav>(activeNav.Home);
+    const [nav, setActiveNav] = useState<activeNav>();
+    const locationPath = useLocation();
 
-    const handleClickHiddenNav = (activeNav: activeNav) => {
+    const handleClickHiddenNav = () => {
         setHiddenNav(!hiddenNav);
-        setActiveNav(activeNav);
     };
+
+    const path = locationPath.pathname;
+
+    useEffect(() => {
+      switch (path) {
+        case "/about":
+            setActiveNav(activeNav.About);
+            break;
+        case "/contact":
+            setActiveNav(activeNav.Contact);
+            break;
+        case "/portopolio":
+            setActiveNav(activeNav.Portfolio);
+            break;
+        default:
+            setActiveNav(activeNav.Home);
+      }
+    }, [path])
+    
+    
+
 
     return (
         <>
@@ -27,7 +48,7 @@ function NavigationBar() {
                 <div className={`flex flex-row gap-3 sm:bg-transparent  sm:gap-10`}>
                     <div
                         className="group/home flex"
-                        onClick={() => handleClickHiddenNav(activeNav.Home)}
+                        onClick={() => handleClickHiddenNav()}
                     >
                         <Link to="/">Beranda</Link>
                         <span
@@ -39,7 +60,7 @@ function NavigationBar() {
                     </div>
                     <div
                         className="group/about flex"
-                        onClick={() => handleClickHiddenNav(activeNav.About)}
+                        onClick={() => handleClickHiddenNav()}
                     >
                         <Link to="/about">Tentang</Link>
                         <span
@@ -51,7 +72,7 @@ function NavigationBar() {
                     </div>
                     <div
                         className="group/contact flex"
-                        onClick={() => handleClickHiddenNav(activeNav.Contact)}
+                        onClick={() => handleClickHiddenNav()}
                     >
                         <Link to="/contact">Kontak</Link>
                         <span
@@ -63,7 +84,7 @@ function NavigationBar() {
                     </div>
                     <div
                         className="group/portfolio flex"
-                        onClick={() => handleClickHiddenNav(activeNav.Portfolio)}
+                        onClick={() => handleClickHiddenNav()}
                     >
                         <Link to="/portopolio">Portfolio</Link>
                         <span

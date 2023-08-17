@@ -42,7 +42,7 @@ const Portfolio = () => {
     }
 
     return (
-        <div className="h-auto pt-24 lg:pt-28 lg:px-14 xl:px-20">
+        <div className="h-auto pt-24 lg:pt-28 lg:px- xl:px-20">
             <div className="group/portfolio m-5 w-min font-bold text-6xl">
                 <div
                     className="duration-300 ease-out group-hover/portfolio:translate-x-5 sm:group-hover/portfolio:translate-x-20
@@ -57,7 +57,7 @@ const Portfolio = () => {
             </div>
             <div
                 className="p-5 gap-7 xl:gap-10 grid md:grid-cols-2 lg:grid-cols-3 overflow-y-auto  auto-rows-auto justify-center">
-                {portfolios.map(function (object, i) {
+                {portfolios.map(function (object, _) {
                     return (
                         <CardPortfolio
                             title={object.title}
@@ -67,7 +67,7 @@ const Portfolio = () => {
                             github={object.github}
                             tech={object.tech}
                             demo_live={object.demo_live}
-                            key={i}
+                            key={object.title}
                         ></CardPortfolio>
                     );
                 })}

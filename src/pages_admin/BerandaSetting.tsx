@@ -29,7 +29,7 @@ const BerandaSetting = () => {
             }
             setIsLoadingPage(false);
         } catch (e) {
-            console.log(e);
+            throw e;
         }
     }
 

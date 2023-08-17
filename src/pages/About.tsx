@@ -23,7 +23,7 @@ const About = () => {
       const pendidikan: Pendidikan[] = documentSnapshot.get("pendidikan");
       setDetailPendidikan(pendidikan);
     } catch (e) {
-      console.log(e);
+      throw e;
     }
   };
 
@@ -81,9 +81,9 @@ const About = () => {
         </div>
         <div className="flex flex-col gap-6 mt-7">
           <div className="flex flex-col">
-            {detailPendidikan.map(function (object, i) {
+            {detailPendidikan.map(function (object,_) {
               return (
-                <div key={`experience-${i}`}>
+                <div key={object.school_name}>
                   <div>
                     <div className="font-bold">
                       {object.degree}, {object.school_name}
@@ -100,8 +100,8 @@ const About = () => {
                       <></>
                     )}
                     <ul>
-                      {object.experience?.map((value, index) => (
-                        <li key={index}>- {value}</li>
+                      {object.experience?.map((value, _) => (
+                        <li key={value}>- {value}</li>
                       ))}
                     </ul>
                   </div>
