@@ -28,6 +28,12 @@ function App() {
   useEffect(() => {
     const getDarkModeLocalStorage = localStorage.getItem("darkMode");
 
+    if (getDarkModeLocalStorage == null) {
+      setDarkMode(true);
+      localStorage.setItem("darkMode", "dark");
+      return;
+    }
+
     if (getDarkModeLocalStorage == "dark") {
       setDarkMode(true);
     } else {
