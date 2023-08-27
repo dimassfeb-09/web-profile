@@ -186,7 +186,7 @@ const PortfolioSetting = () => {
                             autoFocus
                             margin="dense"
                             id="title"
-                            label="Judul"
+                            label="Platform"
                             type="text"
                             fullWidth
                             variant="outlined"

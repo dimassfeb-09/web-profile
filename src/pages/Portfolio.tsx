@@ -7,7 +7,6 @@ import LoadingScreen from "../components/LoadingScreen.tsx";
 const Portfolio = () => {
   const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
   const [isLoadingPage, setIsLoadingPage] = useState(true);
-
   const getPortfolios = async () => {
     const portpoliosRef = collection(db, "portfolio");
     const querySnapshot = await getDocs(portpoliosRef);

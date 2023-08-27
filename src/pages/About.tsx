@@ -39,7 +39,7 @@ const About = () => {
   }
 
   return (
-    <div className="dark:bg-darkColor dark:text-white pt-28 sm:pt-0">
+    <div className="dark:bg-darkColor h-screen dark:text-white pt-28 sm:pt-0">
       <div
         id="#about"
         className="text-md text-justify px-8 sm:pt-32 sm:px-16 sm:text-xl md:pt-36 md:px-20 lg"
