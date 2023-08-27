@@ -43,9 +43,9 @@ function NavigationBar(props: NavigationProps) {
     <>
       <nav
         className="dark z-50 fixed flex flex-row items-center w-full h-[70px] justify-around 
-                text-sm md:text-lg backdrop-blur-md 
-                bg-opacity-30 border-b dark:border-b-darkColor sm:justify-around
-                dark:bg-darkColor dark:text-white"
+                text-sm md:text-lg backdrop-blur-md
+                bg-opacity-30 border-b dark:border-b-white dark:border-opacity-50 sm:justify-around
+                dark:text-white"
       >
         <Link to="/" className="hidden sm:block text-sm font-bold sm:text-lg">
           Dimas Febriyanto
@@ -99,7 +99,7 @@ function NavigationBar(props: NavigationProps) {
         </div>
       </nav>
 
-      <div className="absolute bg-gradient-to-r from-blue-700 via-pink-500 to-purple-500 h-20 blur-2xl opacity-30 w-full"></div>
+      <div className="absolute bg-gradient-to-r from-blue-700 via-pink-500 to-purple-500 h-28 blur-2xl opacity-50 w-full"></div>
     </>
   );
 }
