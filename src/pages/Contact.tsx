@@ -76,8 +76,7 @@ const Contact = () => {
 
   return (
     <>
-      <div className="dark:bg-darkColor dark:text-white h-screen pt-28 flex flex-col items-center">
-        <div className="text-2xl font-bold">Kirim Pesan</div>
+      <div className="dark:bg-darkColor dark:text-white mb-10 flex flex-col items-center">
         <form className="flex flex-col w-full sm:w-3/4 lg:w-1/2 px-5">
           <label htmlFor="name" className="mt-2 required">
             Nama

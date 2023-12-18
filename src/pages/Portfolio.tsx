@@ -41,19 +41,11 @@ const Portfolio = () => {
   }
 
   return (
-    <div className="dark:bg-darkColor dark:text-white  h-auto pt-24 lg:pt-28 lg:px- xl:px-20">
+    <div className="dark:bg-darkColor dark:text-white h-auto xl:px-20">
       <div className="group/portfolio m-5 w-min font-bold text-6xl">
-        <div
-          className="duration-300 ease-out group-hover/portfolio:translate-x-5 sm:group-hover/portfolio:translate-x-20
-                    group-hover/portfolio:bg-gradient-to-r
-                    group-hover/portfolio:from-blue-700
-                    group-hover/portfolio:via-pink-500
-                    group-hover/portfolio:to-purple-500
-                    group-hover/portfolio:text-transparent
-                    group-hover/portfolio:bg-clip-text
-                    "
-        >
-          #Porfolio
+        <div className="text-secondary font-bold">
+          <span className="text-black">#</span>Portfolio
+          <span className="text-black">.</span>
         </div>
       </div>
       <div className="p-5 gap-7 xl:gap-10 grid md:grid-cols-2 lg:grid-cols-3 overflow-y-auto  auto-rows-auto justify-center">

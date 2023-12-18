@@ -1,76 +1,86 @@
-import { collection, doc, getDoc } from "@firebase/firestore";
-import { db } from "../db/Firebase.ts";
-import { useEffect, useState } from "react";
-import LoadingScreen from "../components/LoadingScreen.tsx";
-import { Email, LibraryBooks } from "@mui/icons-material";
+import { ArrowDownward, OpenInNew } from "@mui/icons-material";
+import CardDevelopment from "../components/CardDevelopment";
+import AnimatedText from "../components/AnimatedText";
+import Contact from "./Contact";
+import Portfolio from "./Portfolio";
+import { useRef } from "react";
 
-type BerandaType = {
-  title: string;
-  description: string;
-  cv: string;
-};
+function Home() {
+  const sayHello = [
+    "I'm Dimas",
+    "나는 디마스",
+    "Saya Dimas",
+    "я Димас",
+    "わたし は ぢます で",
+  ];
 
-function AdminHome() {
-  const [berandaType, setBerandaType] = useState<BerandaType>();
-  const [isLoadingPage, setIsLoadingPage] = useState(true);
+  const myElementRef = useRef<HTMLDivElement>(null);
 
-  const getBerandas = async () => {
-    try {
-      const collectionRef = collection(db, "settings");
-      let documentSnapshot = await getDoc(doc(collectionRef, "beranda"));
-      setBerandaType({
-        title: documentSnapshot.get("title"),
-        description: documentSnapshot.get("description"),
-        cv: documentSnapshot.get("cv"),
-      });
-    } catch (e) {
-      console.log(e);
+  const scrollToElement = () => {
+    if (myElementRef.current) {
+      myElementRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
 
-  useEffect(() => {
-    getBerandas().then((v) => v);
-    setTimeout(() => {
-      setIsLoadingPage(false);
-    }, 300);
-  }, []);
-
-  if (isLoadingPage) {
-    return LoadingScreen();
-  }
-
   return (
-    <div className="dark:bg-darkColor dark:text-white sm:mb-0 sm:pt-0 h-screen flex flex-col gap-4 justify-center px-5 md:px-16 lg:px-28 xl:px-28">
-      <div className="text-4xl sm:text-4xl md:text-5xl lg:text-6xl font-bold">
-        <span>Hi! I am</span>
-        <span className="bg-gradient-to-r from-blue-500 to-blue-700 text-transparent bg-clip-text">
-          {" "}
-          {berandaType?.title}.
-        </span>
+    <div className=" bg-primary ">
+      <div className="flex flex-col h-screen justify-center items-center">
+        <div className="flex flex-col gap-10 px-7">
+          <div className="text-7xl lg:text-9xl font-bold flex flex-col gap-3">
+            <div>Hey There,</div>
+            <span className="text-secondary">
+              <AnimatedText texts={sayHello} delay={350} isInfinite={true} />
+              <span className="text-black">.</span>
+            </span>
+          </div>
+          <a href="mailto:dimassfeb@gmail.com" className="flex gap-2 w-min">
+            <span className="text-secondary font-bold">
+              dimassfeb@gmail.com
+            </span>
+            <OpenInNew />
+          </a>
+        </div>
+        <div className="mt-40 flex flex-col items-center gap-2">
+          <span className="font-bold">For More</span>
+          <div
+            className="rounded-full h-12 w-12 border border-black flex items-center justify-center"
+            onClick={scrollToElement}
+          >
+            <ArrowDownward />
+          </div>
+        </div>
       </div>
-      <div className="text-lg lg:text-xl lg:w-[70%]">
-        {berandaType?.description}
+      <div className="bg-white p-14" id="myElement" ref={myElementRef}>
+        <div className="font-bold text-5xl">What I can do?</div>
+        <div className="text-justify mt-8">
+          I am interested in both mobile development and backend development,
+          and I am capable of utilizing technologies such as Flutter for mobile
+          app development and Golang for backend programming.
+        </div>
+        <div className="flex flex-col justify-between mt-20">
+          <div className="">
+            <CardDevelopment title="Web Development" className="bg-red2nd" />
+          </div>
+          <div className="flex justify-between mt-10">
+            <div></div>
+            <CardDevelopment
+              title="Mobile Development"
+              className="bg-green2nd"
+            />
+          </div>
+        </div>
       </div>
-      <div className="flex gap-4 mt-5 lg:text-lg">
-        <a
-          href={berandaType?.cv}
-          target="_block"
-          className="group/cv w-min flex gap-2 items-center"
-        >
-          <LibraryBooks /> Resume
-          <span className="h-[0.2em] w-0 absolute duration-500 ease-in-out translate-y-4 bg-gradient-to-r from-blue-500 to-blue-700 group-hover/cv:w-[5.58em]"></span>
-        </a>
-        <a
-          href="mailto:dimassfeb@gmail.com"
-          target="_block"
-          className="group/cv w-min flex gap-2 items-center"
-        >
-          <Email /> dimassfeb@gmail.com
-          <span className="h-[0.2em] w-0 absolute duration-500 ease-in-out translate-y-4 bg-gradient-to-r from-blue-500 to-blue-700 group-hover/cv:w-[12.3em]"></span>
-        </a>
+      <div id="portfolio" className="pt-20">
+        <Portfolio />
+      </div>
+      <div className="bg-white" id="contact">
+        <h1 className="flex justify-center items-center text-5xl font-bold pt-20 mb-10">
+          Contact
+        </h1>
+        <Contact />
       </div>
     </div>
   );
 }
 
-export default AdminHome;
+export default Home;
