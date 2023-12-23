@@ -56,13 +56,8 @@ const Portfolio = () => {
       </div>
       <div>
         <Swiper
-          slidesPerView={"auto"}
           spaceBetween={30}
           modules={[Autoplay, Pagination]}
-          autoplay={{
-            delay: 3000,
-            disableOnInteraction: false,
-          }}
           breakpoints={{
             768: {
               slidesPerView: 3,

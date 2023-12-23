@@ -1,8 +1,7 @@
 import { GitHub, Preview, Shop } from "@mui/icons-material";
 
 function CardPortfolio(props: Portfolio) {
-  const { image_path, playstore, title, platform, github, tech, demo_live } =
-    props;
+  const { image_path, playstore, title, github, tech, demo_live } = props;
 
   return (
     <div className="flex flex-col p-5 md:mx-0 gap-2 rounded-md bg-white dark:bg-darkColor border-2 dark:border-[1px] duration-300">
