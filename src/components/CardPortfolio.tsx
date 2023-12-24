@@ -4,8 +4,12 @@ function CardPortfolio(props: Portfolio) {
   const { image_path, playstore, title, github, tech, demo_live } = props;
 
   return (
-    <div className="flex flex-col p-5 md:mx-0 gap-2 rounded-md bg-white dark:bg-darkColor border-2 dark:border-[1px] duration-300">
-      <img src={image_path} className="aspect-video" alt={image_path} />
+    <div className="flex bg-gradient-to-r from-secondary/60 to-teal-500/20 flex-col p-5 md:mx-0 gap-2 rounded-lg  border-2 duration-300">
+      <img
+        src={image_path}
+        className="aspect-video rounded-lg"
+        alt={image_path}
+      />
       <hr />
       <div className="h-full flex flex-col gap-4 justify-between">
         <div className="flex flex-col gap-2">
@@ -19,7 +23,7 @@ function CardPortfolio(props: Portfolio) {
                   <span className="group/tooltip ml-2 flex justify-center">
                     <span
                       className="hidden group-hover/tooltip:inline-block rounded group-hover/tooltip:absolute
-                                translate-y-8 bg-gray-400 text-white text-xs p-1"
+                                translate-y-7 bg-black text-xs text-white p-1"
                     >
                       {v.toUpperCase()}
                     </span>
@@ -43,7 +47,7 @@ function CardPortfolio(props: Portfolio) {
           <div className="flex text-black dark:text-white">
             {playstore ? (
               <a href={playstore} target="_blank" className="mr-3">
-                <div className="flex items-center text-[1rem] gap-2 py-1 px-2 border border-gray-300 dark:border-white transition-colors duration-100 ease-in-out hover:scale-105 hover:bg-secondary hover:text-white">
+                <div className="flex items-center text-[1rem] gap-2 py-1 px-2 border border-gray-700 dark:border-white transition-colors duration-100 ease-in-out hover:scale-105 hover:bg-secondary hover:text-white">
                   <img
                     src="/assets/svg/google-play.svg"
                     height={15}
@@ -57,7 +61,7 @@ function CardPortfolio(props: Portfolio) {
             )}
 
             <a href={github} target="_blank" className="group mr-3">
-              <div className="flex items-center text-[1rem] gap-2 py-1 px-2 border border-gray-300 dark:border-white transition-colors duration-100 ease-in-out hover:scale-105 hover:bg-secondary hover:text-white">
+              <div className="flex items-center text-[1rem] gap-2 py-1 px-2 border border-gray-700 dark:border-white transition-colors duration-100 ease-in-out hover:scale-105 hover:bg-secondary hover:text-white">
                 <GitHub />
                 Github
               </div>
@@ -65,7 +69,7 @@ function CardPortfolio(props: Portfolio) {
 
             {demo_live ? (
               <a href={demo_live} target="_blank" className="mr-3">
-                <div className="flex items-center text-[1rem] gap-2 py-1 px-2 border border-gray-300 dark:border-white transition-colors duration-100 ease-in-out hover:scale-105 hover:bg-secondary hover:text-white">
+                <div className="flex items-center text-[1rem] gap-2 py-1 px-2 border border-gray-700 dark:border-white transition-colors duration-100 ease-in-out hover:scale-105 hover:bg-secondary hover:text-white">
                   <Preview /> Demo
                 </div>
               </a>

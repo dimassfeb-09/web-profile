@@ -17,7 +17,7 @@ function Home() {
     "나는 디마스",
     "Saya Dimas",
     "я Димас",
-    "わたし は ぢます で",
+    "私はディマスです",
   ];
 
   const myElementRef = useRef<HTMLDivElement>(null);
@@ -75,7 +75,7 @@ function Home() {
           app development and Golang for backend programming.
         </div>
         <div className="flex flex-col justify-between mt-20">
-          <div className="">
+          <div>
             <CardDevelopment
               title="Web Development"
               className="bg-red2nd"

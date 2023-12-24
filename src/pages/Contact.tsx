@@ -123,10 +123,10 @@ const Contact = () => {
           disabled:font-normal 
           disabled:shadow-none
           disabled:border
-          bg-secondary 
-          shadow-lg 
+          bg-gradient-to-r from-secondary/40 to-teal-500/50
+          rounded-lg
           border-none
-          shadow-secondary/50 
+          shadow-secondary/50
           text-white font-bold"
           onClick={onHandleSubmit}
           disabled={disabled}
