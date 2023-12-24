@@ -1,4 +1,10 @@
-import { ArrowDownward, OpenInNew } from "@mui/icons-material";
+import {
+  ArrowDownward,
+  ContactPage,
+  Laptop,
+  OpenInNew,
+  Smartphone,
+} from "@mui/icons-material";
 import CardDevelopment from "../components/CardDevelopment";
 import AnimatedText from "../components/AnimatedText";
 import Contact from "./Contact";
@@ -26,18 +32,29 @@ function Home() {
     <div className=" bg-primary ">
       <div className="flex flex-col h-screen justify-center items-center">
         <div className="flex flex-col gap-10 px-7">
-          <div className="text-7xl lg:text-9xl font-bold flex flex-col gap-3">
+          <div className="text-7xl lg:text-9xl font-bold flex flex-col items-center gap-3">
             <div>Hey There,</div>
-            <span className="text-secondary">
+            <span className="text-secondary mt-5 text-center">
               <AnimatedText texts={sayHello} delay={350} isInfinite={true} />
               <span className="text-black">.</span>
             </span>
           </div>
-          <a href="mailto:dimassfeb@gmail.com" className="flex gap-2 w-min">
-            <span className="text-secondary font-bold">
-              dimassfeb@gmail.com
-            </span>
+        </div>
+        <div className="flex justify-center items-center mt-10 gap-3 text-secondary font-bold">
+          <a
+            target="_blank"
+            href="mailto:dimassfeb@gmail.com"
+            className="flex gap-2 w-min"
+          >
+            <span>dimassfeb@gmail.com</span>
             <OpenInNew />
+          </a>
+          <span className="text-black font-bold">|</span>
+          <a
+            target="_blank"
+            href="https://drive.google.com/file/d/1nhKAmsKXEH_H48rEKqE6dg8k-Ndmtx46/view"
+          >
+            Resume <ContactPage />
           </a>
         </div>
         <div className="mt-40 flex flex-col items-center gap-2">
@@ -59,13 +76,18 @@ function Home() {
         </div>
         <div className="flex flex-col justify-between mt-20">
           <div className="">
-            <CardDevelopment title="Web Development" className="bg-red2nd" />
+            <CardDevelopment
+              title="Web Development"
+              className="bg-red2nd"
+              icon={<Laptop />}
+            />
           </div>
           <div className="flex justify-between mt-10">
             <div></div>
             <CardDevelopment
               title="Mobile Development"
               className="bg-green2nd"
+              icon={<Smartphone />}
             />
           </div>
         </div>

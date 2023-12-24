@@ -7,8 +7,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 
 import "swiper/css";
 import "swiper/css/pagination";
-import { Autoplay, Pagination } from "swiper/modules";
-import { ArrowRightAltOutlined } from "@mui/icons-material";
+import { Autoplay, Pagination, FreeMode } from "swiper/modules";
 
 const Portfolio = () => {
   const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
@@ -47,8 +46,8 @@ const Portfolio = () => {
   }
 
   return (
-    <div className="mb-20 px-5 sm:px-20">
-      <div className="w-min font-bold text-6xl mb-10">
+    <div className="mb-20 sm:px-20">
+      <div className="w-min font-bold text-6xl mb-10  px-5">
         <div className="text-secondary font-bold">
           <span className="text-black">#</span>Portfolio
           <span className="text-black">.</span>
@@ -56,11 +55,17 @@ const Portfolio = () => {
       </div>
       <div>
         <Swiper
-          spaceBetween={30}
-          modules={[Autoplay, Pagination]}
+          modules={[Autoplay, FreeMode, Pagination]}
+          freeMode={true}
+          pagination={{
+            clickable: true,
+          }}
           breakpoints={{
-            768: {
+            900: {
               slidesPerView: 3,
+            },
+            700: {
+              slidesPerView: 2,
             },
             320: {
               slidesPerView: 1,
@@ -70,7 +75,7 @@ const Portfolio = () => {
         >
           {portfolios.map(function (object, _) {
             return (
-              <SwiperSlide>
+              <SwiperSlide className="mb-12 px-5">
                 <CardPortfolio
                   title={object.title}
                   platform={object.platform}
@@ -85,10 +90,6 @@ const Portfolio = () => {
             );
           })}
         </Swiper>
-        <div className="mt-[0.7rem]">
-          <span className="font-bold text-secondary">Swipe to Right</span>
-          <ArrowRightAltOutlined />
-        </div>
       </div>
     </div>
   );

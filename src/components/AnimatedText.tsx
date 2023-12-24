@@ -36,7 +36,7 @@ const AnimatedText = ({
     };
   }, [currentIndex, delay, isInfinite, text]);
 
-  return <span>{currentText}|</span>;
+  return <span className="text-justify">{currentText}|</span>;
 };
 
 export default AnimatedText;

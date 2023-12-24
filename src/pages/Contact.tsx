@@ -79,7 +79,7 @@ const Contact = () => {
       <div className="dark:bg-darkColor dark:text-white mb-10 flex flex-col items-center">
         <form className="flex flex-col w-full sm:w-3/4 lg:w-1/2 px-5">
           <label htmlFor="name" className="mt-2 required">
-            Nama
+            Name
           </label>
           <input
             type="text"
@@ -103,7 +103,7 @@ const Contact = () => {
           </span>
 
           <label htmlFor="Message" className="mt-2 required">
-            Pesan
+            Messages
           </label>
           <textarea
             placeholder="Your message"
@@ -117,11 +117,21 @@ const Contact = () => {
           </span>
         </form>
         <button
-          className="py-2 px-8 w-min border mt-5 hover:bg-black hover:text-white disabled:bg-gray-50 disabled:text-gray-400 dark:hover:bg-white dark:hover:text-black"
+          className="py-2 px-8 mt-5 
+          disabled:bg-gray-200
+          disabled:text-gray-500 
+          disabled:font-normal 
+          disabled:shadow-none
+          disabled:border
+          bg-secondary 
+          shadow-lg 
+          border-none
+          shadow-secondary/50 
+          text-white font-bold"
           onClick={onHandleSubmit}
           disabled={disabled}
         >
-          Kirim
+          Send Message
         </button>
         <ToastContainer />
       </div>
