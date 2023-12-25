@@ -75,16 +75,19 @@ const Contact = () => {
   }, [isDisabledSubmit]);
 
   return (
-    <>
-      <div className="dark:bg-darkColor dark:text-white mb-10 flex flex-col items-center">
-        <form className="flex flex-col w-full sm:w-3/4 lg:w-1/2 px-5">
+    <div className="pb-14">
+      <h1 className="flex justify-center items-center text-5xl font-bold pt-20 text-white">
+        Contact
+      </h1>
+      <div className="flex flex-col items-center">
+        <form className="flex flex-col w-full sm:w-3/4 lg:w-1/2 px-5 text-white">
           <label htmlFor="name" className="mt-2 required">
             Name
           </label>
           <input
             type="text"
             placeholder="Your name"
-            className="border p-3 mt-2 dark:bg-darkColor dark:opacity-50"
+            className="border p-3 mt-2 rounded-lg bg-secondary focus:border-white focus:outline-none input-active placeholder-gray-300"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
@@ -94,7 +97,7 @@ const Contact = () => {
           <input
             type="text"
             placeholder="Your email"
-            className="border p-3 mt-2 dark:bg-darkColor dark:opacity-50"
+            className="border p-3 mt-2 rounded-lg  bg-secondary focus:border-white focus:outline-none input-active placeholder-gray-300"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -107,7 +110,7 @@ const Contact = () => {
           </label>
           <textarea
             placeholder="Your message"
-            className="border p-3 mt-2 dark:bg-darkColor dark:opacity-50"
+            className="border p-3 mt-2 rounded-lg bg-secondary focus:border-white focus:outline-none input-active placeholder-gray-300"
             rows={5}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
@@ -117,15 +120,14 @@ const Contact = () => {
           </span>
         </form>
         <button
-          className="py-2 px-8 mt-5 
+          className="py-2 px-8 mt-10
           disabled:bg-gray-200
           disabled:text-gray-500 
           disabled:font-normal 
           disabled:shadow-none
           disabled:border
           bg-gradient-to-r from-secondary/40 to-teal-500/50
-          rounded-lg
-          border-none
+          rounded-lg 
           shadow-secondary/50
           text-white font-bold"
           onClick={onHandleSubmit}
@@ -135,7 +137,7 @@ const Contact = () => {
         </button>
         <ToastContainer />
       </div>
-    </>
+    </div>
   );
 };
 

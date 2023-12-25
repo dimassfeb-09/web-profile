@@ -10,6 +10,7 @@ import AnimatedText from "../components/AnimatedText";
 import Contact from "./Contact";
 import Portfolio from "./Portfolio";
 import { useRef } from "react";
+import Experiences from "./Experiences";
 
 function Home() {
   const sayHello = [
@@ -92,13 +93,13 @@ function Home() {
           </div>
         </div>
       </div>
-      <div id="portfolio" className="pt-20">
+      <div id="experiences" className="pt-20 mb-20">
+        <Experiences />
+      </div>
+      <div id="portfolio" className=" bg-white pt-20 pb-10">
         <Portfolio />
       </div>
-      <div className="bg-white" id="contact">
-        <h1 className="flex justify-center items-center text-5xl font-bold pt-20 mb-10">
-          Contact
-        </h1>
+      <div id="contact" className="bg-secondary/80">
         <Contact />
       </div>
     </div>
