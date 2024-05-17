@@ -11,6 +11,10 @@ module.exports = {
         red2nd: "#FF6666",
         green2nd: "#5DBE72",
       },
+      fontFamily: {
+        Bungee: ["Bungee"],
+        FasterOne: ["Faster One"],
+      },
     },
   },
   plugins: [],
