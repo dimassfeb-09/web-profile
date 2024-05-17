@@ -8,7 +8,7 @@ export default function LoginChat() {
   const supabases = Supabase();
 
   async function signInWithGithub() {
-    const { data, error } = await supabases.auth.signInWithOAuth({
+    const { error } = await supabases.auth.signInWithOAuth({
       provider: "github",
     });
 
