@@ -1,6 +1,5 @@
 
 import { createClient } from "@supabase/supabase-js";
-import { useEffect, useState } from "react";
 
 const supabaseConfig = {
     url: import.meta.env.VITE_SUPABASE_URL,
@@ -9,7 +8,7 @@ const supabaseConfig = {
 
 const supabase = createClient(supabaseConfig.url, supabaseConfig.anon_key);
 
-export const Supabase = ()=> {
+export const Supabase = () => {
     return supabase;
 }
 
