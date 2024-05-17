@@ -5,8 +5,6 @@ import Home from "./pages/Home";
 import NotFound from "./pages/NotFound_404";
 import Login from "./pages_admin/Login.tsx";
 import AdminHome from "./pages_admin/Home.tsx";
-import Chat from "./pages/Chat.tsx";
-import LoginChat from "./pages/LoginChat.tsx";
 
 function App() {
   return (
@@ -14,8 +12,6 @@ function App() {
       <Route path="/" element={<Home />} />
       <Route path="/admin/home" element={<AdminHome />} />
       <Route path="/admin/login" element={<Login />} />
-      <Route path="/chat" element={<Chat />} />
-      <Route path="/login" element={<LoginChat />} />
       <Route path="/404" element={<NotFound />} />
       <Route path="*" element={<Navigate to={"/404"} />} />
     </Routes>

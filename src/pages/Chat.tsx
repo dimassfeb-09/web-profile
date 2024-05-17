@@ -58,7 +58,6 @@ export default function Chat() {
         <button onClick={() => logout()}>logout</button>
       </header>
       <section className="flex flex-col items-center mt-10 sm:mt-20">
-        {/* <span>Hello, {userInfoLogin.full_name}</span> */}
         <div className="flex flex-col gap-5 w-4/5">
           <span>Sort by Newest</span>
           <ul className="flex flex-col gap-10">
