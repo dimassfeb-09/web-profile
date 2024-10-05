@@ -79,7 +79,13 @@ export default function IndexPage() {
             </Button>
           </a>
         </div>
-        <Card className="hidden rounded-full h-44 w-44 lg:h-96 lg:w-96 lg:block"></Card>
+        <Card className="hidden rounded-full h-44 w-44 lg:h-96 lg:w-96 lg:block">
+          <img
+            src="assets/img/profile.png"
+            className="rounded-full"
+            alt="My Picture"
+          />
+        </Card>
       </div>
 
       <div
