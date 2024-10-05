@@ -97,7 +97,7 @@ export default function IndexPage() {
           <Card>
             <CardHeader>
               <CardTitle className="text-2xl">Mobile Development</CardTitle>
-              <CardDescription className="text-xl">
+              <CardDescription className="text-lg">
                 I specialize in building intuitive and feature-rich mobile
                 applications that enhance user engagement. From concept to
                 launch, I help you create apps that are tailored to your
@@ -112,7 +112,7 @@ export default function IndexPage() {
           <Card>
             <CardHeader>
               <CardTitle className="text-2xl">Web Development</CardTitle>
-              <CardDescription className="text-xl">
+              <CardDescription className="text-lg">
                 I specialize in crafting responsive and scalable websites that
                 meet modern standards. From initial design to deployment, I
                 ensure that your web presence is optimized for both performance
