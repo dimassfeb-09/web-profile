@@ -3,16 +3,13 @@ import ProjectItem from "../components/projects/ProjectItem";
 import Button from "../components/ui/button";
 import {
   Card,
-  CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
 import { DefaultLayout } from "../layout/DefaultLayout";
 import supabase from "../utils/supabase";
 import { Input } from "../components/ui/input";
-import { Label } from "../components/ui/label";
 import { Textarea } from "../components/ui/textarea";
 import { cn } from "../lib/utils";
 
@@ -193,14 +190,7 @@ export default function IndexPage() {
             placeholder="Additional details..."
           />
 
-          <Button
-            className="w-fit px-20"
-            onClick={function (
-              event: React.MouseEvent<HTMLButtonElement>
-            ): void {
-              throw new Error("Function not implemented.");
-            }}
-          >
+          <Button className="w-fit px-20" onClick={() => {}}>
             Send
           </Button>
         </div>

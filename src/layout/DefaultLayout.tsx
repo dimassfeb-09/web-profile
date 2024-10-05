@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { cn } from "../lib/utils";
 import Button from "../components/ui/button";
 import Drawer from "../components/ui/drawer";
 
@@ -8,10 +7,7 @@ interface DefaultLayoutProps {
   children: React.ReactNode;
 }
 
-export const DefaultLayout: React.FC<DefaultLayoutProps> = ({
-  className,
-  children,
-}) => {
+export const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children }) => {
   const [isDrawerActive, setIsDrawerActive] = useState(false);
 
   const scrollToId = (
