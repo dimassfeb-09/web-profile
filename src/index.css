@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.required:after {
+    content: " *";
+    color: red;
+}
+
+.swiper-pagination-bullet {
+    background-color: #609A82; /* Change this to your desired color */
+}
+
+.input-active {
+    border-color: #ffffff; /* Setel warna batas yang diinginkan */
+  }
+
+.input-active:focus {
+    color: #fff; /* Atur warna teks menjadi putih ketika input mendapatkan fokus */
+  }
