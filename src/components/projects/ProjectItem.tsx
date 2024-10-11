@@ -1,5 +1,5 @@
 import React from "react";
-import Badge from "../ui/badget";
+import Badge from "../ui/badge";
 import { Tech } from "../../pages";
 import { Button } from "../ui/button";
 
@@ -20,7 +20,6 @@ const ProjectItem: React.FC<ProjectItemProps> = ({
   imgSrc,
   title,
   techs,
-  badges,
   reverse = false,
   description,
   githubUrl,
