@@ -10,21 +10,8 @@ import { DefaultLayout } from "../layout/DefaultLayout";
 import supabase from "../utils/supabase";
 import { Input } from "../components/ui/input";
 import { Textarea } from "../components/ui/textarea";
-import { cn } from "../lib/utils";
 import { Button } from "../components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@radix-ui/react-popover";
-import {
-  CommandList,
-  CommandInput,
-  CommandEmpty,
-  CommandGroup,
-  CommandItem,
-} from "cmdk";
-import { ChevronsUpDown, Command, Check } from "lucide-react";
+import TechFilter from "../components/TechFilter";
 
 export interface Tech {
   id: number;
@@ -46,20 +33,19 @@ interface Project {
 
 export default function IndexPage() {
   const [projectData, setProjectData] = useState<Project[]>([]);
+  const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
   const [techs, setTechs] = useState<Tech[]>([]);
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState("");
 
   async function fetchPortfolios(): Promise<Project[]> {
     const { data, error } = await supabase
       .from("portfolios")
       .select(
-        `
-        *,
+        ` 
+        *, 
         portfolio_techs (
-          tech_id,
+          tech_id, 
           techs (
-            id,
+            id, 
             name
           )
         )
@@ -81,15 +67,25 @@ export default function IndexPage() {
       demo_url: portfolio.demo_url,
       image_url: portfolio.image_url,
       portfolio_techs: portfolio.portfolio_techs.map((pt: any) => ({
-        id: pt.techs.id,
+        id: pt.techs.id, // Ensure this is correctly assigned
         name: pt.techs.name,
       })),
       created_at: portfolio.created_at,
     })) as Project[];
 
-    const tech: Tech[] = projects.flatMap((project) => {
-      return project.portfolio_techs.flatMap((techContainer) => techContainer);
+    // Create a Set to hold unique technologies
+    const uniqueTechs = new Map<number, Tech>();
+
+    projects.forEach((project) => {
+      project.portfolio_techs.forEach((tech) => {
+        if (!uniqueTechs.has(tech.id)) {
+          uniqueTechs.set(tech.id, tech);
+        }
+      });
     });
+
+    // Convert the Map back to an array
+    const tech: Tech[] = Array.from(uniqueTechs.values());
 
     setTechs(tech);
 
@@ -99,11 +95,27 @@ export default function IndexPage() {
   useEffect(() => {
     const loadProjects = async () => {
       const projects = await fetchPortfolios();
-      setProjectData(projects); // Set fetched projects to state
+      setProjectData(projects); // Store the fetched projects
+      setFilteredProjects(projects); // Set fetched projects to state
     };
 
     loadProjects();
   }, []);
+
+  const handleSelectedTechs = (selected: string[]) => {
+    console.log("Selected Technologies: ", selected);
+
+    if (selected.length === 0) {
+      // If no tech is selected, show all projects
+      setFilteredProjects(projectData);
+    } else {
+      // Filter projects based on selected technologies
+      const filtered = projectData.filter((project) =>
+        project.portfolio_techs.some((tech) => selected.includes(tech.name))
+      );
+      setFilteredProjects(filtered);
+    }
+  };
 
   return (
     <DefaultLayout>
@@ -181,54 +193,11 @@ export default function IndexPage() {
       <div id="my-projects" className=" bg-white">
         <div className="bg-white w-full flex flex-col items-center pt-20 pb-20">
           <h2 className="text-5xl font-bold mb-5">My Projects</h2>
-          <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger asChild>
-              <Button
-                variant="noShadow"
-                role="combobox"
-                aria-expanded={open}
-                className="w-[200px] justify-between"
-              >
-                {value
-                  ? techs.find((tech) => tech.name === value)?.name
-                  : "Select framework..."}
-                <ChevronsUpDown
-                  color="black"
-                  className="ml-2 h-4 w-4 shrink-0"
-                />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-[200px] !border-0 p-0 font-bold">
-              <Command>
-                <CommandList>
-                  <CommandInput placeholder="Search framework..." />
-                  <CommandEmpty>No framework found.</CommandEmpty>
-                  <CommandGroup>
-                    {techs.map((tech) => (
-                      <CommandItem
-                        key={tech.name}
-                        value={tech.name}
-                        onSelect={(currentValue) => {
-                          setValue(currentValue === value ? "" : currentValue);
-                          setOpen(false);
-                        }}
-                      >
-                        <Check
-                          className={cn(
-                            "mr-2 h-4 w-4",
-                            value === tech.name ? "opacity-100" : "opacity-0"
-                          )}
-                        />
-                        {tech.name}
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                </CommandList>
-              </Command>
-            </PopoverContent>
-          </Popover>
-          <div className="w-full mt-10">
-            {projectData.map((project, index) => (
+          <div className="w-full px-5 sm:px-0 sm:w-3/4 mt-10">
+            <TechFilter techs={techs} selectedTech={handleSelectedTechs} />
+          </div>
+          <div className="w-full px-5 sm:px-0 sm:w-3/4 mt-5">
+            {filteredProjects.map((project, index) => (
               <div className="w-full max-w-screen" key={index}>
                 <ProjectItem
                   className="border"
@@ -263,41 +232,18 @@ export default function IndexPage() {
           </div>
         </div>
 
-        <div className="mt-10 w-full px-5 sm:px-0 sm:mt-0 sm:w-3/4 lg:w-1/2 grid grid-cols-2 gap-5">
-          <Input
-            placeholder="Input your name"
-            className={cn(
-              "flex text-text cursor-pointer items-center rounded-base border-2 border-border dark:border-darkBorder bg-white px-4 py-2 text-sm font-base shadow-light dark:shadow-dark transition-all hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none dark:hover:shadow-none"
-            )}
-          />
-          <Input
-            placeholder="Input your email"
-            className={cn(
-              "flex text-text cursor-pointer items-center rounded-base border-2 border-border dark:border-darkBorder bg-white px-4 py-2 text-sm font-base shadow-light dark:shadow-dark transition-all hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none dark:hover:shadow-none"
-            )}
-          />
-          <Input
-            placeholder="Project Type"
-            className={cn(
-              "flex text-text cursor-pointer items-center rounded-base border-2 border-border dark:border-darkBorder bg-white px-4 py-2 text-sm font-base shadow-light dark:shadow-dark transition-all hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none dark:hover:shadow-none"
-            )}
-          />
-          <Input
-            placeholder="Budget"
-            className={cn(
-              "flex text-text cursor-pointer items-center rounded-base border-2 border-border dark:border-darkBorder bg-white px-4 py-2 text-sm font-base shadow-light dark:shadow-dark transition-all hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none dark:hover:shadow-none"
-            )}
-          />
-          <Textarea
-            className={cn(
-              "col-span-2 flex text-text cursor-pointer items-center rounded-base border-2 border-border dark:border-darkBorder bg-white px-4 py-2 text-sm font-base shadow-light dark:shadow-dark transition-all hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none dark:hover:shadow-none"
-            )}
-            placeholder="Additional details..."
-          />
-
-          <Button className="w-fit px-20" onClick={() => {}}>
-            Send
-          </Button>
+        <div className="mt-10 w-full px-5 sm:px-0 sm:mt-0 sm:w-3/4 lg:w-1/2">
+          <form
+            className="flex flex-col gap-5"
+            onSubmit={(e) => e.preventDefault()}
+          >
+            <Input placeholder="Name" />
+            <Input placeholder="Email" />
+            <Textarea placeholder="Your message" />
+            <Button className="bg-main" type="submit">
+              Send Message
+            </Button>
+          </form>
         </div>
       </div>
     </DefaultLayout>
