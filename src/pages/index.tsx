@@ -122,6 +122,7 @@ export default function IndexPage() {
   const validateForm = (): boolean => {
     if (!name || !email || !subject || !message) {
       setIsError(true);
+      setIsSubmitLoading(false);
       return false;
     }
     setIsError(false);
