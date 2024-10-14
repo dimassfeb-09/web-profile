@@ -9,32 +9,40 @@ import {
 import { DefaultLayout } from "../layout/DefaultLayout";
 import supabase from "../utils/supabase";
 import { Input } from "../components/ui/input";
-import { Textarea } from "../components/ui/textarea";
 import { Button } from "../components/ui/button";
 import TechFilter from "../components/TechFilter";
+import axios from "axios";
+import { Textarea } from "../components/ui/textarea";
 
 export interface Tech {
   id: number;
   name: string;
 }
 
-// Define the type for project data
 interface Project {
-  id: number; // Assuming there's an id field, change as necessary
+  id: number;
   title: string;
   description: string;
-  type: string; // Adjust according to your actual data structure
+  type: string;
   github_url: string;
   demo_url: string;
   image_url: string;
   portfolio_techs: Tech[];
-  created_at: string; // Date as string, or use Date if converted
+  created_at: string;
 }
 
 export default function IndexPage() {
   const [projectData, setProjectData] = useState<Project[]>([]);
   const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
   const [techs, setTechs] = useState<Tech[]>([]);
+
+  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [subject, setSubject] = useState<string>("");
+  const [message, setMessage] = useState<string>("");
+  const [isError, setIsError] = useState<boolean>(false);
+  const [isSubmitLoading, setIsSubmitLoading] = useState<boolean>(false);
+  const [isSuccessSentEmail, setIsSuccessSentEmail] = useState<boolean>(false);
 
   async function fetchPortfolios(): Promise<Project[]> {
     const { data, error } = await supabase
@@ -55,7 +63,7 @@ export default function IndexPage() {
 
     if (error) {
       console.error("Error fetching portfolios:", error);
-      return []; // Return an empty array in case of error
+      return [];
     }
 
     const projects = data.map((portfolio: any) => ({
@@ -67,13 +75,12 @@ export default function IndexPage() {
       demo_url: portfolio.demo_url,
       image_url: portfolio.image_url,
       portfolio_techs: portfolio.portfolio_techs.map((pt: any) => ({
-        id: pt.techs.id, // Ensure this is correctly assigned
+        id: pt.techs.id,
         name: pt.techs.name,
       })),
       created_at: portfolio.created_at,
     })) as Project[];
 
-    // Create a Set to hold unique technologies
     const uniqueTechs = new Map<number, Tech>();
 
     projects.forEach((project) => {
@@ -84,7 +91,6 @@ export default function IndexPage() {
       });
     });
 
-    // Convert the Map back to an array
     const tech: Tech[] = Array.from(uniqueTechs.values());
 
     setTechs(tech);
@@ -95,25 +101,54 @@ export default function IndexPage() {
   useEffect(() => {
     const loadProjects = async () => {
       const projects = await fetchPortfolios();
-      setProjectData(projects); // Store the fetched projects
-      setFilteredProjects(projects); // Set fetched projects to state
+      setProjectData(projects);
+      setFilteredProjects(projects);
     };
 
     loadProjects();
   }, []);
 
   const handleSelectedTechs = (selected: string[]) => {
-    console.log("Selected Technologies: ", selected);
-
     if (selected.length === 0) {
-      // If no tech is selected, show all projects
       setFilteredProjects(projectData);
     } else {
-      // Filter projects based on selected technologies
       const filtered = projectData.filter((project) =>
         project.portfolio_techs.some((tech) => selected.includes(tech.name))
       );
       setFilteredProjects(filtered);
+    }
+  };
+
+  const validateForm = (): boolean => {
+    if (!name || !email || !subject || !message) {
+      setIsError(true);
+      return false;
+    }
+    setIsError(false);
+    return true;
+  };
+
+  const handleSubmitEmail = async () => {
+    setIsSubmitLoading(true);
+    if (!validateForm()) return;
+
+    try {
+      const response = await axios.post(
+        "https://mailer-profile-web-ose6.vercel.app/api/send_email",
+        {
+          name: name,
+          email: email,
+          subject: subject,
+          message: message,
+        }
+      );
+
+      if (response.status == 200) return setIsSuccessSentEmail(true);
+      console.log("asdasdsad");
+    } catch (e: any) {
+      if (e.status != 200) return setIsSuccessSentEmail(false);
+    } finally {
+      setIsSubmitLoading(false);
     }
   };
 
@@ -201,10 +236,10 @@ export default function IndexPage() {
               <div className="w-full max-w-screen" key={index}>
                 <ProjectItem
                   className="border"
-                  imgSrc={project.image_url} // Use an appropriate image URL here
+                  imgSrc={project.image_url}
                   title={project.title}
                   techs={project.portfolio_techs}
-                  badges={["View Project", "View on GitHub", "Live Demo"]} // You can customize buttons
+                  badges={["View Project", "View on GitHub", "Live Demo"]}
                   description={project.description}
                   reverse={index % 2 !== 0}
                   githubUrl={project.github_url}
@@ -237,12 +272,66 @@ export default function IndexPage() {
             className="flex flex-col gap-5"
             onSubmit={(e) => e.preventDefault()}
           >
-            <Input placeholder="Name" />
-            <Input placeholder="Email" />
-            <Textarea placeholder="Your message" />
-            <Button className="bg-main" type="submit">
-              Send Message
+            <div className="flex gap-5">
+              <div className="flex flex-col w-full">
+                <Input
+                  placeholder="Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+                {isError && name === "" && (
+                  <div className="text-xs text-red-600 font-bold mt-1">
+                    Name is required.
+                  </div>
+                )}
+              </div>
+              <div className="flex flex-col w-full">
+                <Input
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                {isError && email === "" && (
+                  <div className="text-xs text-red-600 font-bold mt-1">
+                    Email is required.
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="flex flex-col w-full">
+              <Input
+                placeholder="Subject"
+                value={subject}
+                onChange={(e) => setSubject(e.target.value)}
+              />
+              {isError && subject === "" && (
+                <div className="text-xs text-red-600 font-bold mt-1">
+                  Subject is required.
+                </div>
+              )}
+            </div>
+            <div className="flex flex-col w-full">
+              <Textarea
+                placeholder="Messgae"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+              />
+              {isError && message === "" && (
+                <div className="text-xs text-red-600 font-bold mt-1">
+                  Message is required.
+                </div>
+              )}
+            </div>
+            <Button
+              disabled={isSubmitLoading}
+              className="bg-main"
+              variant={isSubmitLoading ? "noShadow" : "default"}
+              type="submit"
+              onClick={handleSubmitEmail}
+            >
+              {isSubmitLoading ? "Loading..." : "Send Message"}
             </Button>
+            {isSuccessSentEmail && "Berhasil kirim email!"}
           </form>
         </div>
       </div>
