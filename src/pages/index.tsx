@@ -143,8 +143,14 @@ export default function IndexPage() {
         }
       );
 
-      if (response.status == 200) return setIsSuccessSentEmail(true);
-      console.log("asdasdsad");
+      if (response.status == 200) {
+        setName("");
+        setEmail("");
+        setSubject("");
+        setMessage("");
+
+        setIsSuccessSentEmail(true);
+      }
     } catch (e: any) {
       if (e.status != 200) return setIsSuccessSentEmail(false);
     } finally {
