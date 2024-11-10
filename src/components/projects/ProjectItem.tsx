@@ -35,6 +35,7 @@ const ProjectItem: React.FC<ProjectItemProps> = ({
         className="w-full md:w-1/2 h-auto object-cover"
         src={imgSrc}
         alt={title}
+        draggable={false}
       />
       <div className="w-full md:w-1/2 flex flex-col justify-center text-justify p-5 gap-5 bg-white">
         <div id="technology" className="flex flex-wrap gap-2">

@@ -12,27 +12,36 @@ import { Input } from "../components/ui/input";
 import { Textarea } from "../components/ui/textarea";
 import { Button } from "../components/ui/button";
 import TechFilter from "../components/TechFilter";
+import AchievementItem from "../components/achivment/AchivmentItem";
 
 export interface Tech {
   id: number;
   name: string;
 }
 
-// Define the type for project data
 interface Project {
-  id: number; // Assuming there's an id field, change as necessary
+  id: number;
   title: string;
   description: string;
-  type: string; // Adjust according to your actual data structure
+  type: string;
   github_url: string;
   demo_url: string;
   image_url: string;
   portfolio_techs: Tech[];
-  created_at: string; // Date as string, or use Date if converted
+  created_at: string;
+}
+
+interface Achievement {
+  id: number;
+  title: string;
+  description: string;
+  image_url: string;
+  created_at: string;
 }
 
 export default function IndexPage() {
   const [projectData, setProjectData] = useState<Project[]>([]);
+  const [achievementData, setAchievementData] = useState<Achievement[]>([]);
   const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
   const [techs, setTechs] = useState<Tech[]>([]);
 
@@ -92,6 +101,20 @@ export default function IndexPage() {
     return projects;
   }
 
+  async function fetchAchievement() {
+    const { data, error } = await supabase
+      .from("achievements")
+      .select(`*`)
+      .order("id", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching achievement:", error);
+      return []; // Return an empty array in case of error
+    }
+
+    setAchievementData(data);
+  }
+
   useEffect(() => {
     const loadProjects = async () => {
       const projects = await fetchPortfolios();
@@ -99,7 +122,14 @@ export default function IndexPage() {
       setFilteredProjects(projects); // Set fetched projects to state
     };
 
+    const loadAchievement = async () => {
+      await fetchAchievement();
+    };
+
     loadProjects();
+    loadAchievement();
+
+    console.log(achievementData);
   }, []);
 
   const handleSelectedTechs = (selected: string[]) => {
@@ -128,7 +158,7 @@ export default function IndexPage() {
             <h1 className="text-xl">
               Hi, my name is <span className="font-bold">Dimas Febriyanto</span>
             </h1>
-            <div className="text-7xl font-bold">I'm a Fullstack developer</div>
+            <div className="text-7xl font-bold">I'm a Fullstack Developer</div>
             <div className="text-lg mt-5">
               I have skills in web development and mobile development
             </div>
@@ -136,7 +166,7 @@ export default function IndexPage() {
           <a
             target="_blank"
             href="https://drive.google.com/file/d/1KQ3D8u_iNdRHrwFAfq-0KV2Y4_vVKxq1/view?usp=sharing"
-            className="mt-10"
+            className="mt-10 w-min"
           >
             <Button variant="default" className="bg-main" onClick={() => {}}>
               Download My CV
@@ -191,8 +221,10 @@ export default function IndexPage() {
       </div>
 
       <div id="my-projects" className=" bg-white">
-        <div className="bg-white w-full flex flex-col items-center pt-20 pb-20">
-          <h2 className="text-5xl font-bold mb-5">My Projects</h2>
+        <div className="bg-white w-full flex flex-col items-center pt-10 pb-20">
+          <h2 className="text-5xl font-bold mb-5 underline decoration-mainAccent">
+            My Projects
+          </h2>
           <div className="w-full px-5 sm:px-0 sm:w-3/4 mt-10">
             <TechFilter techs={techs} selectedTech={handleSelectedTechs} />
           </div>
@@ -209,6 +241,28 @@ export default function IndexPage() {
                   reverse={index % 2 !== 0}
                   githubUrl={project.github_url}
                   demoUrl={project.demo_url}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div id="my-achievement" className=" bg-white">
+        <div className="bg-white w-full flex flex-col items-center pt-10 pb-20">
+          <h2 className="text-5xl font-bold mb-5 underline decoration-mainAccent">
+            My Achievement
+          </h2>
+          <div className="w-full px-5 sm:px-0 sm:w-3/4 mt-5">
+            {achievementData.map((achievement, index) => (
+              <div className="w-full max-w-screen" key={index}>
+                <AchievementItem
+                  className="border"
+                  title={achievement.title}
+                  reverse={index % 2 !== 0}
+                  description={achievement.description}
+                  imgSrc={achievement.image_url}
+                  createdAt={achievement.created_at}
                 />
               </div>
             ))}

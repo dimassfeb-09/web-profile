@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Drawer from "../components/ui/drawer";
 import { Button } from "../components/ui/button";
+import { Trophy } from "lucide-react";
 
 interface DefaultLayoutProps {
   className?: string;
@@ -90,7 +91,7 @@ export const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children }) => {
             </a>
 
             <a
-              className="text-xl font-base hover:cursor-pointer"
+              className="text-xl font-base hover:cursor-pointer flex items-center gap-2"
               onClick={(e) => scrollToId(e, "what-i-do")}
             >
               What I Do
@@ -99,7 +100,14 @@ export const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children }) => {
               className="text-xl font-base hover:cursor-pointer"
               onClick={(e) => scrollToId(e, "my-projects")}
             >
-              My Projects
+              Projects
+            </a>
+
+            <a
+              className="text-xl font-base hover:cursor-pointer flex items-center gap-2"
+              onClick={(e) => scrollToId(e, "my-achievement")}
+            >
+              <Trophy className="text-yellow-600" /> Achievement
             </a>
             <a
               className="text-xl font-base hover:cursor-pointer"
@@ -142,6 +150,7 @@ export const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children }) => {
           >
             What I Do
           </a>
+
           <a
             className="block w-full text-text border-b-2 border-border dark:border-darkBorder bg-main px-5 py-4 hover:bg-mainAccent"
             onClick={(e) => {
@@ -149,7 +158,17 @@ export const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children }) => {
               setIsDrawerActive(false);
             }}
           >
-            My Projects
+            Projects
+          </a>
+
+          <a
+            className="block w-full text-text border-b-2 border-border dark:border-darkBorder bg-main px-5 py-4 hover:bg-mainAccent"
+            onClick={(e) => {
+              scrollToId(e, "my-achievement");
+              setIsDrawerActive(false);
+            }}
+          >
+            Achievements
           </a>
 
           <a
