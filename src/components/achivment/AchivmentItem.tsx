@@ -1,4 +1,4 @@
-import { Achievement } from "../../types/Achievement";
+import { Achievement } from "../../types/achievement";
 import { formattedDate } from "../../utils/formattedDate";
 
 interface AchievementItemProps {

@@ -11,7 +11,7 @@ import MyProjectSection from "../section/MyProjectSection";
 import ContactSection from "../section/ContactSection";
 import { Experience } from "../types/experience";
 import ExperienceSection from "../section/ExperienceSection";
-import { Achievement } from "../types/Achievement";
+import { Achievement } from "../types/achievement";
 
 export default function IndexPage() {
   const [projectData, setProjectData] = useState<Project[]>([]);

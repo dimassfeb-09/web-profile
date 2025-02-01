@@ -3,7 +3,7 @@ import { Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import AchievementItem from "../components/achivment/AchivmentItem";
-import { Achievement } from "../types/Achievement";
+import { Achievement } from "../types/achievement";
 import { ArrowRight } from "lucide-react";
 import { useState } from "react";
 
