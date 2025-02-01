@@ -1,13 +1,12 @@
 "use client";
 
+import React, { useEffect, useState, ReactNode } from "react";
 import ReactDom from "react-dom";
-
-import { useEffect, useState } from "react";
 
 type Props = {
   active: boolean;
   setActive: React.Dispatch<React.SetStateAction<boolean>>;
-  children: string | JSX.Element | JSX.Element[];
+  children: ReactNode;
 };
 
 export default function Drawer({ active, setActive, children }: Props) {
