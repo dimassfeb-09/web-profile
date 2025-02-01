@@ -1,12 +1,14 @@
 import "./App.css";
-import { Route, Routes } from "react-router-dom";
 import IndexPage from "./pages";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<IndexPage />} />
-    </Routes>
+    <Router>
+      <Routes>
+        <Route path="/" element={<IndexPage />} />
+      </Routes>
+    </Router>
   );
 }
 

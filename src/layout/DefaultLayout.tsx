@@ -96,6 +96,14 @@ export const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children }) => {
             >
               What I Do
             </a>
+
+            <a
+              className="text-xl font-base hover:cursor-pointer"
+              onClick={(e) => scrollToId(e, "experience")}
+            >
+              Experience
+            </a>
+
             <a
               className="text-xl font-base hover:cursor-pointer"
               onClick={(e) => scrollToId(e, "my-projects")}
@@ -141,6 +149,7 @@ export const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children }) => {
           >
             Home
           </a>
+
           <a
             className="block w-full text-text border-b-2 border-border dark:border-darkBorder bg-main px-5 py-4 hover:bg-mainAccent"
             onClick={(e) => {
@@ -149,6 +158,16 @@ export const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children }) => {
             }}
           >
             What I Do
+          </a>
+
+          <a
+            className="block w-full text-text border-b-2 border-border dark:border-darkBorder bg-main px-5 py-4 hover:bg-mainAccent"
+            onClick={(e) => {
+              scrollToId(e, "experience");
+              setIsDrawerActive(false);
+            }}
+          >
+            Experience
           </a>
 
           <a
