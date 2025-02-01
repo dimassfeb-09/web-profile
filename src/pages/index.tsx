@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { DefaultLayout } from "../layout/DefaultLayout";
 import supabase from "../utils/supabase";
 import AchievementsSection from "../section/AchievementSection";
-import { Achievement } from "../types/Achievement";
 import { Project } from "../types/project";
 import { Tech } from "../types/tech";
 import HomeSection from "../section/HomeSection";
@@ -12,6 +11,7 @@ import MyProjectSection from "../section/MyProjectSection";
 import ContactSection from "../section/ContactSection";
 import { Experience } from "../types/experience";
 import ExperienceSection from "../section/ExperienceSection";
+import { Achievement } from "../types/Achievement";
 
 export default function IndexPage() {
   const [projectData, setProjectData] = useState<Project[]>([]);
