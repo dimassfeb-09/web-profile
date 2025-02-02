@@ -5,14 +5,33 @@ import "swiper/css/pagination";
 import AchievementItem from "../components/achivment/AchivmentItem";
 import { Achievement } from "../types/achievement";
 import { ArrowRight } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import supabase from "../utils/supabase";
 
-const AchievementsSection = ({
-  achievementData,
-}: {
-  achievementData: Achievement[];
-}) => {
+const AchievementsSection = () => {
   const [currentSlide, setCurrentSlide] = useState<number>(0);
+  const [achievementData, setAchievementData] = useState<Achievement[]>([]);
+
+  async function fetchAchievement() {
+    const { data, error } = await supabase
+      .from("achievements")
+      .select(`*`)
+      .order("id", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching achievement:", error);
+      return [];
+    }
+
+    setAchievementData(data);
+  }
+
+  useEffect(() => {
+    const loadAchievement = async () => {
+      await fetchAchievement();
+    };
+    loadAchievement();
+  }, []);
 
   return (
     <div id="my-achievement" className="bg-white">

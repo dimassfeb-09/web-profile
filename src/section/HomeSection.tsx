@@ -30,8 +30,9 @@ export default function HomeSection() {
       <Card className="hidden rounded-full h-44 w-44 lg:h-96 lg:w-96 lg:block">
         <img
           src="assets/img/profile.png"
-          className="rounded-full"
+          className="rounded-full object-cover w-full h-full"
           alt="My Picture"
+          draggable={false}
         />
       </Card>
     </div>
