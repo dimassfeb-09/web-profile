@@ -29,18 +29,9 @@ const ProjectItem: React.FC<ProjectItemProps> = ({
         reverse ? "md:flex-row-reverse" : ""
       } my-5`}
     >
-      {/* Image Section */}
-      <img
-        className="w-full md:w-1/2 h-full object-cover"
-        src={imgSrc}
-        alt={title}
-        draggable={false}
-      />
-
-      {/* Content Section */}
-      <div className="w-full md:w-1/2 flex flex-col justify-between text-justify p-5 gap-5 bg-white h-full">
-        {/* Tech Badges */}
-        <div id="technology" className="flex flex-wrap gap-2">
+      <div className="flex flex-col w-full md:w-1/2 gap-5 ">
+        <img src={imgSrc} alt={title} draggable={false} />
+        <div id="technology" className="flex flex-wrap gap-2 px-5">
           {techs.map((tech) => (
             <Badge
               key={tech.id}
@@ -49,7 +40,10 @@ const ProjectItem: React.FC<ProjectItemProps> = ({
             />
           ))}
         </div>
+      </div>
 
+      {/* Content Section */}
+      <div className="w-full md:w-1/2 flex flex-col justify-between text-justify p-5 gap-5 bg-white h-full">
         {/* Title & Description */}
         <h1 className="text-3xl md:text-4xl font-bold">{title}</h1>
         <div
