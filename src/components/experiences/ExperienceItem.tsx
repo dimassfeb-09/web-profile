@@ -9,7 +9,7 @@ interface ExperienceItemProps {
 const ExperienceItem = ({ experience }: ExperienceItemProps) => {
   return (
     <div className="w-full flex flex-col justify-center text-justify gap-5 bg-white">
-      <h1 className="text-3xl md:text-4xl font-bold">
+      <h1 className="text-3xl md:text-4xl font-bold text-start">
         {experience.company_name}
       </h1>
 
