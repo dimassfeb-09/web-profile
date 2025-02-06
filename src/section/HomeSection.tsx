@@ -19,7 +19,7 @@ export default function HomeSection() {
         </div>
         <a
           target="_blank"
-          href="https://drive.google.com/file/d/1KQ3D8u_iNdRHrwFAfq-0KV2Y4_vVKxq1/view?usp=sharing"
+          href="https://drive.google.com/file/d/1h0-sOMTx8syC8xvPwBcw9HObEeikJZtB/view?usp=sharing"
           className="mt-10 w-min"
         >
           <Button variant="default" className="bg-main" onClick={() => {}}>
