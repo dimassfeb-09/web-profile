@@ -46,6 +46,7 @@ export default function MyProjectSection() {
       title: portfolio.title,
       description: portfolio.description,
       type: portfolio.type,
+      playstoreUrl: portfolio.playstore_url,
       github_url: portfolio.github_url,
       demo_url: portfolio.demo_url,
       image_url: portfolio.image_url,
@@ -74,8 +75,6 @@ export default function MyProjectSection() {
   }
 
   const handleSelectedTechs = (selected: string[]) => {
-    console.log("Selected Technologies: ", selected);
-
     if (selected.length === 0) {
       setFilteredProjects(projectData);
     } else {
@@ -129,6 +128,7 @@ export default function MyProjectSection() {
                     badges={["View Project", "View on GitHub", "Live Demo"]}
                     description={project.description}
                     reverse={index % 2 !== 0}
+                    playstoreUrl={project.playstoreUrl}
                     githubUrl={project.github_url}
                     demoUrl={project.demo_url}
                   />

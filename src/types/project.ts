@@ -6,6 +6,7 @@ export interface Project {
     description: string;
     type: string;
     github_url: string;
+    playstoreUrl?: string;
     demo_url: string;
     image_url: string;
     portfolio_techs: Tech[];

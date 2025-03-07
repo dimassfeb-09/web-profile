@@ -2,6 +2,9 @@ import React from "react";
 import Badge from "../ui/badge";
 import { Button } from "../ui/button";
 import { Tech } from "../../types/tech";
+import ShopIcon from "@mui/icons-material/Shop";
+import GitHub from "@mui/icons-material/GitHub";
+import Language from "@mui/icons-material/Language";
 
 interface ProjectItemProps {
   imgSrc: string;
@@ -10,6 +13,7 @@ interface ProjectItemProps {
   description: string;
   badges: string[];
   githubUrl: string;
+  playstoreUrl?: string;
   demoUrl: string;
   reverse?: boolean;
 }
@@ -21,6 +25,7 @@ const ProjectItem: React.FC<ProjectItemProps> = ({
   reverse = false,
   description,
   githubUrl,
+  playstoreUrl,
   demoUrl,
 }) => {
   return (
@@ -53,20 +58,33 @@ const ProjectItem: React.FC<ProjectItemProps> = ({
 
         {/* Button Section - Aligned at Bottom */}
         <div className="flex gap-5 flex-wrap mt-auto">
+          {playstoreUrl && (
+            <Button
+              onClick={() => window.open(playstoreUrl, "_blank")}
+              className="bg-red-500 flex gap-2 text-white"
+            >
+              <ShopIcon />
+              <div>Playstore</div>
+            </Button>
+          )}
+
           {githubUrl && (
             <Button
               onClick={() => window.open(githubUrl, "_blank")}
-              className="bg-blue-500 text-white"
+              className="bg-blue-500 flex gap-2 text-white"
             >
-              View GitHub
+              <GitHub />
+              <div>View GitHub</div>
             </Button>
           )}
+
           {demoUrl && (
             <Button
               onClick={() => window.open(demoUrl, "_blank")}
-              className="bg-green-500 text-white"
+              className="bg-green-500 flex gap-2 text-white"
             >
-              View Demo
+              <Language />
+              <div>View Demo</div>
             </Button>
           )}
         </div>
