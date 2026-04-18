@@ -9,6 +9,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ status: 400, message: 'No image file uploaded' }, { status: 400 });
     }
 
+    // Get bucket from query params, default to 'projects'
+    const { searchParams } = new URL(request.url);
+    const bucketName = searchParams.get('bucket') || 'projects';
+
     const { SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY } = process.env;
     if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
       console.error('Missing Supabase credentials in .env.local');
@@ -30,7 +34,7 @@ export async function POST(request: NextRequest) {
     const buffer = Buffer.from(arrayBuffer);
 
     // Upload to Supabase via REST API
-    const uploadUrl = `${cleanUrl}/storage/v1/object/projects/${uniqueFileName}`;
+    const uploadUrl = `${cleanUrl}/storage/v1/object/${bucketName}/${uniqueFileName}`;
 
     const uploadRes = await fetch(uploadUrl, {
       method: 'POST',
@@ -50,7 +54,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Return the public URL
-    const publicUrl = `${cleanUrl}/storage/v1/object/public/projects/${uniqueFileName}`;
+    const publicUrl = `${cleanUrl}/storage/v1/object/public/${bucketName}/${uniqueFileName}`;
 
     return NextResponse.json({
       status: 200,

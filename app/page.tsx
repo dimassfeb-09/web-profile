@@ -3,6 +3,8 @@ import AboutSection from "@/src/components/sections/AboutSection";
 import SkillsSection from "@/src/components/sections/SkillsSection";
 import ExperienceSection from "@/src/components/sections/ExperienceSection";
 import ProjectsSection from "@/src/components/sections/ProjectsSection";
+import AchievementSection from "@/src/components/sections/AchievementSection";
+import CertificatesSection from "@/src/components/sections/CertificatesSection";
 import ContactSection from "@/src/components/sections/ContactSection";
 
 export default function Home() {
@@ -13,6 +15,8 @@ export default function Home() {
       <SkillsSection />
       <ExperienceSection />
       <ProjectsSection />
+      <AchievementSection />
+      <CertificatesSection />
       <ContactSection />
     </main>
   );
