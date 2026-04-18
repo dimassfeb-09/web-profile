@@ -4,7 +4,7 @@ import Image from 'next/image';
 interface ProjectCardProps {
   title: string;
   description: string;
-  imageUrl: string;
+  imageUrl: string | null;
   features: string[];
   linkUrl: string;
   linkText: string;
@@ -18,18 +18,18 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   linkUrl,
   linkText,
 }) => {
-  const [imgSrc, setImgSrc] = React.useState(imageUrl);
-  const fallbackImage = '/images/project-placeholder.jpeg'; // Path ke gambar dummy Anda
+  const fallbackImage = '/images/project-placeholder.jpeg';
+  const [imgSrc, setImgSrc] = React.useState(imageUrl || fallbackImage);
 
   return (
     <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant/10 overflow-hidden group hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] transition-all duration-300 hover:-translate-y-1 flex flex-col">
       <div className="aspect-[1024/500] w-full bg-surface-container-high relative overflow-hidden">
         <Image
           alt={`${title} Screenshot`}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
           src={imgSrc}
-          width={1024}
-          height={500}
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
           onError={() => setImgSrc(fallbackImage)}
         />
       </div>

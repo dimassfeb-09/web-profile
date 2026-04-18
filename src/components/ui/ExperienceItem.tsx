@@ -3,15 +3,15 @@ import React from 'react';
 interface ExperienceItemProps {
   role: string;
   company: string;
-  start_date: string;
-  end_date: string | null;
+  start_date: string | Date;
+  end_date: string | Date | null;
   description: string[];
 }
 
 const ExperienceItem: React.FC<ExperienceItemProps> = ({ role, company, start_date, end_date, description }) => {
-  const formatDate = (dateStr: string | null) => {
-    if (!dateStr) return 'Present';
-    const date = new Date(dateStr);
+  const formatDate = (dateValue: string | Date | null) => {
+    if (!dateValue) return 'Present';
+    const date = new Date(dateValue);
     return new Intl.DateTimeFormat('id-ID', { month: 'long', year: 'numeric' }).format(date);
   };
 

@@ -9,7 +9,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:ci": "jest --ci --coverage --forceExit"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
@@ -23,13 +27,16 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4.2.2",
     "@types/bcryptjs": "^3.0.0",
+    "@types/jest": "^30.0.0",
     "@types/node": "^20",
     "@types/pg": "^8.20.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.4",
+    "jest": "^30.3.0",
     "tailwindcss": "^4.2.2",
+    "ts-jest": "^29.4.9",
     "typescript": "^5"
   },
   "ignoreScripts": [

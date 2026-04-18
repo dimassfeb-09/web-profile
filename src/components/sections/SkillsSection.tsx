@@ -1,6 +1,4 @@
-'use client';
-
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import SkillCategory from '../ui/SkillCategory';
 
 interface Category {
@@ -12,52 +10,11 @@ interface Category {
   delay_class: string;
 }
 
-const SkillsSection = () => {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+interface SkillsSectionProps {
+  categories: Category[];
+}
 
-  useEffect(() => {
-    const fetchSkills = async () => {
-      try {
-        setIsLoading(true);
-        const res = await fetch('/api/skills');
-        const json = await res.json();
-        
-        if (json.status === 200) {
-          setCategories(json.data);
-        } else {
-          setError(json.message || 'Failed to fetch skills');
-        }
-      } catch (err) {
-        setError('An error occurred while fetching skills');
-        console.error(err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchSkills();
-  }, []);
-
-  if (isLoading) {
-    return (
-      <section className="pt-12 xs:pt-16 lg:pt-24 min-h-[300px] flex items-center justify-center" id="skills">
-        <div className="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
-      </section>
-    );
-  }
-
-  if (error) {
-    return (
-      <section className="pt-12 xs:pt-16 lg:pt-24" id="skills">
-        <div className="p-8 rounded-3xl bg-error/5 border border-error/10 text-center">
-          <p className="text-error font-body">{error}</p>
-        </div>
-      </section>
-    );
-  }
-
+const SkillsSection: React.FC<SkillsSectionProps> = ({ categories }) => {
   return (
     <section className="pt-12 xs:pt-16 lg:pt-24" id="skills">
       <div className="mb-12 xs:mb-16">

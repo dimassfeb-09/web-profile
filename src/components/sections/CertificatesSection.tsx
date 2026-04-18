@@ -1,61 +1,26 @@
-'use client';
-
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 interface Certificate {
   id?: string;
   title: string;
   issuer: string;
-  issue_date: string;
-  credential_url: string;
-  image_url?: string;
+  issue_date: string | Date | null;
+  credential_url: string | null;
+  image_url: string | null;
 }
 
-const CertificatesSection = () => {
-  const [certificates, setCertificates] = useState<Certificate[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+interface CertificatesSectionProps {
+  certificates: Certificate[];
+}
 
-  useEffect(() => {
-    const fetchCertificates = async () => {
-      try {
-        setIsLoading(true);
-        const res = await fetch('/api/certificates');
-        const json = await res.json();
-        
-        if (json.status === 200) {
-          setCertificates(json.data);
-        } else {
-          setError(json.message || 'Failed to fetch certificates');
-        }
-      } catch (err) {
-        setError('An error occurred while fetching certificates');
-        console.error(err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+const CertificatesSection: React.FC<CertificatesSectionProps> = ({ certificates }) => {
+  const formatDate = (dateValue: string | Date | null) => {
+    if (!dateValue) return '';
+    const date = new Date(dateValue);
+    return new Intl.DateTimeFormat('id-ID', { month: 'long', year: 'numeric' }).format(date);
+  };
 
-    fetchCertificates();
-  }, []);
-
-  if (isLoading) {
-    return (
-      <section className="pt-12 xs:pt-16 lg:pt-24" id="certificates">
-        <div className="mb-12 xs:mb-16">
-          <div className="h-10 w-64 bg-surface-container-high rounded-full animate-pulse mb-4"></div>
-          <div className="h-6 w-96 bg-surface-container-high rounded-full animate-pulse"></div>
-        </div>
-        <div className="space-y-4">
-          {[1, 2, 3].map(i => (
-            <div key={i} className="h-24 bg-surface-container-low rounded-2xl animate-pulse"></div>
-          ))}
-        </div>
-      </section>
-    );
-  }
-
-  if (error || certificates.length === 0) return null;
+  if (certificates.length === 0) return null;
 
   return (
     <section className="pt-12 xs:pt-16 lg:pt-24 pb-20" id="certificates">
@@ -81,7 +46,7 @@ const CertificatesSection = () => {
               <div>
                 <h3 className="font-headline text-lg font-bold text-on-surface">{cert.title}</h3>
                 <p className="font-body text-sm text-on-surface-variant">
-                  {cert.issuer} • <span className="opacity-80">{cert.issue_date}</span>
+                  {cert.issuer} • <span className="opacity-80">{formatDate(cert.issue_date)}</span>
                 </p>
               </div>
             </div>

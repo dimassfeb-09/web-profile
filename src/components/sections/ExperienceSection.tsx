@@ -1,66 +1,20 @@
-'use client';
-
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import ExperienceItem from '../ui/ExperienceItem';
 
 interface Experience {
   id?: number;
   role: string;
   company: string;
-  start_date: string;
-  end_date: string | null;
+  start_date: string | Date;
+  end_date: string | Date | null;
   description: string[];
 }
 
-const ExperienceSection = () => {
-  const [experiences, setExperiences] = useState<Experience[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+interface ExperienceSectionProps {
+  experiences: Experience[];
+}
 
-  useEffect(() => {
-    const fetchExperiences = async () => {
-      try {
-        setIsLoading(true);
-        const res = await fetch('/api/experience');
-        const json = await res.json();
-        
-        if (json.status === 200) {
-          setExperiences(json.data);
-        } else {
-          setError(json.message || 'Failed to fetch experiences');
-        }
-      } catch (err) {
-        setError('An error occurred while fetching experiences');
-        console.error(err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchExperiences();
-  }, []);
-
-  if (isLoading) {
-    return (
-      <section className="pt-12 xs:pt-16 lg:pt-24 min-h-[300px] flex items-center justify-center" id="experience">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
-          <p className="text-on-surface-variant font-body animate-pulse">Retrieving experience history...</p>
-        </div>
-      </section>
-    );
-  }
-
-  if (error) {
-    return (
-      <section className="pt-12 xs:pt-16 lg:pt-24" id="experience">
-        <div className="p-8 rounded-3xl bg-error/5 border border-error/10 text-center">
-          <p className="text-error font-body mb-4">{error}</p>
-        </div>
-      </section>
-    );
-  }
-
+const ExperienceSection: React.FC<ExperienceSectionProps> = ({ experiences }) => {
   return (
     <section className="pt-12 xs:pt-16 lg:pt-24" id="experience">
       <div className="mb-12 xs:mb-16">

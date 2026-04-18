@@ -1,6 +1,4 @@
-'use client';
-
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 interface ContactData {
   headline: string;
@@ -9,49 +7,11 @@ interface ContactData {
   linkedin_url: string;
 }
 
-const ContactSection = () => {
-  const [data, setData] = useState<ContactData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+interface ContactSectionProps {
+  data: ContactData;
+}
 
-  useEffect(() => {
-    const fetchContact = async () => {
-      try {
-        setIsLoading(true);
-        const res = await fetch('/api/contact');
-        const json = await res.json();
-        
-        if (json.status === 200) {
-          setData(json.data);
-        } else {
-          setError(json.message || 'Failed to fetch contact data');
-        }
-      } catch (err) {
-        setError('An error occurred while fetching contact data');
-        console.error(err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchContact();
-  }, []);
-
-  if (isLoading || !data) {
-    return (
-      <section className="pt-16 xs:pt-24 lg:pt-32 pb-12 text-center" id="contact">
-        <div className="max-w-3xl mx-auto px-6 flex flex-col items-center">
-          <div className="w-full h-12 bg-surface-container-high rounded-xl animate-pulse mb-6"></div>
-          <div className="w-full h-8 bg-surface-container-high rounded-lg animate-pulse mb-12"></div>
-          <div className="flex gap-6 w-full justify-center mb-12">
-            <div className="w-40 h-14 bg-surface-container-high rounded-full animate-pulse"></div>
-            <div className="w-40 h-14 bg-surface-container-high rounded-full animate-pulse"></div>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
+const ContactSection: React.FC<ContactSectionProps> = ({ data }) => {
   return (
     <section className="pt-16 xs:pt-24 lg:pt-32 pb-12 text-center relative overflow-hidden" id="contact">
       {/* Background Grid Pattern */}

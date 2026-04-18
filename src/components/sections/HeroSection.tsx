@@ -1,6 +1,4 @@
-'use client';
-
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Badge from '../ui/Badge';
 
 interface HomeData {
@@ -11,38 +9,11 @@ interface HomeData {
   cv_url: string;
 }
 
-const HeroSection = () => {
-  const [data, setData] = useState<HomeData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+interface HeroSectionProps {
+  data: HomeData;
+}
 
-  useEffect(() => {
-    const fetchHome = async () => {
-      try {
-        const res = await fetch('/api/home');
-        const json = await res.json();
-        if (json.status === 200) {
-          setData(json.data);
-        }
-      } catch (err) {
-        console.error('Failed to fetch home data:', err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchHome();
-  }, []);
-
-  if (isLoading || !data) {
-    return (
-      <section className="min-h-[80dvh] xl:min-h-[716px] flex flex-col items-center justify-center text-center relative pt-12">
-        <div className="w-48 h-10 bg-surface-container-high rounded-full animate-pulse mb-8"></div>
-        <div className="w-full max-w-4xl h-24 bg-surface-container-high rounded-3xl animate-pulse mb-8"></div>
-        <div className="w-full max-w-2xl h-12 bg-surface-container-high rounded-xl animate-pulse mb-12"></div>
-      </section>
-    );
-  }
-
+const HeroSection: React.FC<HeroSectionProps> = ({ data }) => {
   return (
     <section className="min-h-[80dvh] xl:min-h-[716px] flex flex-col items-center justify-center text-center relative pt-12 overflow-hidden">
       {/* Dynamic Background Grid Pattern */}

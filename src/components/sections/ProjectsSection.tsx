@@ -7,17 +7,26 @@ interface Project {
   id?: string;
   title: string;
   description: string;
-  image_url: string; // Database field
+  image_url: string;
   features: string[];
   link_url: string;
   link_text: string;
 }
 
-const ProjectsSection = () => {
-  const [projects, setProjects] = useState<Project[]>([]);
+interface ProjectsSectionProps {
+  initialProjects: Project[];
+}
+
+const ProjectsSection: React.FC<ProjectsSectionProps> = ({ initialProjects }) => {
+  const [projects] = useState<Project[]>(initialProjects);
   const [visibleCount, setVisibleCount] = useState(6);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    const cols = getColumnCount();
+    setVisibleCount(cols === 1 ? 2 : cols);
+  }, []);
 
   const getColumnCount = () => {
     if (typeof window === 'undefined') return 3;
@@ -28,65 +37,11 @@ const ProjectsSection = () => {
     return 1;
   };
 
-  useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        setIsLoading(true);
-        const res = await fetch('/api/projects');
-        const json = await res.json();
-        
-        if (json.status === 200) {
-          setProjects(json.data);
-          // Set initial visible count based on grid columns
-          const cols = getColumnCount();
-          // For mobile (1 col), we show 2 to have at least some content
-          setVisibleCount(cols === 1 ? 2 : cols);
-        } else {
-          setError(json.message || 'Failed to fetch projects');
-        }
-      } catch (err) {
-        setError('An error occurred while fetching projects');
-        console.error(err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchProjects();
-  }, []);
-
   const handleLoadMore = () => {
     const cols = getColumnCount();
     const increment = cols === 1 ? 2 : cols;
     setVisibleCount(prev => Math.min(prev + increment, projects.length));
   };
-
-  if (isLoading) {
-    return (
-      <section className="pt-12 xs:pt-16 lg:pt-24 min-h-[400px] flex items-center justify-center" id="projects">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
-          <p className="text-on-surface-variant font-body animate-pulse">Loading amazing projects...</p>
-        </div>
-      </section>
-    );
-  }
-
-  if (error) {
-    return (
-      <section className="pt-12 xs:pt-16 lg:pt-24" id="projects">
-        <div className="p-8 rounded-3xl bg-error/5 border border-error/10 text-center">
-          <p className="text-error font-body mb-4">{error}</p>
-          <button 
-            onClick={() => window.location.reload()}
-            className="px-6 py-2 bg-error/10 text-error rounded-full hover:bg-error/20 transition-colors"
-          >
-            Try Again
-          </button>
-        </div>
-      </section>
-    );
-  }
 
   return (
     <section className="pt-12 xs:pt-16 lg:pt-24" id="projects">
@@ -100,12 +55,12 @@ const ProjectsSection = () => {
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 4xl:grid-cols-4 gap-6 xs:gap-8">
-        {projects.slice(0, visibleCount).map((project, index) => (
+        {(mounted ? projects.slice(0, visibleCount) : projects.slice(0, 3)).map((project, index) => (
           <ProjectCard
             key={project.id || index}
             title={project.title}
             description={project.description}
-            imageUrl={project.image_url} // Map image_url from DB to imageUrl prop
+            imageUrl={project.image_url}
             features={project.features}
             linkUrl={project.link_url}
             linkText={project.link_text}

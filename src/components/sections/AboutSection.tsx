@@ -1,59 +1,15 @@
-'use client';
-
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 interface AboutData {
   headline: string;
   paragraphs: string[];
 }
 
-const AboutSection = () => {
-  const [data, setData] = useState<AboutData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+interface AboutSectionProps {
+  data: AboutData;
+}
 
-  useEffect(() => {
-    const fetchAbout = async () => {
-      try {
-        setIsLoading(true);
-        const res = await fetch('/api/about');
-        const json = await res.json();
-        
-        if (json.status === 200) {
-          setData(json.data);
-        } else {
-          setError(json.message || 'Failed to fetch about data');
-        }
-      } catch (err) {
-        setError('An error occurred while fetching about data');
-        console.error(err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchAbout();
-  }, []);
-
-  if (isLoading) {
-    return (
-      <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 xs:gap-12 lg:gap-16 items-start pt-12 xs:pt-16 lg:pt-24 min-h-[400px]" id="about">
-        <div className="lg:col-span-5 h-24 bg-surface-container-high rounded-2xl animate-pulse"></div>
-        <div className="lg:col-span-7 h-64 bg-surface-container-high rounded-[2rem] animate-pulse"></div>
-      </section>
-    );
-  }
-
-  if (error || !data) {
-    return (
-      <section className="pt-12 xs:pt-16 lg:pt-24" id="about">
-        <div className="p-8 rounded-3xl bg-error/5 border border-error/10 text-center">
-          <p className="text-error font-body">{error || 'Data could not be loaded'}</p>
-        </div>
-      </section>
-    );
-  }
-
+const AboutSection: React.FC<AboutSectionProps> = ({ data }) => {
   return (
     <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 xs:gap-12 lg:gap-16 items-start pt-12 xs:pt-16 lg:pt-24" id="about">
       <div className="lg:col-span-5 lg:sticky lg:top-32">
