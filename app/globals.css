@@ -1,26 +1,88 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-primary: #003ec7;
+  --color-primary-container: #0052ff;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #dfe3ff;
+  
+  --color-secondary: #006875;
+  --color-secondary-container: #00e3fd;
+  --color-on-secondary: #ffffff;
+  --color-on-secondary-container: #00616d;
+  
+  --color-tertiary: #910081;
+  --color-tertiary-container: #ba00a7;
+  --color-on-tertiary: #ffffff;
+  --color-on-tertiary-container: #ffdaf1;
+  
+  --color-background: #f9f9f9;
+  --color-on-background: #1a1c1c;
+  
+  --color-surface: #f9f9f9;
+  --color-surface-variant: #e2e2e2;
+  --color-on-surface: #1a1c1c;
+  --color-on-surface-variant: #434656;
+  
+  --color-outline: #737688;
+  --color-outline-variant: #c3c5d9;
+  
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f3f3f3;
+  --color-surface-container: #eeeeee;
+  --color-surface-container-high: #e8e8e8;
+  --color-surface-container-highest: #e2e2e2;
+
+  --font-headline: "Plus Jakarta Sans", ui-sans-serif, system-ui;
+  --font-body: "Inter", ui-sans-serif, system-ui;
+  --font-label: "Space Grotesk", ui-sans-serif, system-ui;
+
+  /* Custom 10-Tier Breakpoints Mapping */
+  --breakpoint-xs: 360px;
+  --breakpoint-sm: 480px;
+  --breakpoint-md: 640px;
+  --breakpoint-lg: 768px;
+  --breakpoint-xl: 1024px;
+  --breakpoint-2xl: 1280px;
+  --breakpoint-3xl: 1440px;
+  --breakpoint-4xl: 1536px;
+  --breakpoint-5xl: 1920px;
+
+  /* Custom Animations */
+  @keyframes slide-right {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(0); }
+  }
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes scale-up {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  --animate-slide-right: slide-right 0.3s cubic-bezier(0, 0, 0.2, 1);
+  --animate-fade-in: fade-in 0.2s ease-out;
+  --animate-scale-up: scale-up 0.2s cubic-bezier(0, 0, 0.2, 1);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  body {
+    @apply bg-background text-on-background font-body antialiased;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  .bg-grid-pattern {
+    background-size: 40px 40px;
+    background-image: linear-gradient(to right, rgba(115, 118, 136, 0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(115, 118, 136, 0.04) 1px, transparent 1px);
+    mask-image: radial-gradient(ellipse at center, black 20%, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 20%, transparent 80%);
+  }
+  
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
 }
