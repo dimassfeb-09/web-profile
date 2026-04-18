@@ -35,7 +35,7 @@ export default async function RootLayout({
   const cvUrl = homeData.data?.cv_url || "#";
 
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" data-scroll-behavior="smooth" className="scroll-smooth">
       <head>
         <link rel="preconnect" href="https://atgnqunmelvquqdwkmnq.supabase.co" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />

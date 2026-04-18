@@ -13,6 +13,7 @@ const menuItems = [
   { name: 'Projects', href: '/admin/projects', icon: 'folder_open' },
   { name: 'Achievements', href: '/admin/achievements', icon: 'workspace_premium' },
   { name: 'Certificates', href: '/admin/certificates', icon: 'card_membership' },
+  { name: 'Blog', href: '/admin/blog', icon: 'article' },
   { name: 'Contact', href: '/admin/contact', icon: 'mail' },
 ];
 

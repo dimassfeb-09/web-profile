@@ -13,7 +13,7 @@ interface ContactSectionProps {
 
 const ContactSection: React.FC<ContactSectionProps> = ({ data }) => {
   return (
-    <section className="pt-16 xs:pt-24 lg:pt-32 pb-12 text-center relative overflow-hidden" id="contact">
+    <section className="pt-16 xs:pt-24 lg:pt-32 pb-12 text-center relative overflow-hidden">
       {/* Background Grid Pattern */}
       <div className="absolute inset-0 bg-grid-pattern -z-10 opacity-40"></div>
       

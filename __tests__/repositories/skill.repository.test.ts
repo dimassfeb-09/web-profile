@@ -51,6 +51,12 @@ describe('SkillRepository', () => {
       );
       expect(result).toEqual(expected);
     });
+
+    it('should return null if not found', async () => {
+      mockQuery.mockResolvedValueOnce({ rows: [] });
+      const result = await SkillRepository.update(1, {} as any);
+      expect(result).toBeNull();
+    });
   });
 
   describe('delete()', () => {
@@ -61,6 +67,16 @@ describe('SkillRepository', () => {
 
       expect(mockQuery).toHaveBeenCalledWith('DELETE FROM skill_categories WHERE id = $1', [1]);
       expect(result).toBe(true);
+    });
+
+    it('should return false if rowCount is 0 or null', async () => {
+      mockQuery.mockResolvedValueOnce({ rowCount: 0 });
+      let result = await SkillRepository.delete(1);
+      expect(result).toBe(false);
+
+      mockQuery.mockResolvedValueOnce({ rowCount: null });
+      result = await SkillRepository.delete(1);
+      expect(result).toBe(false);
     });
   });
 });

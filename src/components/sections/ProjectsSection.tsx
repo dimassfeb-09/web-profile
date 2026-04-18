@@ -44,7 +44,7 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ initialProjects }) =>
   };
 
   return (
-    <section className="pt-12 xs:pt-16 lg:pt-24" id="projects">
+    <section className="pt-16 xs:pt-24 lg:pt-32 pb-12">
       <div className="mb-12 xs:mb-16">
         <h2 className="font-headline text-3xl xs:text-4xl lg:text-5xl font-bold tracking-tight text-on-surface mb-4">
           Featured Projects.

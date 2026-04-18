@@ -74,33 +74,47 @@ export default async function Home() {
     <main className="pt-20 xs:pt-24 lg:pt-32 px-6 xs:px-8 md:px-12 lg:px-16 2xl:px-24 max-w-[1920px] mx-auto flex flex-col gap-12 xs:gap-20 lg:gap-24 xl:gap-32 pb-20 xs:pb-32">
       <HeroSection data={homeData.data} />
       
-      <Suspense fallback={<SectionSkeleton />}>
-        <AboutSectionWrapper />
-      </Suspense>
+      <div id="about">
+        <Suspense fallback={<SectionSkeleton />}>
+          <AboutSectionWrapper />
+        </Suspense>
+      </div>
       
-      <Suspense fallback={<SectionSkeleton />}>
-        <SkillsSectionWrapper />
-      </Suspense>
+      <div id="skills">
+        <Suspense fallback={<SectionSkeleton />}>
+          <SkillsSectionWrapper />
+        </Suspense>
+      </div>
       
-      <Suspense fallback={<SectionSkeleton />}>
-        <ExperienceSectionWrapper />
-      </Suspense>
+      <div id="experience">
+        <Suspense fallback={<SectionSkeleton />}>
+          <ExperienceSectionWrapper />
+        </Suspense>
+      </div>
       
-      <Suspense fallback={<SectionSkeleton />}>
-        <ProjectsSectionWrapper />
-      </Suspense>
+      <div id="projects">
+        <Suspense fallback={<SectionSkeleton />}>
+          <ProjectsSectionWrapper />
+        </Suspense>
+      </div>
       
-      <Suspense fallback={<SectionSkeleton />}>
-        <AchievementSectionWrapper />
-      </Suspense>
+      <div id="achievements">
+        <Suspense fallback={<SectionSkeleton />}>
+          <AchievementSectionWrapper />
+        </Suspense>
+      </div>
       
-      <Suspense fallback={<SectionSkeleton />}>
-        <CertificatesSectionWrapper />
-      </Suspense>
+      <div id="certificates">
+        <Suspense fallback={<SectionSkeleton />}>
+          <CertificatesSectionWrapper />
+        </Suspense>
+      </div>
       
-      <Suspense fallback={<SectionSkeleton />}>
-        <ContactSectionWrapper />
-      </Suspense>
+      <div id="contact">
+        <Suspense fallback={<SectionSkeleton />}>
+          <ContactSectionWrapper />
+        </Suspense>
+      </div>
     </main>
   );
 }

@@ -1,0 +1,67 @@
+/* Tiptap Editor Styles */
+.tiptap {
+  min-height: 600px;
+  outline: none;
+}
+
+.tiptap p.is-editor-empty:first-child::before {
+  color: #686b7c;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Flattened Images */
+.tiptap img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 1rem;
+  margin: 2rem 0;
+  box-shadow: none !important; /* Force no shadow */
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.tiptap img.ProseMirror-selectednode {
+  outline: 3px solid #0052ff;
+  outline-offset: 4px;
+}
+
+/* Better Alignments */
+.tiptap [style*="text-align: center"] {
+  text-align: center;
+}
+
+.tiptap [style*="text-align: right"] {
+  text-align: right;
+}
+
+/* Horizontal Rule Styling */
+.tiptap hr {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 3rem 0;
+}
+
+/* Link Styling */
+.tiptap a {
+  cursor: pointer;
+}
+
+/* Scrollbar Styling for Editor */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.1);
+}

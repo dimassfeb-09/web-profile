@@ -7,6 +7,8 @@ import { AboutData } from '@/src/repositories/about.repository';
 import { ContactData } from '@/src/repositories/contact.repository';
 import { HomeData } from '@/src/repositories/home.repository';
 import { AdminData } from '@/src/repositories/admin.repository';
+import { BlogData } from '@/src/repositories/blog.repository';
+import { BlogImageData } from '@/src/repositories/blog_image.repository';
 
 export const createAchievementData = (overrides?: Partial<AchievementData>): AchievementData => ({
   title: 'Default Achievement Title',
@@ -80,5 +82,23 @@ export const createAdminData = (overrides?: Partial<AdminData>): AdminData => ({
   id: 1,
   email: 'admin@example.com',
   password: 'hashed-password',
+  ...overrides,
+});
+
+export const createBlogData = (overrides?: Partial<BlogData>): BlogData => ({
+  id: 'test-uuid',
+  title: 'Default Blog Title',
+  slug: 'default-blog-slug',
+  excerpt: 'This is a test excerpt.',
+  content: { type: 'doc', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Test content' }] }] },
+  is_published: false,
+  ...overrides,
+});
+
+export const createBlogImageData = (overrides?: Partial<BlogImageData>): BlogImageData => ({
+  blog_id: 'test-uuid',
+  file_path: 'blogs/test-uuid/image.png',
+  storage_url: 'https://example.com/image.png',
+  status: 'unused',
   ...overrides,
 });

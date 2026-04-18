@@ -36,6 +36,22 @@ describe('Auth Library', () => {
     });
   });
 
+  describe('environment fallbacks', () => {
+    it('should use fallback secret if JWT_SECRET is missing', async () => {
+      const originalEnv = process.env.JWT_SECRET;
+      delete process.env.JWT_SECRET;
+      
+      // We use isolateModules to reload the module and trigger top-level calculation
+      jest.isolateModules(async () => {
+        const { encrypt: encryptIsolated } = require('@/src/lib/auth');
+        const token = await encryptIsolated({ email: 'test' });
+        expect(token).toBe('mocked-jwt-token');
+      });
+
+      process.env.JWT_SECRET = originalEnv;
+    });
+  });
+
   describe('decrypt()', () => {
     it('should return payload from token', async () => {
       const payload = await decrypt('some-token');

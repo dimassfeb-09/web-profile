@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 
 interface TopNavBarProps {
   cvUrl: string;
@@ -8,6 +10,15 @@ interface TopNavBarProps {
 
 const TopNavBar = ({ cvUrl }: TopNavBarProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const isHome = pathname === '/';
+
+  const getHref = (href: string) => {
+    if (href.startsWith('#')) {
+      return isHome ? href : `/${href}`;
+    }
+    return href;
+  };
 
 
 
@@ -37,6 +48,7 @@ const TopNavBar = ({ cvUrl }: TopNavBarProps) => {
     { name: 'Projects', href: '#projects' },
     { name: 'Achievements', href: '#achievements' },
     { name: 'Certificates', href: '#certificates' },
+    { name: 'Blog', href: '/blog' },
     { name: 'Contact', href: '#contact' },
   ];
 
@@ -49,24 +61,24 @@ const TopNavBar = ({ cvUrl }: TopNavBarProps) => {
       }`}
     >
       <div className="flex justify-between items-center px-6 xs:px-8 py-4 xs:py-6 max-w-screen-2xl mx-auto relative z-50">
-        <a
+        <Link
           className="text-lg xs:text-xl font-black tracking-tighter text-zinc-900 font-headline transition-all duration-300 ease-in-out hover:opacity-80 scale-95 active:scale-90 transition-transform"
-          href="#"
+          href="/"
           onClick={() => setIsMenuOpen(false)}
         >
           Dimas Febriyanto
-        </a>
+        </Link>
 
         {/* Desktop Links */}
         <div className="hidden lg:flex items-center gap-8 font-plus-jakarta text-sm font-medium tracking-tight">
           {navLinks.map((link) => (
-            <a
+            <Link
               key={link.name}
-              className="text-zinc-500 hover:text-zinc-900 transition-all duration-300 ease-in-out hover:opacity-80"
-              href={link.href}
+              className="text-zinc-500 hover:text-zinc-900 transition-all duration-300 ease-in-out hover:opacity-80 border-b-2 border-transparent hover:border-primary/30 py-1"
+              href={getHref(link.href)}
             >
               {link.name}
-            </a>
+            </Link>
           ))}
         </div>
 
@@ -102,14 +114,14 @@ const TopNavBar = ({ cvUrl }: TopNavBarProps) => {
       >
         <div className="flex flex-col items-center justify-center min-h-full py-10 xs:py-12 gap-6 xs:gap-8 px-8">
           {navLinks.map((link) => (
-            <a
+            <Link
               key={link.name}
               className="text-xl xs:text-2xl font-headline font-bold text-zinc-900 hover:text-primary transition-colors text-center w-full"
-              href={link.href}
+              href={getHref(link.href)}
               onClick={() => setIsMenuOpen(false)}
             >
               {link.name}
-            </a>
+            </Link>
           ))}
           <a
             className="mt-4 w-full flex items-center justify-center px-8 py-3.5 xs:py-4 rounded-full bg-gradient-to-br from-primary to-primary-container text-white font-label font-medium text-base xs:text-lg tracking-wide shadow-lg shadow-primary/20"

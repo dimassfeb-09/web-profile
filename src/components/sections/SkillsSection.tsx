@@ -16,7 +16,7 @@ interface SkillsSectionProps {
 
 const SkillsSection: React.FC<SkillsSectionProps> = ({ categories }) => {
   return (
-    <section className="pt-12 xs:pt-16 lg:pt-24" id="skills">
+    <section className="pt-12 xs:pt-16 lg:pt-24 min-h-[400px]">
       <div className="mb-12 xs:mb-16">
         <h2 className="font-headline text-3xl xs:text-4xl lg:text-5xl font-bold tracking-tight text-on-surface mb-4">
           Technical Arsenal.

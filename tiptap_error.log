@@ -1,0 +1,21 @@
+generateHTML can only be used in a browser environment
+If you want to use this in a Node environment, use the `@tiptap/html/server` import instead.
+Error: generateHTML can only be used in a browser environment
+If you want to use this in a Node environment, use the `@tiptap/html/server` import instead.
+    at generateHTML (F:\Project\web-profile\node_modules\@tiptap\html\src\generateHTML.ts:32:11)
+    at renderBlogContent (F:\Project\web-profile\src\lib\tiptap.ts:17:24)
+    at Object.<anonymous> (F:\Project\web-profile\__tests__\lib\tiptap.test.ts:70:35)
+    at Promise.finally.completed (F:\Project\web-profile\node_modules\jest-circus\build\jestAdapterInit.js:1557:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (F:\Project\web-profile\node_modules\jest-circus\build\jestAdapterInit.js:1497:10)
+    at _callCircusTest (F:\Project\web-profile\node_modules\jest-circus\build\jestAdapterInit.js:1007:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (F:\Project\web-profile\node_modules\jest-circus\build\jestAdapterInit.js:947:3)
+    at F:\Project\web-profile\node_modules\jest-circus\build\jestAdapterInit.js:849:7
+    at _runTestsForDescribeBlock (F:\Project\web-profile\node_modules\jest-circus\build\jestAdapterInit.js:862:11)
+    at _runTestsForDescribeBlock (F:\Project\web-profile\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+    at run (F:\Project\web-profile\node_modules\jest-circus\build\jestAdapterInit.js:761:3)
+    at runAndTransformResultsToJestFormat (F:\Project\web-profile\node_modules\jest-circus\build\jestAdapterInit.js:1918:21)
+    at jestAdapter (F:\Project\web-profile\node_modules\jest-circus\build\runner.js:101:19)
+    at runTestInternal (F:\Project\web-profile\node_modules\jest-runner\build\index.js:275:16)
+    at runTest (F:\Project\web-profile\node_modules\jest-runner\build\index.js:343:7)

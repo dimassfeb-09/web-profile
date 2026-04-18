@@ -23,7 +23,7 @@ const CertificatesSection: React.FC<CertificatesSectionProps> = ({ certificates 
   if (certificates.length === 0) return null;
 
   return (
-    <section className="pt-12 xs:pt-16 lg:pt-24 pb-20" id="certificates">
+    <section className="pt-12 xs:pt-16 lg:pt-24 pb-20">
       <div className="mb-12 xs:mb-16">
         <h2 className="font-headline text-3xl xs:text-4xl lg:text-5xl font-bold tracking-tight text-on-surface mb-4">
           Certificates.

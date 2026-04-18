@@ -51,16 +51,22 @@ describe('ExperienceRepository', () => {
       );
       expect(result).toEqual(expected);
     });
+
+    it('should return null if not found', async () => {
+      mockQuery.mockResolvedValueOnce({ rows: [] });
+      const result = await ExperienceRepository.update(999, {} as any);
+      expect(result).toBeNull();
+    });
   });
 
   describe('delete()', () => {
     it('should return false when no row deleted', async () => {
       mockQuery.mockResolvedValueOnce({ rowCount: 0 });
-      let result = await ExperienceRepository.delete('invalid-id');
+      let result = await ExperienceRepository.delete('invalid-id' as any);
       expect(result).toBe(false);
 
       mockQuery.mockResolvedValueOnce({ rowCount: null });
-      result = await ExperienceRepository.delete('invalid-id');
+      result = await ExperienceRepository.delete('invalid-id' as any);
       expect(result).toBe(false);
     });
 

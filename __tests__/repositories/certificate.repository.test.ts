@@ -30,6 +30,12 @@ describe('CertificateRepository', () => {
       expect(mockQuery).toHaveBeenCalledWith('SELECT * FROM certificates WHERE id = $1', ['uuid-123']);
       expect(result).toEqual(mockData);
     });
+
+    it('should return null if not found', async () => {
+      mockQuery.mockResolvedValueOnce({ rows: [] });
+      const result = await CertificateRepository.findById('non-existent');
+      expect(result).toBeNull();
+    });
   });
 
   describe('create()', () => {
@@ -62,6 +68,12 @@ describe('CertificateRepository', () => {
         [input.title, input.issuer, input.issue_date, input.credential_url, input.image_url, id]
       );
       expect(result).toEqual(expected);
+    });
+
+    it('should return null if not found', async () => {
+      mockQuery.mockResolvedValueOnce({ rows: [] });
+      const result = await CertificateRepository.update('non-existent', {} as any);
+      expect(result).toBeNull();
     });
   });
 

@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "material-symbols/outlined.css";
 
 @theme {
   --color-primary: #003ec7;
@@ -71,9 +72,63 @@
   body {
     @apply bg-background text-on-background font-body antialiased;
   }
+
+  /* Global Responsive Tables - Basic Styles */
+  table {
+    @apply w-full border-collapse text-left text-sm;
+  }
+  
+  th {
+    @apply font-headline font-bold text-on-surface p-4 border-b border-outline-variant/20 bg-surface-container-low;
+  }
+  
+  td {
+    @apply p-4 border-b border-outline-variant/10 text-on-surface-variant font-body;
+  }
+
+  /* Global Responsive Forms - Basic Styles */
+  input, select, textarea {
+    @apply w-full bg-surface-container-lowest border border-outline-variant/30 rounded-xl px-4 py-3 
+    text-on-surface font-body outline-none transition-all duration-200 
+    focus:border-primary focus:ring-2 focus:ring-primary/20 hover:border-outline-variant/60;
+  }
+
+  label {
+    @apply block text-sm font-label font-bold text-on-surface/80 mb-2 tracking-wide;
+  }
 }
 
 @layer utilities {
+  /* Layout Containers scaling with breakpoints */
+  .section-container {
+    @apply mx-auto max-w-[1920px] px-4;
+  }
+  @media (min-width: 360px) { .section-container { @apply px-6; } }
+  @media (min-width: 480px) { .section-container { @apply px-8; } }
+  @media (min-width: 640px) { .section-container { @apply px-12; } }
+  @media (min-width: 768px) { .section-container { @apply px-16; } }
+  @media (min-width: 1024px) { .section-container { @apply px-24; } }
+  @media (min-width: 1280px) { .section-container { @apply px-32; } }
+  @media (min-width: 1440px) { .section-container { @apply px-48; } }
+
+  /* Responsive Table Wrapper */
+  .table-responsive {
+    @apply w-full overflow-x-auto overflow-y-hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+
+  /* Responsive Form Grid */
+  .form-grid {
+    @apply grid grid-cols-1 gap-6;
+  }
+  @media (min-width: 640px) { .form-grid { @apply grid-cols-2; } }
+  @media (min-width: 768px) { .form-grid { @apply grid-cols-12; } }
+  
+  .form-span-full { @apply lg:col-span-12; }
+  .form-span-half { @apply lg:col-span-6; }
+  .form-span-third { @apply lg:col-span-4; }
+
   .bg-grid-pattern {
     background-size: 40px 40px;
     background-image: linear-gradient(to right, rgba(115, 118, 136, 0.04) 1px, transparent 1px),
@@ -99,6 +154,7 @@
     font-display: block; /* Avoid FOIT */
   }
 
+
   /* Optimized Blurs to avoid Paint Bottlenecks */
   .blur-ambient {
     transform: translateZ(0);
@@ -106,6 +162,21 @@
     backface-visibility: hidden;
     perspective: 1000;
   }
+
+  /* Tiptap Typography */
+  .tiptap-content {
+    @apply font-body leading-relaxed text-on-surface-variant;
+  }
+  .tiptap-content h1 { @apply font-headline text-3xl sm:text-5xl font-bold text-on-surface mt-12 mb-6; }
+  .tiptap-content h2 { @apply font-headline text-2xl sm:text-4xl font-bold text-on-surface mt-10 mb-5; }
+  .tiptap-content h3 { @apply font-headline text-xl sm:text-3xl font-bold text-on-surface mt-8 mb-4; }
+  .tiptap-content p { @apply mb-6 text-lg; }
+  .tiptap-content ul { @apply list-disc pl-8 mb-6 space-y-2 text-lg; }
+  .tiptap-content ol { @apply list-decimal pl-8 mb-6 space-y-2 text-lg; }
+  .tiptap-content blockquote { @apply border-l-4 border-primary/30 pl-6 py-2 italic text-on-surface/80 bg-primary/5 rounded-r-2xl my-8 text-xl; }
+  .tiptap-content img { @apply rounded-[2rem] shadow-2xl my-10 mx-auto border border-outline-variant/10; }
+  .tiptap-content a { @apply text-primary font-bold underline hover:no-underline transition-all; }
+  .tiptap-content code { @apply px-2 py-0.5 rounded bg-surface-container-high font-mono text-sm border border-outline-variant/20; }
 }
 
 

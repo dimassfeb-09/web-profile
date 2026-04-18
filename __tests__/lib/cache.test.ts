@@ -23,6 +23,18 @@ describe('Cache Library', () => {
       expect(result).toBe('data-1');
     });
 
+    it('should use default TTL if not provided in options', async () => {
+      const fetcher = jest.fn().mockResolvedValue('ttl-data');
+      await getCachedData('ttl-key', fetcher); // Uses default 12h
+      expect(fetcher).toHaveBeenCalledTimes(1);
+    });
+
+    it('should use custom TTL if provided in options', async () => {
+      const fetcher = jest.fn().mockResolvedValue('custom-ttl-data');
+      await getCachedData('custom-ttl-key', fetcher, { ttl: 1000 });
+      expect(fetcher).toHaveBeenCalledTimes(1);
+    });
+
     it('should return cached data on second call (HIT)', async () => {
       const fetcher = jest.fn().mockResolvedValue('fresh-data');
       

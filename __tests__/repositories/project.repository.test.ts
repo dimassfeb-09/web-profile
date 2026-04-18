@@ -30,6 +30,12 @@ describe('ProjectRepository', () => {
       expect(mockQuery).toHaveBeenCalledWith('SELECT * FROM projects WHERE id = $1', ['uuid-123']);
       expect(result).toEqual(mockData);
     });
+
+    it('should return null if not found', async () => {
+      mockQuery.mockResolvedValueOnce({ rows: [] });
+      const result = await ProjectRepository.findById('non-existent');
+      expect(result).toBeNull();
+    });
   });
 
   describe('create()', () => {
@@ -62,6 +68,12 @@ describe('ProjectRepository', () => {
         [input.title, input.description, input.image_url, input.features, input.link_url, input.link_text, id]
       );
       expect(result).toEqual(expected);
+    });
+
+    it('should return null if not found', async () => {
+      mockQuery.mockResolvedValueOnce({ rows: [] });
+      const result = await ProjectRepository.update('non-existent', {} as any);
+      expect(result).toBeNull();
     });
   });
 
