@@ -2,24 +2,14 @@
 
 import React, { useState, useEffect } from 'react';
 
-const TopNavBar = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [cvUrl, setCvUrl] = useState('#');
+interface TopNavBarProps {
+  cvUrl: string;
+}
 
-  useEffect(() => {
-    const fetchCv = async () => {
-      try {
-        const res = await fetch('/api/home');
-        const json = await res.json();
-        if (json.status === 200 && json.data.cv_url) {
-          setCvUrl(json.data.cv_url);
-        }
-      } catch (err) {
-        console.error('Failed to fetch CV link in Navbar:', err);
-      }
-    };
-    fetchCv();
-  }, []);
+const TopNavBar = ({ cvUrl }: TopNavBarProps) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+
 
   useEffect(() => {
     // Robust scroll lock for mobile devices
