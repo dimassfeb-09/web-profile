@@ -14,6 +14,13 @@ interface Achievement {
   description: string;
   image_url: string | null;
   date: string | null;
+  event_organizer?: string | null;
+  category?: string | null;
+  team_members?: string[] | null;
+  tech_stack?: string[] | null;
+  problem_statement?: string | null;
+  solution_overview?: string | null;
+  credential_url?: string | null;
 }
 
 interface AchievementClientProps {
@@ -30,7 +37,14 @@ export default function AchievementClient({ initialData }: AchievementClientProp
     title: '',
     description: '',
     image_url: '',
-    date: ''
+    date: '',
+    event_organizer: '',
+    category: '',
+    team_members: '',
+    tech_stack: '',
+    problem_statement: '',
+    solution_overview: '',
+    credential_url: ''
   });
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -46,7 +60,14 @@ export default function AchievementClient({ initialData }: AchievementClientProp
       title: achievement.title,
       description: achievement.description,
       image_url: achievement.image_url || '',
-      date: formatDateForInput(achievement.date)
+      date: formatDateForInput(achievement.date),
+      event_organizer: achievement.event_organizer || '',
+      category: achievement.category || '',
+      team_members: achievement.team_members ? achievement.team_members.join(', ') : '',
+      tech_stack: achievement.tech_stack ? achievement.tech_stack.join(', ') : '',
+      problem_statement: achievement.problem_statement || '',
+      solution_overview: achievement.solution_overview || '',
+      credential_url: achievement.credential_url || ''
     });
     setSelectedFile(null);
     setIsModalOpen(true);
@@ -95,6 +116,8 @@ export default function AchievementClient({ initialData }: AchievementClientProp
 
       const payload = {
         ...formData,
+        tech_stack: formData.tech_stack ? formData.tech_stack.split(',').map(s => s.trim()).filter(Boolean) : null,
+        team_members: formData.team_members ? formData.team_members.split(',').map(s => s.trim()).filter(Boolean) : null,
         image_url: finalImageUrl || null,
         date: formData.date || null
       };
@@ -108,7 +131,7 @@ export default function AchievementClient({ initialData }: AchievementClientProp
 
       if (result.status === 200 || result.status === 201) {
         setIsModalOpen(false);
-        setFormData({ title: '', description: '', image_url: '', date: '' });
+        setFormData({ title: '', description: '', image_url: '', date: '', event_organizer: '', category: '', team_members: '', tech_stack: '', problem_statement: '', solution_overview: '', credential_url: '' });
         setSelectedFile(null);
         setEditingAchievement(null);
         router.refresh();
@@ -130,14 +153,14 @@ export default function AchievementClient({ initialData }: AchievementClientProp
         buttonLabel="Add Achievement"
         onButtonClick={() => {
           setEditingAchievement(null);
-          setFormData({ title: '', description: '', image_url: '', date: '' });
+          setFormData({ title: '', description: '', image_url: '', date: '', event_organizer: '', category: '', team_members: '', tech_stack: '', problem_statement: '', solution_overview: '', credential_url: '' });
           setSelectedFile(null);
           setIsModalOpen(true);
         }}
       />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {initialData.map((achievement) => (
+        {initialData.map((achievement, index) => (
           <div key={achievement.id} className="bg-surface-container-low border border-outline-variant/10 rounded-3xl p-6 flex flex-col group">
             {achievement.image_url ? (
                <div className="aspect-video w-full rounded-2xl bg-surface-container-high mb-6 overflow-hidden relative">
@@ -145,6 +168,7 @@ export default function AchievementClient({ initialData }: AchievementClientProp
                    src={achievement.image_url} 
                    alt={achievement.title} 
                    fill 
+                   priority={index < 3}
                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                    className="object-cover" 
                  />
@@ -192,6 +216,7 @@ export default function AchievementClient({ initialData }: AchievementClientProp
               required
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              suppressHydrationWarning
               className="w-full px-4 py-3 rounded-xl bg-surface-container-high border border-outline-variant/20 focus:outline-none focus:border-primary transition-all text-sm font-body"
             />
           </div>
@@ -212,6 +237,7 @@ export default function AchievementClient({ initialData }: AchievementClientProp
               rows={3}
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              suppressHydrationWarning
               className="w-full px-4 py-3 rounded-xl bg-surface-container-high border border-outline-variant/20 focus:outline-none focus:border-primary transition-all text-sm resize-none font-body custom-scrollbar"
             />
           </div>
@@ -222,6 +248,85 @@ export default function AchievementClient({ initialData }: AchievementClientProp
               type="date"
               value={formData.date}
               onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+              suppressHydrationWarning
+              className="w-full px-4 py-3 rounded-xl bg-surface-container-high border border-outline-variant/20 focus:outline-none focus:border-primary transition-all text-sm font-body"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label className="font-label text-xs text-on-surface-variant ml-1 font-body">Event Organizer (Optional)</label>
+              <input
+                type="text"
+                value={formData.event_organizer}
+                onChange={(e) => setFormData({ ...formData, event_organizer: e.target.value })}
+                suppressHydrationWarning
+                className="w-full px-4 py-3 rounded-xl bg-surface-container-high border border-outline-variant/20 focus:outline-none focus:border-primary transition-all text-sm font-body"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="font-label text-xs text-on-surface-variant ml-1 font-body">Category (Optional)</label>
+              <input
+                type="text"
+                value={formData.category}
+                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                suppressHydrationWarning
+                className="w-full px-4 py-3 rounded-xl bg-surface-container-high border border-outline-variant/20 focus:outline-none focus:border-primary transition-all text-sm font-body"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <label className="font-label text-xs text-on-surface-variant ml-1 font-body">Problem Statement (Optional)</label>
+            <textarea
+              rows={3}
+              value={formData.problem_statement}
+              onChange={(e) => setFormData({ ...formData, problem_statement: e.target.value })}
+              suppressHydrationWarning
+              className="w-full px-4 py-3 rounded-xl bg-surface-container-high border border-outline-variant/20 focus:outline-none focus:border-primary transition-all text-sm resize-none font-body custom-scrollbar"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="font-label text-xs text-on-surface-variant ml-1 font-body">Solution Overview (Optional)</label>
+            <textarea
+              rows={3}
+              value={formData.solution_overview}
+              onChange={(e) => setFormData({ ...formData, solution_overview: e.target.value })}
+              suppressHydrationWarning
+              className="w-full px-4 py-3 rounded-xl bg-surface-container-high border border-outline-variant/20 focus:outline-none focus:border-primary transition-all text-sm resize-none font-body custom-scrollbar"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="font-label text-xs text-on-surface-variant ml-1 font-body">Tech Stack (comma separated)</label>
+            <input
+              type="text"
+              value={formData.tech_stack}
+              onChange={(e) => setFormData({ ...formData, tech_stack: e.target.value })}
+              suppressHydrationWarning
+              className="w-full px-4 py-3 rounded-xl bg-surface-container-high border border-outline-variant/20 focus:outline-none focus:border-primary transition-all text-sm font-body"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="font-label text-xs text-on-surface-variant ml-1 font-body">Team Members (comma separated)</label>
+            <input
+              type="text"
+              value={formData.team_members}
+              onChange={(e) => setFormData({ ...formData, team_members: e.target.value })}
+              suppressHydrationWarning
+              className="w-full px-4 py-3 rounded-xl bg-surface-container-high border border-outline-variant/20 focus:outline-none focus:border-primary transition-all text-sm font-body"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="font-label text-xs text-on-surface-variant ml-1 font-body">Credential URL (Optional)</label>
+            <input
+              type="url"
+              value={formData.credential_url}
+              onChange={(e) => setFormData({ ...formData, credential_url: e.target.value })}
+              suppressHydrationWarning
               className="w-full px-4 py-3 rounded-xl bg-surface-container-high border border-outline-variant/20 focus:outline-none focus:border-primary transition-all text-sm font-body"
             />
           </div>

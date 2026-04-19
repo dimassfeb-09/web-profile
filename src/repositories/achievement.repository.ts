@@ -6,6 +6,13 @@ export interface AchievementData {
   description: string;
   image_url: string | null;
   date: string | Date | null;
+  event_organizer?: string | null;
+  category?: string | null;
+  team_members?: string[] | null;
+  tech_stack?: string[] | null;
+  problem_statement?: string | null;
+  solution_overview?: string | null;
+  credential_url?: string | null;
   created_at?: Date;
   updated_at?: Date;
 }
@@ -26,15 +33,26 @@ export class AchievementRepository {
 
   static async create(data: AchievementData): Promise<AchievementData> {
     const query = `
-      INSERT INTO achievements (title, description, image_url, date)
-      VALUES ($1, $2, $3, $4)
+      INSERT INTO achievements (
+        title, description, image_url, date,
+        event_organizer, category, team_members,
+        tech_stack, problem_statement, solution_overview, credential_url
+      )
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
       RETURNING *
     `;
     const values = [
       data.title,
       data.description,
       data.image_url,
-      data.date
+      data.date,
+      data.event_organizer ?? null,
+      data.category ?? null,
+      data.team_members ?? null,
+      data.tech_stack ?? null,
+      data.problem_statement ?? null,
+      data.solution_overview ?? null,
+      data.credential_url ?? null,
     ];
     const { rows } = await pool.query(query, values);
     return rows[0];
@@ -43,8 +61,12 @@ export class AchievementRepository {
   static async update(id: string, data: Partial<AchievementData>): Promise<AchievementData | null> {
     const query = `
       UPDATE achievements 
-      SET title = $1, description = $2, image_url = $3, date = $4, updated_at = CURRENT_TIMESTAMP
-      WHERE id = $5
+      SET 
+        title = $1, description = $2, image_url = $3, date = $4,
+        event_organizer = $5, category = $6, team_members = $7,
+        tech_stack = $8, problem_statement = $9, solution_overview = $10,
+        credential_url = $11, updated_at = CURRENT_TIMESTAMP
+      WHERE id = $12
       RETURNING *
     `;
     const values = [
@@ -52,6 +74,13 @@ export class AchievementRepository {
       data.description,
       data.image_url,
       data.date,
+      data.event_organizer ?? null,
+      data.category ?? null,
+      data.team_members ?? null,
+      data.tech_stack ?? null,
+      data.problem_statement ?? null,
+      data.solution_overview ?? null,
+      data.credential_url ?? null,
       id
     ];
     const { rows } = await pool.query(query, values);

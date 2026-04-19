@@ -65,7 +65,11 @@ async function ProjectsSectionWrapper({ sort }: { sort: 'newest' | 'oldest' }) {
 
 async function AchievementSectionWrapper({ sort }: { sort: 'newest' | 'oldest' }) {
   const achievementsData = await AchievementService.getAllAchievements(false, sort);
-  return <AchievementSection achievements={achievementsData.data || []} />;
+  const achievements = (achievementsData.data || []).map(ach => ({
+    ...ach,
+    id: ach.id || ''
+  }));
+  return <AchievementSection achievements={achievements} />;
 }
 
 async function CertificatesSectionWrapper({ sort }: { sort: 'newest' | 'oldest' }) {

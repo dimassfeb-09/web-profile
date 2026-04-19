@@ -2,7 +2,7 @@ import React from 'react';
 import AchievementCard from '../ui/AchievementCard';
 
 interface Achievement {
-  id?: string;
+  id: string;
   title: string;
   description: string;
   image_url: string | null;
@@ -31,10 +31,12 @@ const AchievementSection: React.FC<AchievementSectionProps> = ({ achievements })
         {achievements.map((achievement, index) => (
           <AchievementCard
             key={achievement.id || index}
+            id={achievement.id}
             title={achievement.title}
             description={achievement.description}
             imageUrl={achievement.image_url}
             date={achievement.date || ''}
+            priority={index < 2}
           />
         ))}
       </div>

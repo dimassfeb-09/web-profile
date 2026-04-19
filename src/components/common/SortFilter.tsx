@@ -34,6 +34,7 @@ function SortFilterContent() {
       <select
         value={currentSort}
         onChange={handleSortChange}
+        suppressHydrationWarning
         className={cn(
           "w-full pl-11 pr-10 py-2.5 rounded-2xl appearance-none cursor-pointer",
           "bg-surface-container-low border border-outline-variant/10 text-on-surface text-sm font-label font-medium",

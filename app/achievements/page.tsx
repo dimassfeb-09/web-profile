@@ -22,16 +22,21 @@ export default async function AchievementsPage(props: {
   const sort = (searchParams.sort === 'oldest' ? 'oldest' : 'newest') as 'newest' | 'oldest';
 
   const response = await AchievementService.getAllAchievements(false, sort);
-  const achievements = response.data || [];
+  const achievements = (response.data || []).map(ach => ({
+    ...ach,
+    id: ach.id || ''
+  }));
 
   return (
     <main className="pt-24 lg:pt-32 px-6 md:px-12 lg:px-16 2xl:px-24 max-w-[1920px] mx-auto pb-20">
       <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <Link 
           href="/#achievements" 
-          className="flex items-center gap-2 text-primary font-label font-medium hover:underline"
+          className="inline-flex items-center gap-2 text-on-surface-variant hover:text-primary transition-all duration-300 font-label font-bold text-sm group"
         >
-          <span className="material-symbols-outlined text-sm">arrow_back</span>
+          <span className="material-symbols-outlined text-lg group-hover:-translate-x-1 transition-transform">
+            arrow_back
+          </span>
           Kembali ke Beranda
         </Link>
         <SortFilter />

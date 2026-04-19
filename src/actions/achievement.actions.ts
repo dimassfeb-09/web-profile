@@ -8,6 +8,13 @@ export async function createAchievementAction(data: {
   description: string;
   image_url: string | null;
   date: string | null;
+  event_organizer?: string | null;
+  category?: string | null;
+  team_members?: string[] | null;
+  tech_stack?: string[] | null;
+  problem_statement?: string | null;
+  solution_overview?: string | null;
+  credential_url?: string | null;
 }) {
   try {
     const result = await AchievementService.createAchievement(data);
@@ -24,6 +31,13 @@ export async function updateAchievementAction(id: string, data: Partial<{
   description: string;
   image_url: string | null;
   date: string | null;
+  event_organizer?: string | null;
+  category?: string | null;
+  team_members?: string[] | null;
+  tech_stack?: string[] | null;
+  problem_statement?: string | null;
+  solution_overview?: string | null;
+  credential_url?: string | null;
 }>) {
   try {
     const result = await AchievementService.updateAchievement(id, data);

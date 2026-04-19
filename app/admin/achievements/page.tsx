@@ -24,7 +24,14 @@ export default async function AchievementManagementPage(props: {
     title: ach.title,
     description: ach.description,
     image_url: ach.image_url,
-    date: ach.date ? (ach.date instanceof Date ? ach.date.toISOString() : ach.date) : null
+    date: ach.date ? (ach.date instanceof Date ? ach.date.toISOString() : ach.date) : null,
+    event_organizer: ach.event_organizer || null,
+    category: ach.category || null,
+    team_members: ach.team_members || null,
+    tech_stack: ach.tech_stack || null,
+    problem_statement: ach.problem_statement || null,
+    solution_overview: ach.solution_overview || null,
+    credential_url: ach.credential_url || null
   }));
   
   return (

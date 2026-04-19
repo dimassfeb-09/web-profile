@@ -1,14 +1,18 @@
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 
 interface AchievementCardProps {
+  id: string;
   title: string;
   description: string;
   imageUrl: string | null;
   date: string | Date | null;
+  priority?: boolean;
 }
 
-const AchievementCard = ({ title, description, imageUrl, date }: AchievementCardProps) => {
+const AchievementCard = ({ id, title, description, imageUrl, date, priority }: AchievementCardProps) => {
   const formatDate = (dateValue: string | Date | null) => {
     if (!dateValue) return '';
     const date = new Date(dateValue);
@@ -16,14 +20,15 @@ const AchievementCard = ({ title, description, imageUrl, date }: AchievementCard
   };
 
   return (
-    <div className="group bg-surface-container-low border border-outline-variant/10 rounded-3xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-1">
+    <Link href={`/achievements/${id}`} className="group bg-surface-container-low border border-outline-variant/10 rounded-3xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-1 block">
       <div className="aspect-[1024/500] w-full bg-surface-container-high overflow-hidden relative">
         <Image 
           src={imageUrl || '/placeholder.jpg'} 
           alt={title} 
           fill
+          priority={priority}
           className="object-cover transition-transform duration-500 group-hover:scale-105"
-          sizes="(max-width: 768px) 100vw, 50vw"
+          sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 400px"
         />
       </div>
       <div className="p-6">
@@ -33,11 +38,15 @@ const AchievementCard = ({ title, description, imageUrl, date }: AchievementCard
             {formatDate(date)}
           </span>
         </div>
-        <p className="font-body text-sm text-on-surface-variant line-clamp-2 leading-relaxed">
+        <p className="font-body text-sm text-on-surface-variant line-clamp-2 leading-relaxed mb-4">
           {description}
         </p>
+        <div className="flex items-center gap-1.5 text-primary font-label text-xs font-bold tracking-wide">
+          View Detail
+          <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+        </div>
       </div>
-    </div>
+    </Link>
   );
 };
 
