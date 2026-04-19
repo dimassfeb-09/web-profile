@@ -1,0 +1,17 @@
+name: Ping Google Sitemap
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'app/blog/**'
+      - 'app/sitemap.ts'
+
+jobs:
+  ping-sitemap:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Sitemap to Google
+        run: |
+          curl -s "https://www.google.com/ping?sitemap=https://www.dimassfeb.com/sitemap.xml"

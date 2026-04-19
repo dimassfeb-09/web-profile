@@ -6,6 +6,7 @@ import Link from 'next/link';
 import TiptapRenderer from '@/src/components/shared/TiptapRenderer';
 import JsonLd from '@/src/components/common/JsonLd';
 import RelatedPosts from '@/src/components/blog/RelatedPosts';
+import Breadcrumb from '@/src/components/common/Breadcrumb';
 
 const BASE_URL = "https://www.dimassfeb.com";
 
@@ -122,14 +123,12 @@ export default async function BlogPostPage({ params }: { params: Params }) {
     <article className="min-h-screen pt-32 pb-20 px-6 sm:px-10 bg-surface">
       <JsonLd schema={blogPostingSchema} />
       <div className="max-w-3xl mx-auto space-y-12">
-        {/* Navigation */}
-        <Link
-          href="/blog"
-          className="inline-flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors font-body text-sm font-bold group"
-        >
-          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-          Back to Blog
-        </Link>
+        {/* Navigation Breadcrumb */}
+        <Breadcrumb items={[
+          { label: "Home", href: "/" },
+          { label: "Blog", href: "/blog" },
+          { label: blog.title, href: `/blog/${blog.slug}` },
+        ]} />
 
         {/* Header */}
         <header className="space-y-6">

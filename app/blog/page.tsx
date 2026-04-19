@@ -3,6 +3,7 @@ import { BlogService } from '@/src/services/blog.service';
 import BlogScrollArea from '@/src/components/blog/BlogScrollArea';
 import type { Metadata } from "next";
 import { headers } from 'next/headers';
+import JsonLd from '@/src/components/common/JsonLd';
 
 const BASE_URL = "https://www.dimassfeb.com";
 
@@ -34,8 +35,25 @@ export default async function BlogListPage() {
 
   const { blogs, nextCursor, hasMore } = await BlogService.getAllBlogs({ onlyPublished: true, limit });
 
+  const blogSchema = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "@id": "https://www.dimassfeb.com/blog#blog",
+    name: "Blog & Insights — Dimas Febriyanto",
+    url: "https://www.dimassfeb.com/blog",
+    description:
+      "Articles about Flutter, Golang, mobile development, and backend engineering.",
+    author: {
+      "@type": "Person",
+      "@id": "https://www.dimassfeb.com/#person",
+      name: "Dimas Febriyanto",
+    },
+    inLanguage: "id-ID",
+  };
+
   return (
     <div className="min-h-screen pt-32 pb-20 px-6 sm:px-10 max-w-7xl mx-auto">
+      <JsonLd schema={blogSchema} />
       <div className="space-y-4 mb-16">
         <h1 className="font-headline text-5xl sm:text-7xl font-bold text-on-surface">
           Blog & <span className="text-primary">Insights</span>
