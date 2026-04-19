@@ -1,12 +1,12 @@
 import { SkillService } from '@/src/services/skill.service';
 import { SkillRepository } from '@/src/repositories/skill.repository';
-import { getCachedData, clearCache } from '@/src/lib/cache';
+import { revalidateTag } from 'next/cache';
 import { createSkillCategoryData } from '../helpers/factories';
 
 jest.mock('../../src/repositories/skill.repository');
-jest.mock('../../src/lib/cache', () => ({
-  getCachedData: jest.fn(async (key: string, fetcher: () => any) => await fetcher()),
-  clearCache: jest.fn(),
+jest.mock('next/cache', () => ({
+  revalidateTag: jest.fn(),
+  unstable_cache: jest.fn((fn) => fn),
 }));
 
 const MockedRepo = SkillRepository as jest.Mocked<typeof SkillRepository>;
@@ -22,13 +22,21 @@ describe('SkillService', () => {
 
   describe('getAllSkills()', () => {
     it('should return skills', async () => {
-      const mockData = [createSkillCategoryData({ title: 'Skill 1' })];
+      const mockData = [createSkillCategoryData({ title: 'Web' })];
       MockedRepo.findAll.mockResolvedValueOnce(mockData);
 
       const result = await SkillService.getAllSkills();
 
-      expect(getCachedData).toHaveBeenCalledWith('skills_data', expect.any(Function), expect.any(Object));
       expect(result.data).toEqual(mockData);
+    });
+
+    it('should bypass cache when requested', async () => {
+      const mockData = [createSkillCategoryData()];
+      MockedRepo.findAll.mockResolvedValueOnce(mockData);
+
+      await SkillService.getAllSkills(true);
+
+      expect(MockedRepo.findAll).toHaveBeenCalledTimes(1);
     });
 
     it('should throw error when repo fails', async () => {
@@ -46,7 +54,7 @@ describe('SkillService', () => {
       const result = await SkillService.createSkill(input);
 
       expect(MockedRepo.create).toHaveBeenCalledWith(input);
-      expect(clearCache).toHaveBeenCalledWith('skills_data');
+      expect(revalidateTag).toHaveBeenCalledWith('skills', 'max');
       expect(result.status).toBe(201);
     });
   });
@@ -61,7 +69,7 @@ describe('SkillService', () => {
       const result = await SkillService.updateSkill(id, input);
 
       expect(MockedRepo.update).toHaveBeenCalledWith(id, input);
-      expect(clearCache).toHaveBeenCalledWith('skills_data');
+      expect(revalidateTag).toHaveBeenCalledWith('skills', 'max');
       expect(result.status).toBe(200);
     });
 
@@ -79,7 +87,7 @@ describe('SkillService', () => {
       const result = await SkillService.deleteSkill(id);
 
       expect(MockedRepo.delete).toHaveBeenCalledWith(id);
-      expect(clearCache).toHaveBeenCalledWith('skills_data');
+      expect(revalidateTag).toHaveBeenCalledWith('skills', 'max');
       expect(result.status).toBe(200);
     });
 

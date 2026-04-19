@@ -1,11 +1,19 @@
 import { ExperienceRepository, ExperienceData } from '../repositories/experience.repository';
-import { getCachedData, clearCache } from '../lib/cache';
+import { unstable_cache, revalidateTag } from 'next/cache';
 
 export class ExperienceService {
+  private static getCachedExperiences = unstable_cache(
+    async () => ExperienceRepository.findAll(),
+    ['experience_data'],
+    { revalidate: 3600, tags: ['experience'] }
+  );
+
   static async getAllExperiences(bypassCache = false) {
     try {
-      const experiences = await getCachedData('experience_data', () => ExperienceRepository.findAll(), { bypass: bypassCache });
-      
+      const experiences = bypassCache
+        ? await ExperienceRepository.findAll()
+        : await this.getCachedExperiences();
+
       return {
         status: 200,
         message: 'Experiences retrieved successfully',
@@ -23,7 +31,7 @@ export class ExperienceService {
     }
 
     const experience = await ExperienceRepository.create(data);
-    clearCache('experience_data');
+    revalidateTag('experience', 'max');
     return {
       status: 201,
       message: 'Experience created successfully',
@@ -32,15 +40,13 @@ export class ExperienceService {
   }
 
   static async updateExperience(id: number, data: Partial<ExperienceData>) {
-    // If both dates are provided or one is provided and the other exists in current state 
-    // (for simplicity in API, we assume full or enough data is sent for validation if needed)
     if (data.start_date && data.end_date && new Date(data.end_date) < new Date(data.start_date)) {
       throw new Error('End date cannot be earlier than start date');
     }
 
     const experience = await ExperienceRepository.update(id, data);
     if (!experience) throw new Error('Experience not found');
-    clearCache('experience_data');
+    revalidateTag('experience', 'max');
     return {
       status: 200,
       message: 'Experience updated successfully',
@@ -51,7 +57,7 @@ export class ExperienceService {
   static async deleteExperience(id: number) {
     const success = await ExperienceRepository.delete(id);
     if (!success) throw new Error('Experience not found');
-    clearCache('experience_data');
+    revalidateTag('experience', 'max');
     return {
       status: 200,
       message: 'Experience deleted successfully'

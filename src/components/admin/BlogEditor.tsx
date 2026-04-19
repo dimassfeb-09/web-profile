@@ -6,9 +6,9 @@ import {
   Quote, Image as ImageIcon, Undo, Redo, Code, 
   Underline as UnderlineIcon, Strikethrough, 
   AlignLeft, AlignCenter, AlignRight, 
-  Link as LinkIcon, Minus
+  Link as LinkIcon, Minus, Terminal
 } from 'lucide-react';
-import { tiptapExtensions } from '@/src/lib/tiptap-extensions';
+import { tiptapExtensionsClient } from '@/src/lib/tiptap-extensions-client';
 import './editor.css';
 
 interface BlogEditorProps {
@@ -68,6 +68,7 @@ const MenuBar = ({ editor, blogId }: { editor: any, blogId: string }) => {
     { icon: UnderlineIcon, action: () => editor.chain().focus().toggleUnderline().run(), active: 'underline', title: 'Underline' },
     { icon: Strikethrough, action: () => editor.chain().focus().toggleStrike().run(), active: 'strike', title: 'Strikethrough' },
     { icon: Code, action: () => editor.chain().focus().toggleCode().run(), active: 'code', title: 'Code' },
+    { icon: Terminal, action: () => editor.chain().focus().toggleCodeBlock().run(), active: 'codeBlock', title: 'Code Block' },
     
     { type: 'spacer' },
 
@@ -99,7 +100,7 @@ const MenuBar = ({ editor, blogId }: { editor: any, blogId: string }) => {
   ];
 
   return (
-    <div className="flex flex-wrap gap-1 p-2 md:p-3 border-b border-outline-variant/10 bg-surface/80 backdrop-blur-xl sticky top-0 z-50">
+    <div className="flex flex-wrap gap-1 p-2 md:p-3 border-b border-outline-variant/10 bg-surface sticky top-[5.25rem] lg:top-[6.25rem] z-50">
       {buttons.map((btn, i) => {
         if (btn.type === 'spacer') {
           return <div key={`spacer-${i}`} className="w-px h-6 bg-outline-variant/20 mx-1 self-center" />;
@@ -152,7 +153,7 @@ const MenuBar = ({ editor, blogId }: { editor: any, blogId: string }) => {
 export default function BlogEditor({ content, onChange, blogId }: BlogEditorProps) {
   const editor = useEditor({
     immediatelyRender: false,
-    extensions: tiptapExtensions,
+    extensions: tiptapExtensionsClient,
     content: content,
     onUpdate: ({ editor }) => {
       onChange(editor.getJSON());
@@ -165,11 +166,9 @@ export default function BlogEditor({ content, onChange, blogId }: BlogEditorProp
   });
 
   return (
-    <div className="w-full border border-outline-variant/20 rounded-[1.5rem] md:rounded-[2.5rem] bg-surface shadow-xs overflow-hidden ring-1 ring-black/[0.02]">
+    <div className="w-full border border-outline-variant/20 rounded-[1.5rem] md:rounded-[2.5rem] bg-surface shadow-xs ring-1 ring-black/[0.02]">
       <MenuBar editor={editor} blogId={blogId} />
-      <div className="custom-scrollbar overflow-y-auto max-h-[75vh] bg-surface">
-        <EditorContent editor={editor} />
-      </div>
+      <EditorContent editor={editor} />
     </div>
   );
 }

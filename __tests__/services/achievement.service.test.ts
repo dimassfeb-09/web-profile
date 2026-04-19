@@ -1,17 +1,16 @@
 import { AchievementService } from '@/src/services/achievement.service';
 import { AchievementRepository } from '@/src/repositories/achievement.repository';
-import { clearCache, getCachedData } from '@/src/lib/cache';
+import { revalidateTag } from 'next/cache';
 import { createAchievementData } from '../helpers/factories';
 
 // Mock dependencies
 jest.mock('../../src/repositories/achievement.repository');
-jest.mock('../../src/lib/cache', () => ({
-  getCachedData: jest.fn(async (key: string, fetcher: () => any) => await fetcher()),
-  clearCache: jest.fn(),
+jest.mock('next/cache', () => ({
+  revalidateTag: jest.fn(),
+  unstable_cache: jest.fn((fn) => fn),
 }));
 
 const MockedRepo = AchievementRepository as jest.Mocked<typeof AchievementRepository>;
-const mockedGetCachedData = getCachedData as jest.MockedFunction<typeof getCachedData>;
 
 describe('AchievementService', () => {
   beforeEach(() => {
@@ -29,12 +28,20 @@ describe('AchievementService', () => {
 
       const result = await AchievementService.getAllAchievements();
 
-      expect(mockedGetCachedData).toHaveBeenCalledWith('achievements_all', expect.any(Function), expect.any(Object));
       expect(result).toEqual({
         status: 200,
         message: 'Achievements retrieved successfully',
         data: mockData,
       });
+    });
+
+    it('should bypass cache when requested', async () => {
+      const mockData = [createAchievementData()];
+      MockedRepo.findAll.mockResolvedValueOnce(mockData);
+
+      await AchievementService.getAllAchievements(true);
+
+      expect(MockedRepo.findAll).toHaveBeenCalledTimes(1);
     });
 
     it('should throw error when repository fails', async () => {
@@ -57,12 +64,21 @@ describe('AchievementService', () => {
 
       const result = await AchievementService.getAchievementById(id);
 
-      expect(mockedGetCachedData).toHaveBeenCalledWith(`achievement_${id}`, expect.any(Function), expect.any(Object));
       expect(result).toEqual({
         status: 200,
         message: 'Achievement retrieved successfully',
         data: mockData,
       });
+    });
+
+    it('should bypass cache for single achievement when requested', async () => {
+      const id = 'uuid-123';
+      const mockData = createAchievementData({ id });
+      MockedRepo.findById.mockResolvedValueOnce(mockData);
+
+      await AchievementService.getAchievementById(id, true);
+
+      expect(MockedRepo.findById).toHaveBeenCalledWith(id);
     });
 
     it('should return 404 when achievement not found', async () => {
@@ -99,7 +115,7 @@ describe('AchievementService', () => {
       const result = await AchievementService.createAchievement(input);
 
       expect(MockedRepo.create).toHaveBeenCalledWith(input);
-      expect(clearCache).toHaveBeenCalledWith('achievements_all');
+      expect(revalidateTag).toHaveBeenCalledWith('achievements', 'max');
       expect(result).toEqual({
         status: 201,
         message: 'Achievement created successfully',
@@ -118,8 +134,8 @@ describe('AchievementService', () => {
       const result = await AchievementService.updateAchievement(id, input);
 
       expect(MockedRepo.update).toHaveBeenCalledWith(id, input);
-      expect(clearCache).toHaveBeenCalledWith('achievements_all');
-      expect(clearCache).toHaveBeenCalledWith(`achievement_${id}`);
+      expect(revalidateTag).toHaveBeenCalledWith('achievements', 'max');
+      expect(revalidateTag).toHaveBeenCalledWith(`achievement_${id}`, 'max');
       expect(result.status).toBe(200);
     });
 
@@ -139,8 +155,8 @@ describe('AchievementService', () => {
       const result = await AchievementService.deleteAchievement(id);
 
       expect(MockedRepo.delete).toHaveBeenCalledWith(id);
-      expect(clearCache).toHaveBeenCalledWith('achievements_all');
-      expect(clearCache).toHaveBeenCalledWith(`achievement_${id}`);
+      expect(revalidateTag).toHaveBeenCalledWith('achievements', 'max');
+      expect(revalidateTag).toHaveBeenCalledWith(`achievement_${id}`, 'max');
       expect(result.status).toBe(200);
     });
 

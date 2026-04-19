@@ -1,12 +1,12 @@
 import { ExperienceService } from '@/src/services/experience.service';
 import { ExperienceRepository } from '@/src/repositories/experience.repository';
-import { getCachedData, clearCache } from '@/src/lib/cache';
+import { revalidateTag } from 'next/cache';
 import { createExperienceData } from '../helpers/factories';
 
 jest.mock('../../src/repositories/experience.repository');
-jest.mock('../../src/lib/cache', () => ({
-  getCachedData: jest.fn(async (key: string, fetcher: () => any) => await fetcher()),
-  clearCache: jest.fn(),
+jest.mock('next/cache', () => ({
+  revalidateTag: jest.fn(),
+  unstable_cache: jest.fn((fn) => fn),
 }));
 
 const MockedRepo = ExperienceRepository as jest.Mocked<typeof ExperienceRepository>;
@@ -27,8 +27,16 @@ describe('ExperienceService', () => {
 
       const result = await ExperienceService.getAllExperiences();
 
-      expect(getCachedData).toHaveBeenCalledWith('experience_data', expect.any(Function), expect.any(Object));
       expect(result.data).toEqual(mockData);
+    });
+
+    it('should bypass cache when requested', async () => {
+      const mockData = [createExperienceData()];
+      MockedRepo.findAll.mockResolvedValueOnce(mockData);
+
+      await ExperienceService.getAllExperiences(true);
+
+      expect(MockedRepo.findAll).toHaveBeenCalledTimes(1);
     });
 
     it('should throw error when repo fails', async () => {
@@ -46,7 +54,7 @@ describe('ExperienceService', () => {
       const result = await ExperienceService.createExperience(input);
 
       expect(MockedRepo.create).toHaveBeenCalledWith(input);
-      expect(clearCache).toHaveBeenCalledWith('experience_data');
+      expect(revalidateTag).toHaveBeenCalledWith('experience', 'max');
       expect(result.status).toBe(201);
     });
 
@@ -69,7 +77,7 @@ describe('ExperienceService', () => {
       const result = await ExperienceService.updateExperience(id, input);
 
       expect(MockedRepo.update).toHaveBeenCalledWith(id, input);
-      expect(clearCache).toHaveBeenCalledWith('experience_data');
+      expect(revalidateTag).toHaveBeenCalledWith('experience', 'max');
       expect(result.status).toBe(200);
     });
 
@@ -92,7 +100,7 @@ describe('ExperienceService', () => {
       const result = await ExperienceService.deleteExperience(id);
 
       expect(MockedRepo.delete).toHaveBeenCalledWith(id);
-      expect(clearCache).toHaveBeenCalledWith('experience_data');
+      expect(revalidateTag).toHaveBeenCalledWith('experience', 'max');
       expect(result.status).toBe(200);
     });
 

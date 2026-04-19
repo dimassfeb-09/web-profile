@@ -1,12 +1,12 @@
 import { AboutService } from '@/src/services/about.service';
 import { AboutRepository } from '@/src/repositories/about.repository';
-import { getCachedData, clearCache } from '@/src/lib/cache';
+import { revalidateTag } from 'next/cache';
 import { createAboutData } from '../helpers/factories';
 
 jest.mock('../../src/repositories/about.repository');
-jest.mock('../../src/lib/cache', () => ({
-  getCachedData: jest.fn(async (key: string, fetcher: () => any) => await fetcher()),
-  clearCache: jest.fn(),
+jest.mock('next/cache', () => ({
+  revalidateTag: jest.fn(),
+  unstable_cache: jest.fn((fn) => fn),
 }));
 
 const MockedRepo = AboutRepository as jest.Mocked<typeof AboutRepository>;
@@ -27,8 +27,16 @@ describe('AboutService', () => {
 
       const result = await AboutService.getAboutData();
 
-      expect(getCachedData).toHaveBeenCalledWith('about_data', expect.any(Function), expect.any(Object));
       expect(result.data).toEqual(mockData);
+    });
+
+    it('should bypass cache when requested', async () => {
+      const mockData = createAboutData();
+      MockedRepo.findFirst.mockResolvedValueOnce(mockData);
+
+      await AboutService.getAboutData(true);
+
+      expect(MockedRepo.findFirst).toHaveBeenCalledTimes(1);
     });
 
     it('should return 404 when missing', async () => {
@@ -52,7 +60,7 @@ describe('AboutService', () => {
       const result = await AboutService.updateAboutData(input);
 
       expect(MockedRepo.update).toHaveBeenCalledWith(input);
-      expect(clearCache).toHaveBeenCalledWith('about_data');
+      expect(revalidateTag).toHaveBeenCalledWith('about', 'max');
       expect(result.status).toBe(200);
     });
 

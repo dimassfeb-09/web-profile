@@ -1,12 +1,12 @@
 import { CertificateService } from '@/src/services/certificate.service';
 import { CertificateRepository } from '@/src/repositories/certificate.repository';
-import { clearCache, getCachedData } from '@/src/lib/cache';
+import { revalidateTag } from 'next/cache';
 import { createCertificateData } from '../helpers/factories';
 
 jest.mock('../../src/repositories/certificate.repository');
-jest.mock('../../src/lib/cache', () => ({
-  getCachedData: jest.fn(async (key: string, fetcher: () => any) => await fetcher()),
-  clearCache: jest.fn(),
+jest.mock('next/cache', () => ({
+  revalidateTag: jest.fn(),
+  unstable_cache: jest.fn((fn) => fn),
 }));
 
 const MockedRepo = CertificateRepository as jest.Mocked<typeof CertificateRepository>;
@@ -27,8 +27,16 @@ describe('CertificateService', () => {
 
       const result = await CertificateService.getAllCertificates();
 
-      expect(getCachedData).toHaveBeenCalledWith('certificates_all', expect.any(Function), expect.any(Object));
       expect(result.data).toEqual(mockData);
+    });
+
+    it('should bypass cache when requested', async () => {
+      const mockData = [createCertificateData()];
+      MockedRepo.findAll.mockResolvedValueOnce(mockData);
+
+      await CertificateService.getAllCertificates(true);
+
+      expect(MockedRepo.findAll).toHaveBeenCalledTimes(1);
     });
 
     it('should throw error when repo fails', async () => {
@@ -45,8 +53,17 @@ describe('CertificateService', () => {
 
       const result = await CertificateService.getCertificateById(id);
 
-      expect(getCachedData).toHaveBeenCalledWith(`certificate_${id}`, expect.any(Function), expect.any(Object));
       expect(result.data).toEqual(mockData);
+    });
+
+    it('should bypass cache for single certificate when requested', async () => {
+      const id = '123';
+      const mockData = createCertificateData({ id });
+      MockedRepo.findById.mockResolvedValueOnce(mockData);
+
+      await CertificateService.getCertificateById(id, true);
+
+      expect(MockedRepo.findById).toHaveBeenCalledWith(id);
     });
 
     it('should return 404 when not found', async () => {
@@ -70,7 +87,7 @@ describe('CertificateService', () => {
       const result = await CertificateService.createCertificate(input);
 
       expect(MockedRepo.create).toHaveBeenCalledWith(input);
-      expect(clearCache).toHaveBeenCalledWith('certificates_all');
+      expect(revalidateTag).toHaveBeenCalledWith('certificates', 'max');
       expect(result.status).toBe(201);
     });
   });
@@ -85,8 +102,8 @@ describe('CertificateService', () => {
       const result = await CertificateService.updateCertificate(id, input);
 
       expect(MockedRepo.update).toHaveBeenCalledWith(id, input);
-      expect(clearCache).toHaveBeenCalledWith('certificates_all');
-      expect(clearCache).toHaveBeenCalledWith(`certificate_${id}`);
+      expect(revalidateTag).toHaveBeenCalledWith('certificates', 'max');
+      expect(revalidateTag).toHaveBeenCalledWith(`certificate_${id}`, 'max');
       expect(result.status).toBe(200);
     });
 
@@ -104,8 +121,8 @@ describe('CertificateService', () => {
       const result = await CertificateService.deleteCertificate(id);
 
       expect(MockedRepo.delete).toHaveBeenCalledWith(id);
-      expect(clearCache).toHaveBeenCalledWith('certificates_all');
-      expect(clearCache).toHaveBeenCalledWith(`certificate_${id}`);
+      expect(revalidateTag).toHaveBeenCalledWith('certificates', 'max');
+      expect(revalidateTag).toHaveBeenCalledWith(`certificate_${id}`, 'max');
       expect(result.status).toBe(200);
     });
 

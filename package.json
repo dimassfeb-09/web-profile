@@ -16,6 +16,7 @@
     "test:ci": "jest --ci --coverage --forceExit"
   },
   "dependencies": {
+    "@tiptap/extension-code-block-lowlight": "^3.22.4",
     "@tiptap/extension-image": "^3.22.4",
     "@tiptap/extension-text-align": "^3.22.4",
     "@tiptap/html": "^3.22.4",
@@ -24,7 +25,9 @@
     "@tiptap/starter-kit": "^3.22.4",
     "@types/uuid": "^10.0.0",
     "bcryptjs": "^3.0.3",
+    "highlight.js": "^11.11.1",
     "jose": "^6.2.2",
+    "lowlight": "^3.3.0",
     "lucide-react": "^1.8.0",
     "material-symbols": "^0.44.2",
     "next": "16.2.4",

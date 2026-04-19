@@ -3,6 +3,7 @@ import { Plus_Jakarta_Sans, Inter, Space_Grotesk } from "next/font/google";
 import Shell from "@/src/components/layout/Shell";
 import IconLoader from "@/src/components/common/IconLoader";
 import "./globals.css";
+import "@/src/styles/highlight-theme.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-headline",

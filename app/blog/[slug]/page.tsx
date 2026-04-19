@@ -1,9 +1,8 @@
-import React from 'react';
 import { BlogService } from '@/src/services/blog.service';
-import { renderBlogContent } from '@/src/lib/tiptap';
 import { notFound } from 'next/navigation';
 import { Calendar, ArrowLeft, Clock } from 'lucide-react';
 import Link from 'next/link';
+import TiptapRenderer from '@/src/components/shared/TiptapRenderer';
 
 type Params = Promise<{ slug: string }>;
 
@@ -15,7 +14,8 @@ export default async function BlogPostPage({ params }: { params: Params }) {
     notFound();
   }
 
-  const htmlContent = await renderBlogContent(blog.content);
+  const wordCount = JSON.stringify(blog.content).length;
+  const readTime = Math.ceil(wordCount / 1000);
 
   return (
     <article className="min-h-screen pt-32 pb-20 px-6 sm:px-10 bg-surface">
@@ -42,7 +42,7 @@ export default async function BlogPostPage({ params }: { params: Params }) {
             </div>
             <div className="flex items-center gap-2">
               <Clock className="w-4 h-4 text-primary" />
-              {Math.ceil(JSON.stringify(blog.content).length / 1000)} min read
+              {readTime} min read
             </div>
           </div>
 
@@ -58,9 +58,9 @@ export default async function BlogPostPage({ params }: { params: Params }) {
         </header>
 
         {/* Content */}
-        <div 
+        <TiptapRenderer 
+          content={blog.content}
           className="tiptap-content w-full max-w-none focus:outline-none"
-          dangerouslySetInnerHTML={{ __html: htmlContent }}
         />
 
         {/* Footer */}

@@ -1,19 +1,19 @@
 import { ContactService } from '@/src/services/contact.service';
 import { ContactRepository } from '@/src/repositories/contact.repository';
-import { getCachedData, clearCache } from '@/src/lib/cache';
+import { revalidateTag } from 'next/cache';
 import { createContactData } from '../helpers/factories';
 
 jest.mock('../../src/repositories/contact.repository');
-jest.mock('../../src/lib/cache', () => ({
-  getCachedData: jest.fn(async (key: string, fetcher: () => any) => await fetcher()),
-  clearCache: jest.fn(),
+jest.mock('next/cache', () => ({
+  revalidateTag: jest.fn(),
+  unstable_cache: jest.fn((fn) => fn),
 }));
 
 const MockedRepo = ContactRepository as jest.Mocked<typeof ContactRepository>;
 
 describe('ContactService', () => {
   beforeEach(() => {
-    jest.spyOn(console, 'error').mockImplementation(() => {});
+    jest.spyOn(console, 'error').mockImplementation(() => { });
   });
 
   afterEach(() => {
@@ -27,8 +27,16 @@ describe('ContactService', () => {
 
       const result = await ContactService.getContactData();
 
-      expect(getCachedData).toHaveBeenCalledWith('contact_data', expect.any(Function), expect.any(Object));
       expect(result.data).toEqual(mockData);
+    });
+
+    it('should bypass cache when requested', async () => {
+      const mockData = createContactData();
+      MockedRepo.findFirst.mockResolvedValueOnce(mockData);
+
+      await ContactService.getContactData(true);
+
+      expect(MockedRepo.findFirst).toHaveBeenCalledTimes(1);
     });
 
     it('should return 404 when missing', async () => {
@@ -52,7 +60,7 @@ describe('ContactService', () => {
       const result = await ContactService.updateContactData(input);
 
       expect(MockedRepo.update).toHaveBeenCalledWith(input);
-      expect(clearCache).toHaveBeenCalledWith('contact_data');
+      expect(revalidateTag).toHaveBeenCalledWith('contact', 'max');
       expect(result.status).toBe(200);
     });
 

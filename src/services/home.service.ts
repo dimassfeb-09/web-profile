@@ -1,10 +1,18 @@
 import { HomeRepository, HomeData } from '../repositories/home.repository';
-import { getCachedData, clearCache } from '../lib/cache';
+import { unstable_cache, revalidateTag } from 'next/cache';
 
 export class HomeService {
+  private static getCachedHomeData = unstable_cache(
+    async () => HomeRepository.findFirst(),
+    ['home_data'],
+    { revalidate: 3600, tags: ['home'] }
+  );
+
   static async getHomeData(bypassCache = false) {
     try {
-      const home = await getCachedData('home_data', () => HomeRepository.findFirst(), { bypass: bypassCache });
+      const home = bypassCache
+        ? await HomeRepository.findFirst()
+        : await this.getCachedHomeData();
       
       if (!home) {
         return {
@@ -27,7 +35,7 @@ export class HomeService {
   static async updateHomeData(data: HomeData) {
     const home = await HomeRepository.update(data);
     if (!home) throw new Error('Home data not found');
-    clearCache('home_data');
+    revalidateTag('home', 'max');
     return {
       status: 200,
       message: 'Home data updated successfully',

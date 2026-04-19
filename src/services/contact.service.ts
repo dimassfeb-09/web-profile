@@ -1,10 +1,18 @@
 import { ContactRepository, ContactData } from '../repositories/contact.repository';
-import { getCachedData, clearCache } from '../lib/cache';
+import { unstable_cache, revalidateTag } from 'next/cache';
 
 export class ContactService {
+  private static getCachedContactData = unstable_cache(
+    async () => ContactRepository.findFirst(),
+    ['contact_data'],
+    { revalidate: 3600, tags: ['contact'] }
+  );
+
   static async getContactData(bypassCache = false) {
     try {
-      const contact = await getCachedData('contact_data', () => ContactRepository.findFirst(), { bypass: bypassCache });
+      const contact = bypassCache
+        ? await ContactRepository.findFirst()
+        : await this.getCachedContactData();
       
       if (!contact) {
         return {
@@ -27,7 +35,7 @@ export class ContactService {
   static async updateContactData(data: ContactData) {
     const contact = await ContactRepository.update(data);
     if (!contact) throw new Error('Contact data not found');
-    clearCache('contact_data');
+    revalidateTag('contact', 'max');
     return {
       status: 200,
       message: 'Contact data updated successfully',

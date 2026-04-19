@@ -1,10 +1,18 @@
 import { AboutRepository, AboutData } from '../repositories/about.repository';
-import { getCachedData, clearCache } from '../lib/cache';
+import { unstable_cache, revalidateTag } from 'next/cache';
 
 export class AboutService {
+  private static getCachedAboutData = unstable_cache(
+    async () => AboutRepository.findFirst(),
+    ['about_data'],
+    { revalidate: 3600, tags: ['about'] }
+  );
+
   static async getAboutData(bypassCache = false) {
     try {
-      const about = await getCachedData('about_data', () => AboutRepository.findFirst(), { bypass: bypassCache });
+      const about = bypassCache
+        ? await AboutRepository.findFirst()
+        : await this.getCachedAboutData();
       
       if (!about) {
         return {
@@ -27,7 +35,7 @@ export class AboutService {
   static async updateAboutData(data: AboutData) {
     const about = await AboutRepository.update(data);
     if (!about) throw new Error('About data not found');
-    clearCache('about_data');
+    revalidateTag('about', 'max');
     return {
       status: 200,
       message: 'About data updated successfully',

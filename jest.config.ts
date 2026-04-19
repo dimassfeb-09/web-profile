@@ -18,11 +18,11 @@ const config: Config = {
     '!src/lib/db.ts',
   ],
   transform: {
-    '^.+\\.tsx?$': ['ts-jest', { useESM: false }],
+    '^.+\\.(t|j)sx?$': ['ts-jest', { useESM: false }],
   },
-  // Only transform @tiptap/* packages (NOT happy-dom — it stays mocked)
+  // Only transform @tiptap/* packages and ESM packages like lowlight
   transformIgnorePatterns: [
-    '/node_modules/(?!@tiptap/)',
+    '/node_modules/(?!(@tiptap/|lowlight/|devlop/|fault/|dequal/))',
   ],
 };
 

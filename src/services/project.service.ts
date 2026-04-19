@@ -1,10 +1,24 @@
 import { ProjectRepository, ProjectData } from '../repositories/project.repository';
-import { getCachedData, clearCache } from '../lib/cache';
+import { unstable_cache, revalidateTag } from 'next/cache';
 
 export class ProjectService {
+  private static getCachedAllProjects = unstable_cache(
+    async () => ProjectRepository.findAll(),
+    ['projects_all'],
+    { revalidate: 3600, tags: ['projects'] }
+  );
+
+  private static getCachedProjectById = (id: string) => unstable_cache(
+    async () => ProjectRepository.findById(id),
+    [`project_${id}`],
+    { revalidate: 3600, tags: ['projects', `project_${id}`] }
+  )();
+
   static async getAllProjects(bypassCache = false) {
     try {
-      const projects = await getCachedData('projects_all', () => ProjectRepository.findAll(), { bypass: bypassCache });
+      const projects = bypassCache 
+        ? await ProjectRepository.findAll() 
+        : await this.getCachedAllProjects();
       
       return {
         status: 200,
@@ -19,7 +33,9 @@ export class ProjectService {
 
   static async getProjectById(id: string, bypassCache = false) {
     try {
-      const project = await getCachedData(`project_${id}`, () => ProjectRepository.findById(id), { bypass: bypassCache });
+      const project = bypassCache
+        ? await ProjectRepository.findById(id)
+        : await this.getCachedProjectById(id);
       
       if (!project) {
         return {
@@ -41,7 +57,7 @@ export class ProjectService {
 
   static async createProject(data: ProjectData) {
     const project = await ProjectRepository.create(data);
-    clearCache('projects_all');
+    revalidateTag('projects', 'max');
     return {
       status: 201,
       message: 'Project created successfully',
@@ -53,9 +69,9 @@ export class ProjectService {
     const project = await ProjectRepository.update(id, data);
     if (!project) throw new Error('Project not found');
     
-    // Invalidate both the list and the specific project cache
-    clearCache('projects_all');
-    clearCache(`project_${id}`);
+    // Invalidate the projects list and the specific project
+    revalidateTag('projects', 'max');
+    revalidateTag(`project_${id}`, 'max');
     
     return {
       status: 200,
@@ -68,8 +84,8 @@ export class ProjectService {
     const success = await ProjectRepository.delete(id);
     if (!success) throw new Error('Project not found');
     
-    clearCache('projects_all');
-    clearCache(`project_${id}`);
+    revalidateTag('projects', 'max');
+    revalidateTag(`project_${id}`, 'max');
     
     return {
       status: 200,

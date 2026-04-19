@@ -1,12 +1,12 @@
 import { HomeService } from '@/src/services/home.service';
 import { HomeRepository } from '@/src/repositories/home.repository';
-import { getCachedData, clearCache } from '@/src/lib/cache';
+import { revalidateTag } from 'next/cache';
 import { createHomeData } from '../helpers/factories';
 
 jest.mock('../../src/repositories/home.repository');
-jest.mock('../../src/lib/cache', () => ({
-  getCachedData: jest.fn(async (key: string, fetcher: () => any) => await fetcher()),
-  clearCache: jest.fn(),
+jest.mock('next/cache', () => ({
+  revalidateTag: jest.fn(),
+  unstable_cache: jest.fn((fn) => fn),
 }));
 
 const MockedRepo = HomeRepository as jest.Mocked<typeof HomeRepository>;
@@ -27,8 +27,16 @@ describe('HomeService', () => {
 
       const result = await HomeService.getHomeData();
 
-      expect(getCachedData).toHaveBeenCalledWith('home_data', expect.any(Function), expect.any(Object));
       expect(result.data).toEqual(mockData);
+    });
+
+    it('should bypass cache when requested', async () => {
+      const mockData = createHomeData();
+      MockedRepo.findFirst.mockResolvedValueOnce(mockData);
+
+      await HomeService.getHomeData(true);
+
+      expect(MockedRepo.findFirst).toHaveBeenCalledTimes(1);
     });
 
     it('should return 404 when missing', async () => {
@@ -52,7 +60,7 @@ describe('HomeService', () => {
       const result = await HomeService.updateHomeData(input);
 
       expect(MockedRepo.update).toHaveBeenCalledWith(input);
-      expect(clearCache).toHaveBeenCalledWith('home_data');
+      expect(revalidateTag).toHaveBeenCalledWith('home', 'max');
       expect(result.status).toBe(200);
     });
 

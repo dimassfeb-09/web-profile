@@ -8,6 +8,7 @@ import { ProjectService } from "@/src/services/project.service";
 import { AchievementService } from "@/src/services/achievement.service";
 import { CertificateService } from "@/src/services/certificate.service";
 import { ContactService } from "@/src/services/contact.service";
+import { BlogService } from "@/src/services/blog.service";
 
 // Static Import for Hero (P1: Fastest LCP)
 import HeroSection from "@/src/components/sections/HeroSection";
@@ -20,6 +21,7 @@ const ProjectsSection = dynamic(() => import("@/src/components/sections/Projects
 const AchievementSection = dynamic(() => import("@/src/components/sections/AchievementSection"));
 const CertificatesSection = dynamic(() => import("@/src/components/sections/CertificatesSection"));
 const ContactSection = dynamic(() => import("@/src/components/sections/ContactSection"));
+const BlogSection = dynamic(() => import("@/src/components/sections/BlogSection"));
 
 // Skeleton Fallback
 const SectionSkeleton = () => (
@@ -60,6 +62,11 @@ async function CertificatesSectionWrapper() {
 async function ContactSectionWrapper() {
   const contactData = await ContactService.getContactData();
   return contactData.data ? <ContactSection data={contactData.data} /> : null;
+}
+
+async function BlogSectionWrapper() {
+  const blogsData = await BlogService.getAllBlogs(true);
+  return <BlogSection blogs={blogsData || []} />;
 }
 
 export default async function Home() {
@@ -110,6 +117,12 @@ export default async function Home() {
         </Suspense>
       </div>
       
+      <div id="blog">
+        <Suspense fallback={<SectionSkeleton />}>
+          <BlogSectionWrapper />
+        </Suspense>
+      </div>
+
       <div id="contact">
         <Suspense fallback={<SectionSkeleton />}>
           <ContactSectionWrapper />

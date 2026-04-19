@@ -3,10 +3,19 @@ import Image from '@tiptap/extension-image';
 import Underline from '@tiptap/extension-underline';
 import Link from '@tiptap/extension-link';
 import TextAlign from '@tiptap/extension-text-align';
+import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
+import { common, createLowlight } from 'lowlight';
+import dart from 'highlight.js/lib/languages/dart';
 
-export const tiptapExtensions = [
+const lowlight = createLowlight(common);
+lowlight.register('dart', dart);
+
+export const getLowlight = () => lowlight;
+
+export const getBaseExtensions = () => [
   StarterKit.configure({
     horizontalRule: false,
+    codeBlock: false, // Matikan default code block karena kita pakai lowlight
     // Ensure these are NOT in StarterKit to avoid duplicates
     link: false,
     underline: false,
@@ -26,4 +35,23 @@ export const tiptapExtensions = [
       class: 'rounded-xl mx-auto my-8 border border-outline-variant/10',
     },
   }),
+];
+
+export const tiptapExtensions = [
+  ...getBaseExtensions(),
+  CodeBlockLowlight.extend({
+    addAttributes() {
+      return {
+        ...this.parent?.(),
+        filename: {
+          default: null,
+          parseHTML: element => element.getAttribute('data-filename'),
+          renderHTML: attributes => {
+            if (!attributes.filename) return {}
+            return { 'data-filename': attributes.filename }
+          },
+        },
+      }
+    },
+  }).configure({ lowlight }),
 ];

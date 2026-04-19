@@ -1,19 +1,19 @@
 import { ProjectService } from '@/src/services/project.service';
 import { ProjectRepository } from '@/src/repositories/project.repository';
-import { clearCache, getCachedData } from '@/src/lib/cache';
+import { revalidateTag } from 'next/cache';
 import { createProjectData } from '../helpers/factories';
 
 jest.mock('../../src/repositories/project.repository');
-jest.mock('../../src/lib/cache', () => ({
-  getCachedData: jest.fn(async (key: string, fetcher: () => any) => await fetcher()),
-  clearCache: jest.fn(),
+jest.mock('next/cache', () => ({
+  revalidateTag: jest.fn(),
+  unstable_cache: jest.fn((fn) => fn),
 }));
 
 const MockedRepo = ProjectRepository as jest.Mocked<typeof ProjectRepository>;
 
 describe('ProjectService', () => {
   beforeEach(() => {
-    jest.spyOn(console, 'error').mockImplementation(() => {});
+    jest.spyOn(console, 'error').mockImplementation(() => { });
   });
 
   afterEach(() => {
@@ -27,8 +27,16 @@ describe('ProjectService', () => {
 
       const result = await ProjectService.getAllProjects();
 
-      expect(getCachedData).toHaveBeenCalledWith('projects_all', expect.any(Function), expect.any(Object));
       expect(result.data).toEqual(mockData);
+    });
+
+    it('should bypass cache when requested', async () => {
+      const mockData = [createProjectData()];
+      MockedRepo.findAll.mockResolvedValueOnce(mockData);
+
+      await ProjectService.getAllProjects(true);
+
+      expect(MockedRepo.findAll).toHaveBeenCalledTimes(1);
     });
 
     it('should throw error when repo fails', async () => {
@@ -45,8 +53,17 @@ describe('ProjectService', () => {
 
       const result = await ProjectService.getProjectById(id);
 
-      expect(getCachedData).toHaveBeenCalledWith(`project_${id}`, expect.any(Function), expect.any(Object));
       expect(result.data).toEqual(mockData);
+    });
+
+    it('should bypass cache for single project when requested', async () => {
+      const id = '123';
+      const mockData = createProjectData({ id });
+      MockedRepo.findById.mockResolvedValueOnce(mockData);
+
+      await ProjectService.getProjectById(id, true);
+
+      expect(MockedRepo.findById).toHaveBeenCalledWith(id);
     });
 
     it('should return 404 when not found', async () => {
@@ -70,7 +87,7 @@ describe('ProjectService', () => {
       const result = await ProjectService.createProject(input);
 
       expect(MockedRepo.create).toHaveBeenCalledWith(input);
-      expect(clearCache).toHaveBeenCalledWith('projects_all');
+      expect(revalidateTag).toHaveBeenCalledWith('projects', 'max');
       expect(result.status).toBe(201);
     });
   });
@@ -85,8 +102,8 @@ describe('ProjectService', () => {
       const result = await ProjectService.updateProject(id, input);
 
       expect(MockedRepo.update).toHaveBeenCalledWith(id, input);
-      expect(clearCache).toHaveBeenCalledWith('projects_all');
-      expect(clearCache).toHaveBeenCalledWith(`project_${id}`);
+      expect(revalidateTag).toHaveBeenCalledWith('projects', 'max');
+      expect(revalidateTag).toHaveBeenCalledWith(`project_${id}`, 'max');
       expect(result.status).toBe(200);
     });
 
@@ -104,8 +121,8 @@ describe('ProjectService', () => {
       const result = await ProjectService.deleteProject(id);
 
       expect(MockedRepo.delete).toHaveBeenCalledWith(id);
-      expect(clearCache).toHaveBeenCalledWith('projects_all');
-      expect(clearCache).toHaveBeenCalledWith(`project_${id}`);
+      expect(revalidateTag).toHaveBeenCalledWith('projects', 'max');
+      expect(revalidateTag).toHaveBeenCalledWith(`project_${id}`, 'max');
       expect(result.status).toBe(200);
     });
 

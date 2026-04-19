@@ -1,11 +1,25 @@
 import { AchievementRepository, AchievementData } from '../repositories/achievement.repository';
-import { getCachedData, clearCache } from '../lib/cache';
+import { unstable_cache, revalidateTag } from 'next/cache';
 
 export class AchievementService {
+  private static getCachedAllAchievements = unstable_cache(
+    async () => AchievementRepository.findAll(),
+    ['achievements_all'],
+    { revalidate: 3600, tags: ['achievements'] }
+  );
+
+  private static getCachedAchievementById = (id: string) => unstable_cache(
+    async () => AchievementRepository.findById(id),
+    [`achievement_${id}`],
+    { revalidate: 3600, tags: ['achievements', `achievement_${id}`] }
+  )();
+
   static async getAllAchievements(bypassCache = false) {
     try {
-      const achievements = await getCachedData('achievements_all', () => AchievementRepository.findAll(), { bypass: bypassCache });
-      
+      const achievements = bypassCache
+        ? await AchievementRepository.findAll()
+        : await this.getCachedAllAchievements();
+
       return {
         status: 200,
         message: 'Achievements retrieved successfully',
@@ -19,8 +33,10 @@ export class AchievementService {
 
   static async getAchievementById(id: string, bypassCache = false) {
     try {
-      const achievement = await getCachedData(`achievement_${id}`, () => AchievementRepository.findById(id), { bypass: bypassCache });
-      
+      const achievement = bypassCache
+        ? await AchievementRepository.findById(id)
+        : await this.getCachedAchievementById(id);
+
       if (!achievement) {
         return {
           status: 404,
@@ -41,7 +57,7 @@ export class AchievementService {
 
   static async createAchievement(data: AchievementData) {
     const achievement = await AchievementRepository.create(data);
-    clearCache('achievements_all');
+    revalidateTag('achievements', 'max');
     return {
       status: 201,
       message: 'Achievement created successfully',
@@ -52,10 +68,10 @@ export class AchievementService {
   static async updateAchievement(id: string, data: Partial<AchievementData>) {
     const achievement = await AchievementRepository.update(id, data);
     if (!achievement) throw new Error('Achievement not found');
-    
-    clearCache('achievements_all');
-    clearCache(`achievement_${id}`);
-    
+
+    revalidateTag('achievements', 'max');
+    revalidateTag(`achievement_${id}`, 'max');
+
     return {
       status: 200,
       message: 'Achievement updated successfully',
@@ -66,10 +82,10 @@ export class AchievementService {
   static async deleteAchievement(id: string) {
     const success = await AchievementRepository.delete(id);
     if (!success) throw new Error('Achievement not found');
-    
-    clearCache('achievements_all');
-    clearCache(`achievement_${id}`);
-    
+
+    revalidateTag('achievements', 'max');
+    revalidateTag(`achievement_${id}`, 'max');
+
     return {
       status: 200,
       message: 'Achievement deleted successfully'

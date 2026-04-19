@@ -1,10 +1,24 @@
 import { CertificateRepository, CertificateData } from '../repositories/certificate.repository';
-import { getCachedData, clearCache } from '../lib/cache';
+import { unstable_cache, revalidateTag } from 'next/cache';
 
 export class CertificateService {
+  private static getCachedAllCertificates = unstable_cache(
+    async () => CertificateRepository.findAll(),
+    ['certificates_all'],
+    { revalidate: 3600, tags: ['certificates'] }
+  );
+
+  private static getCachedCertificateById = (id: string) => unstable_cache(
+    async () => CertificateRepository.findById(id),
+    [`certificate_${id}`],
+    { revalidate: 3600, tags: ['certificates', `certificate_${id}`] }
+  )();
+
   static async getAllCertificates(bypassCache = false) {
     try {
-      const certificates = await getCachedData('certificates_all', () => CertificateRepository.findAll(), { bypass: bypassCache });
+      const certificates = bypassCache
+        ? await CertificateRepository.findAll()
+        : await this.getCachedAllCertificates();
       
       return {
         status: 200,
@@ -19,7 +33,9 @@ export class CertificateService {
 
   static async getCertificateById(id: string, bypassCache = false) {
     try {
-      const certificate = await getCachedData(`certificate_${id}`, () => CertificateRepository.findById(id), { bypass: bypassCache });
+      const certificate = bypassCache
+        ? await CertificateRepository.findById(id)
+        : await this.getCachedCertificateById(id);
       
       if (!certificate) {
         return {
@@ -41,7 +57,7 @@ export class CertificateService {
 
   static async createCertificate(data: CertificateData) {
     const certificate = await CertificateRepository.create(data);
-    clearCache('certificates_all');
+    revalidateTag('certificates', 'max');
     return {
       status: 201,
       message: 'Certificate created successfully',
@@ -53,8 +69,8 @@ export class CertificateService {
     const certificate = await CertificateRepository.update(id, data);
     if (!certificate) throw new Error('Certificate not found');
     
-    clearCache('certificates_all');
-    clearCache(`certificate_${id}`);
+    revalidateTag('certificates', 'max');
+    revalidateTag(`certificate_${id}`, 'max');
     
     return {
       status: 200,
@@ -67,8 +83,8 @@ export class CertificateService {
     const success = await CertificateRepository.delete(id);
     if (!success) throw new Error('Certificate not found');
     
-    clearCache('certificates_all');
-    clearCache(`certificate_${id}`);
+    revalidateTag('certificates', 'max');
+    revalidateTag(`certificate_${id}`, 'max');
     
     return {
       status: 200,
