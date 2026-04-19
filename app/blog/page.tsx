@@ -4,6 +4,7 @@ import BlogScrollArea from '@/src/components/blog/BlogScrollArea';
 import type { Metadata } from "next";
 import { headers } from 'next/headers';
 import JsonLd from '@/src/components/common/JsonLd';
+import BackButton from '@/src/components/common/BackButton';
 
 const BASE_URL = "https://www.dimassfeb.com";
 
@@ -54,6 +55,9 @@ export default async function BlogListPage() {
   return (
     <div className="min-h-screen pt-32 pb-20 px-6 sm:px-10 max-w-7xl mx-auto">
       <JsonLd schema={blogSchema} />
+      <div className="mb-10">
+        <BackButton href="/#blog" />
+      </div>
       <div className="space-y-4 mb-16">
         <h1 className="font-headline text-5xl sm:text-7xl font-bold text-on-surface">
           Blog & <span className="text-primary">Insights</span>

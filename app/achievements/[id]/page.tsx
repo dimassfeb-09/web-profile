@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { AchievementService } from '@/src/services/achievement.service';
 import Breadcrumb from '@/src/components/common/Breadcrumb';
+import BackButton from '@/src/components/common/BackButton';
 import JsonLd from '@/src/components/common/JsonLd';
 import { ExternalLink, Calendar, Building2, Tag, Users, Code2 } from 'lucide-react';
 
@@ -202,16 +203,8 @@ export default async function AchievementDetailPage({ params }: { params: Params
         )}
       </div>
 
-      <div className="mt-12 pt-8 border-t border-outline-variant/10">
-        <Link
-          href="/achievements"
-          className="inline-flex items-center gap-2 text-on-surface-variant hover:text-primary transition-all duration-300 font-label font-bold text-sm group"
-        >
-          <span className="material-symbols-outlined text-lg group-hover:-translate-x-1 transition-transform">
-            arrow_back
-          </span>
-          Back to All Achievements
-        </Link>
+      <div className="mt-12 pt-8 border-t border-outline-variant/10 text-center">
+        <BackButton href="/achievements" label="Back to All Achievements" />
       </div>
     </main>
   );

@@ -27,7 +27,14 @@ export default async function ProjectManagementPage(props: {
     features: project.features,
     link_url: project.link_url,
     link_text: project.link_text,
-    created_at: project.created_at
+    created_at: project.created_at,
+    slug: project.slug || '',
+    long_description: project.long_description || '',
+    tech_stack: project.tech_stack || [],
+    screenshots: project.screenshots || [],
+    status: project.status || 'completed',
+    date: project.date || '',
+    external_links: project.external_links || {}
   }));
   
   return (

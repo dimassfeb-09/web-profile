@@ -10,6 +10,13 @@ export async function createProjectAction(data: {
   features: string[];
   link_url: string;
   link_text: string;
+  slug?: string;
+  long_description?: string | null;
+  tech_stack?: string[];
+  screenshots?: string[];
+  status?: string;
+  date?: string | Date | null;
+  external_links?: Record<string, string> | null;
 }) {
   try {
     const result = await ProjectService.createProject(data);
@@ -28,6 +35,13 @@ export async function updateProjectAction(id: string, data: Partial<{
   features: string[];
   link_url: string;
   link_text: string;
+  slug: string;
+  long_description: string | null;
+  tech_stack: string[];
+  screenshots: string[];
+  status: string;
+  date: string | Date | null;
+  external_links: Record<string, string> | null;
 }>) {
   try {
     const result = await ProjectService.updateProject(id, data);

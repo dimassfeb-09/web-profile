@@ -3,6 +3,7 @@ import { ProjectService } from '@/src/services/project.service';
 import ProjectsSection from '@/src/components/sections/ProjectsSection';
 import SortFilter from '@/src/components/common/SortFilter';
 import Link from 'next/link';
+import BackButton from '@/src/components/common/BackButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -27,13 +28,7 @@ export default async function ProjectsPage(props: {
   return (
     <main className="pt-24 lg:pt-32 px-6 md:px-12 lg:px-16 2xl:px-24 max-w-[1920px] mx-auto pb-20">
       <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <Link 
-          href="/#projects" 
-          className="flex items-center gap-2 text-primary font-label font-medium hover:underline"
-        >
-          <span className="material-symbols-outlined text-sm">arrow_back</span>
-          Kembali ke Beranda
-        </Link>
+        <BackButton href="/#projects" />
         <SortFilter />
       </div>
       

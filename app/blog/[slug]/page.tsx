@@ -7,6 +7,7 @@ import TiptapRenderer from '@/src/components/shared/TiptapRenderer';
 import JsonLd from '@/src/components/common/JsonLd';
 import RelatedPosts from '@/src/components/blog/RelatedPosts';
 import Breadcrumb from '@/src/components/common/Breadcrumb';
+import BackButton from '@/src/components/common/BackButton';
 
 const BASE_URL = "https://www.dimassfeb.com";
 
@@ -123,6 +124,9 @@ export default async function BlogPostPage({ params }: { params: Params }) {
     <article className="min-h-screen pt-32 pb-20 px-6 sm:px-10 bg-surface">
       <JsonLd schema={blogPostingSchema} />
       <div className="max-w-3xl mx-auto space-y-12">
+        <div className="mb-4">
+          <BackButton href="/blog" label="Back to Blog" />
+        </div>
         {/* Navigation Breadcrumb */}
         <Breadcrumb items={[
           { label: "Home", href: "/" },

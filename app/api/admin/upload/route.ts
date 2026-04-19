@@ -3,7 +3,7 @@ import { requireAuth } from '@/src/lib/auth';
 
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-const ALLOWED_BUCKETS = ['projects', 'achievements', 'certificates'];
+const ALLOWED_BUCKETS = ['projects', 'achievements', 'certificates', 'project-screenshots'];
 
 export async function POST(request: NextRequest) {
   try {

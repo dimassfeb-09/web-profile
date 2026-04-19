@@ -11,6 +11,7 @@ interface Project {
   features: string[];
   link_url: string;
   link_text: string;
+  slug?: string;
 }
 
 interface ProjectsSectionProps {
@@ -66,6 +67,7 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ initialProjects }) =>
             linkUrl={project.link_url}
             linkText={project.link_text}
             priority={index <= 1}
+            slug={project.slug}
           />
         ))}
       </div>
