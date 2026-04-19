@@ -9,12 +9,11 @@ export async function POST(request: NextRequest) {
   try {
     // Basic verification: Check if triggered by Vercel Cron or direct secret
     const authHeader = request.headers.get('authorization');
+    const cronSecret = process.env.CRON_SECRET;
     
-    // In production, we should check against a process.env.CRON_SECRET
-    // If not provided, we skip for now (security by obscurity is bad, 
-    // but this is a starting point).
-    if (process.env.NODE_ENV === 'production') {
-      if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    // Always check for secret if configured, or if in production
+    if (cronSecret || process.env.NODE_ENV === 'production') {
+      if (authHeader !== `Bearer ${cronSecret}`) {
         return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
       }
     }

@@ -87,7 +87,7 @@ describe('CertificateService', () => {
       const result = await CertificateService.createCertificate(input);
 
       expect(MockedRepo.create).toHaveBeenCalledWith(input);
-      expect(revalidateTag).toHaveBeenCalledWith('certificates', 'max');
+      expect(revalidateTag).toHaveBeenCalledWith('certificates', { expire: 0 });
       expect(result.status).toBe(201);
     });
   });
@@ -102,8 +102,8 @@ describe('CertificateService', () => {
       const result = await CertificateService.updateCertificate(id, input);
 
       expect(MockedRepo.update).toHaveBeenCalledWith(id, input);
-      expect(revalidateTag).toHaveBeenCalledWith('certificates', 'max');
-      expect(revalidateTag).toHaveBeenCalledWith(`certificate_${id}`, 'max');
+      expect(revalidateTag).toHaveBeenCalledWith('certificates', { expire: 0 });
+      expect(revalidateTag).toHaveBeenCalledWith(`certificate_${id}`, { expire: 0 });
       expect(result.status).toBe(200);
     });
 
@@ -121,8 +121,8 @@ describe('CertificateService', () => {
       const result = await CertificateService.deleteCertificate(id);
 
       expect(MockedRepo.delete).toHaveBeenCalledWith(id);
-      expect(revalidateTag).toHaveBeenCalledWith('certificates', 'max');
-      expect(revalidateTag).toHaveBeenCalledWith(`certificate_${id}`, 'max');
+      expect(revalidateTag).toHaveBeenCalledWith('certificates', { expire: 0 });
+      expect(revalidateTag).toHaveBeenCalledWith(`certificate_${id}`, { expire: 0 });
       expect(result.status).toBe(200);
     });
 

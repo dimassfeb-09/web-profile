@@ -8,12 +8,13 @@ import {
   AlignLeft, AlignCenter, AlignRight, 
   Link as LinkIcon, Minus, Terminal
 } from 'lucide-react';
+import { JSONContent } from '@tiptap/react';
 import { tiptapExtensionsClient } from '@/src/lib/tiptap-extensions-client';
 import './editor.css';
 
 interface BlogEditorProps {
-  content: any;
-  onChange: (json: any) => void;
+  content: JSONContent | string;
+  onChange: (json: JSONContent) => void;
   blogId: string;
 }
 

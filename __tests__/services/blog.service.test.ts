@@ -168,8 +168,8 @@ describe('BlogService', () => {
         ['https://example.com/img2.png']
       );
       expect(revalidateTag).toHaveBeenCalledWith('blog', { expire: 0 });
-      expect(revalidateTag).toHaveBeenCalledWith(`blog_${id}`, 'max');
-      expect(revalidateTag).toHaveBeenCalledWith(`blog_slug_${updatedBlog.slug}`, 'max');
+      expect(revalidateTag).toHaveBeenCalledWith(`blog_${id}`, { expire: 0 });
+      expect(revalidateTag).toHaveBeenCalledWith(`blog_slug_${updatedBlog.slug}`, { expire: 0 });
     });
 
     it('should not revalidate slug tag if slug is missing during update', async () => {
@@ -209,7 +209,7 @@ describe('BlogService', () => {
       expect(ImageService.deleteAllBlogImages).toHaveBeenCalledWith(id);
       expect(BlogRepository.delete).toHaveBeenCalledWith(id);
       expect(revalidateTag).toHaveBeenCalledWith('blog', { expire: 0 });
-      expect(revalidateTag).toHaveBeenCalledWith(`blog_${id}`, 'max');
+      expect(revalidateTag).toHaveBeenCalledWith(`blog_${id}`, { expire: 0 });
       expect(result).toBe(true);
     });
 
@@ -221,7 +221,7 @@ describe('BlogService', () => {
 
       await BlogService.deleteBlog(id);
 
-      expect(revalidateTag).toHaveBeenCalledWith('blog_slug_deleted-slug', 'max');
+      expect(revalidateTag).toHaveBeenCalledWith('blog_slug_deleted-slug', { expire: 0 });
     });
 
     it('should not revalidate slug tag if slug is missing during delete', async () => {
@@ -240,7 +240,7 @@ describe('BlogService', () => {
       (BlogRepository.delete as jest.Mock).mockResolvedValue(false);
       const result = await BlogService.deleteBlog(id);
       expect(result).toBe(false);
-      expect(revalidateTag).not.toHaveBeenCalledWith('blog', 'max');
+      expect(revalidateTag).not.toHaveBeenCalledWith('blog', { expire: 0 });
     });
   });
 });

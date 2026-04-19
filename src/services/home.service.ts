@@ -35,7 +35,7 @@ export class HomeService {
   static async updateHomeData(data: HomeData) {
     const home = await HomeRepository.update(data);
     if (!home) throw new Error('Home data not found');
-    revalidateTag('home', 'max');
+    revalidateTag('home', { expire: 0 });
     return {
       status: 200,
       message: 'Home data updated successfully',

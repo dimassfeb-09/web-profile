@@ -54,7 +54,7 @@ describe('SkillService', () => {
       const result = await SkillService.createSkill(input);
 
       expect(MockedRepo.create).toHaveBeenCalledWith(input);
-      expect(revalidateTag).toHaveBeenCalledWith('skills', 'max');
+      expect(revalidateTag).toHaveBeenCalledWith('skills', { expire: 0 });
       expect(result.status).toBe(201);
     });
   });
@@ -69,7 +69,7 @@ describe('SkillService', () => {
       const result = await SkillService.updateSkill(id, input);
 
       expect(MockedRepo.update).toHaveBeenCalledWith(id, input);
-      expect(revalidateTag).toHaveBeenCalledWith('skills', 'max');
+      expect(revalidateTag).toHaveBeenCalledWith('skills', { expire: 0 });
       expect(result.status).toBe(200);
     });
 
@@ -87,7 +87,7 @@ describe('SkillService', () => {
       const result = await SkillService.deleteSkill(id);
 
       expect(MockedRepo.delete).toHaveBeenCalledWith(id);
-      expect(revalidateTag).toHaveBeenCalledWith('skills', 'max');
+      expect(revalidateTag).toHaveBeenCalledWith('skills', { expire: 0 });
       expect(result.status).toBe(200);
     });
 

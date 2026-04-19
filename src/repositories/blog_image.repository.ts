@@ -49,12 +49,13 @@ export class BlogImageRepository {
   }
 
   static async findUnusedExpired(hours: number = 24): Promise<BlogImageData[]> {
+    const safeHours = Math.max(1, Math.floor(Number(hours)));
     const query = `
       SELECT * FROM blog_images 
       WHERE status = 'unused' 
-      AND updated_at < NOW() - INTERVAL '${hours} hours'
+      AND updated_at < NOW() - ($1 * INTERVAL '1 hour')
     `;
-    const { rows } = await pool.query(query);
+    const { rows } = await pool.query(query, [safeHours]);
     return rows;
   }
 

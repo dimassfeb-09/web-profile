@@ -57,7 +57,7 @@ export class ProjectService {
 
   static async createProject(data: ProjectData) {
     const project = await ProjectRepository.create(data);
-    revalidateTag('projects', 'max');
+    revalidateTag('projects', { expire: 0 });
     return {
       status: 201,
       message: 'Project created successfully',
@@ -70,8 +70,8 @@ export class ProjectService {
     if (!project) throw new Error('Project not found');
     
     // Invalidate the projects list and the specific project
-    revalidateTag('projects', 'max');
-    revalidateTag(`project_${id}`, 'max');
+    revalidateTag('projects', { expire: 0 });
+    revalidateTag(`project_${id}`, { expire: 0 });
     
     return {
       status: 200,
@@ -84,8 +84,8 @@ export class ProjectService {
     const success = await ProjectRepository.delete(id);
     if (!success) throw new Error('Project not found');
     
-    revalidateTag('projects', 'max');
-    revalidateTag(`project_${id}`, 'max');
+    revalidateTag('projects', { expire: 0 });
+    revalidateTag(`project_${id}`, { expire: 0 });
     
     return {
       status: 200,

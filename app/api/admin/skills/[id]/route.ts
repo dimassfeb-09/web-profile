@@ -1,17 +1,36 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { SkillService } from '@/src/services/skill.service';
+import { requireAuth } from '@/src/lib/auth';
+import { z } from 'zod';
+
+const SkillSchema = z.object({
+  icon: z.string().min(1),
+  title: z.string().min(1).max(100),
+  skills: z.array(z.string().min(1)),
+  color_class: z.string().min(1),
+  delay_class: z.string().min(1),
+});
 
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    await requireAuth();
     const { id } = await params;
-    const data = await request.json();
+    const body = await request.json();
+    const data = SkillSchema.partial().parse(body);
     const result = await SkillService.updateSkill(parseInt(id), data);
     return NextResponse.json(result, { status: result.status });
   } catch (error: any) {
-    return NextResponse.json({ status: 500, message: error.message }, { status: 500 });
+    if (error.message === 'UNAUTHORIZED') {
+      return NextResponse.json({ status: 401, message: 'Unauthorized' }, { status: 401 });
+    }
+    if (error instanceof z.ZodError) {
+      return NextResponse.json({ status: 400, message: error.issues[0].message }, { status: 400 });
+    }
+    console.error('[Admin Skill PUT] Error:', error);
+    return NextResponse.json({ status: 500, message: 'Internal Server Error' }, { status: 500 });
   }
 }
 
@@ -20,10 +39,15 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    await requireAuth();
     const { id } = await params;
     const result = await SkillService.deleteSkill(parseInt(id));
     return NextResponse.json(result, { status: result.status });
   } catch (error: any) {
-    return NextResponse.json({ status: 500, message: error.message }, { status: 500 });
+    if (error.message === 'UNAUTHORIZED') {
+      return NextResponse.json({ status: 401, message: 'Unauthorized' }, { status: 401 });
+    }
+    console.error('[Admin Skill DELETE] Error:', error);
+    return NextResponse.json({ status: 500, message: 'Internal Server Error' }, { status: 500 });
   }
 }

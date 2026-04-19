@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSession } from '@/src/lib/auth';
+import { requireAuth } from '@/src/lib/auth';
 import { BlogService } from '@/src/services/blog.service';
 import { BlogData } from '@/src/repositories/blog.repository';
 
@@ -20,8 +20,9 @@ export async function GET(request: NextRequest, { params }: { params: Params }) 
       data: blog
     });
   } catch (error: any) {
+    console.error('[Blog GET] Error:', error);
     return NextResponse.json(
-      { status: 500, message: error.message || 'Internal Server Error', data: null },
+      { status: 500, message: 'Internal Server Error', data: null },
       { status: 500 }
     );
   }
@@ -29,11 +30,7 @@ export async function GET(request: NextRequest, { params }: { params: Params }) 
 
 export async function PUT(request: NextRequest, { params }: { params: Params }) {
   try {
-    const session = await getSession();
-    if (!session) {
-      return NextResponse.json({ status: 401, message: 'Unauthorized' }, { status: 401 });
-    }
-
+    await requireAuth();
     const { id } = await params;
     const body = await request.json();
     
@@ -50,9 +47,12 @@ export async function PUT(request: NextRequest, { params }: { params: Params }) 
     });
 
   } catch (error: any) {
-    console.error('Update Blog Error:', error);
+    if (error.message === 'UNAUTHORIZED') {
+      return NextResponse.json({ status: 401, message: 'Unauthorized' }, { status: 401 });
+    }
+    console.error('[Blog PUT] Error:', error);
     return NextResponse.json(
-      { status: 500, message: error.message || 'Internal Server Error', data: null },
+      { status: 500, message: 'Internal Server Error', data: null },
       { status: 500 }
     );
   }
@@ -60,11 +60,7 @@ export async function PUT(request: NextRequest, { params }: { params: Params }) 
 
 export async function DELETE(request: NextRequest, { params }: { params: Params }) {
   try {
-    const session = await getSession();
-    if (!session) {
-      return NextResponse.json({ status: 401, message: 'Unauthorized' }, { status: 401 });
-    }
-
+    await requireAuth();
     const { id } = await params;
     const success = await BlogService.deleteBlog(id);
     
@@ -79,9 +75,12 @@ export async function DELETE(request: NextRequest, { params }: { params: Params 
     });
 
   } catch (error: any) {
-    console.error('Delete Blog Error:', error);
+    if (error.message === 'UNAUTHORIZED') {
+      return NextResponse.json({ status: 401, message: 'Unauthorized' }, { status: 401 });
+    }
+    console.error('[Blog DELETE] Error:', error);
     return NextResponse.json(
-      { status: 500, message: error.message || 'Internal Server Error', data: null },
+      { status: 500, message: 'Internal Server Error', data: null },
       { status: 500 }
     );
   }

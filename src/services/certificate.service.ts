@@ -57,7 +57,7 @@ export class CertificateService {
 
   static async createCertificate(data: CertificateData) {
     const certificate = await CertificateRepository.create(data);
-    revalidateTag('certificates', 'max');
+    revalidateTag('certificates', { expire: 0 });
     return {
       status: 201,
       message: 'Certificate created successfully',
@@ -69,8 +69,8 @@ export class CertificateService {
     const certificate = await CertificateRepository.update(id, data);
     if (!certificate) throw new Error('Certificate not found');
     
-    revalidateTag('certificates', 'max');
-    revalidateTag(`certificate_${id}`, 'max');
+    revalidateTag('certificates', { expire: 0 });
+    revalidateTag(`certificate_${id}`, { expire: 0 });
     
     return {
       status: 200,
@@ -83,8 +83,8 @@ export class CertificateService {
     const success = await CertificateRepository.delete(id);
     if (!success) throw new Error('Certificate not found');
     
-    revalidateTag('certificates', 'max');
-    revalidateTag(`certificate_${id}`, 'max');
+    revalidateTag('certificates', { expire: 0 });
+    revalidateTag(`certificate_${id}`, { expire: 0 });
     
     return {
       status: 200,

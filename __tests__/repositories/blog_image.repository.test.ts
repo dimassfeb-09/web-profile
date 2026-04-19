@@ -103,14 +103,23 @@ describe('BlogImageRepository', () => {
     it('should find unused images older than X hours', async () => {
       mockQuery.mockResolvedValueOnce({ rows: [] });
       await BlogImageRepository.findUnusedExpired(48);
-      expect(mockQuery).toHaveBeenCalledWith(expect.stringContaining("status = 'unused'"));
-      expect(mockQuery).toHaveBeenCalledWith(expect.stringContaining("AND updated_at < NOW() - INTERVAL '48 hours'"));
+      expect(mockQuery).toHaveBeenCalledWith(
+        expect.stringContaining("status = 'unused'"),
+        [48]
+      );
+      expect(mockQuery).toHaveBeenCalledWith(
+        expect.stringContaining("AND updated_at < NOW() - ($1 * INTERVAL '1 hour')"),
+        [48]
+      );
     });
 
     it('should use default 24 hours if no argument provided', async () => {
       mockQuery.mockResolvedValueOnce({ rows: [] });
       await BlogImageRepository.findUnusedExpired();
-      expect(mockQuery).toHaveBeenCalledWith(expect.stringContaining("INTERVAL '24 hours'"));
+      expect(mockQuery).toHaveBeenCalledWith(
+        expect.stringContaining("AND updated_at < NOW() - ($1 * INTERVAL '1 hour')"),
+        [24]
+      );
     });
   });
 

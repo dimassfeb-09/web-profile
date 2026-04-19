@@ -48,7 +48,7 @@ describe('CertificateRepository', () => {
 
       expect(mockQuery).toHaveBeenCalledWith(
         expect.stringContaining('INSERT INTO certificates'),
-        [input.title, input.issuer, input.issue_date, input.credential_url, input.image_url]
+        [input.title, input.issuer, input.issue_date, input.credential_url, input.image_url, input.description]
       );
       expect(result).toEqual(expected);
     });
@@ -65,7 +65,7 @@ describe('CertificateRepository', () => {
 
       expect(mockQuery).toHaveBeenCalledWith(
         expect.stringContaining('UPDATE certificates'),
-        [input.title, input.issuer, input.issue_date, input.credential_url, input.image_url, id]
+        [input.title, input.issuer, input.issue_date, input.credential_url, input.image_url, input.description, id]
       );
       expect(result).toEqual(expected);
     });

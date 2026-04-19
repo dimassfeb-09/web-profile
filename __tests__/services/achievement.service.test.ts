@@ -115,7 +115,7 @@ describe('AchievementService', () => {
       const result = await AchievementService.createAchievement(input);
 
       expect(MockedRepo.create).toHaveBeenCalledWith(input);
-      expect(revalidateTag).toHaveBeenCalledWith('achievements', 'max');
+      expect(revalidateTag).toHaveBeenCalledWith('achievements', { expire: 0 });
       expect(result).toEqual({
         status: 201,
         message: 'Achievement created successfully',
@@ -134,8 +134,8 @@ describe('AchievementService', () => {
       const result = await AchievementService.updateAchievement(id, input);
 
       expect(MockedRepo.update).toHaveBeenCalledWith(id, input);
-      expect(revalidateTag).toHaveBeenCalledWith('achievements', 'max');
-      expect(revalidateTag).toHaveBeenCalledWith(`achievement_${id}`, 'max');
+      expect(revalidateTag).toHaveBeenCalledWith('achievements', { expire: 0 });
+      expect(revalidateTag).toHaveBeenCalledWith(`achievement_${id}`, { expire: 0 });
       expect(result.status).toBe(200);
     });
 
@@ -155,8 +155,8 @@ describe('AchievementService', () => {
       const result = await AchievementService.deleteAchievement(id);
 
       expect(MockedRepo.delete).toHaveBeenCalledWith(id);
-      expect(revalidateTag).toHaveBeenCalledWith('achievements', 'max');
-      expect(revalidateTag).toHaveBeenCalledWith(`achievement_${id}`, 'max');
+      expect(revalidateTag).toHaveBeenCalledWith('achievements', { expire: 0 });
+      expect(revalidateTag).toHaveBeenCalledWith(`achievement_${id}`, { expire: 0 });
       expect(result.status).toBe(200);
     });
 

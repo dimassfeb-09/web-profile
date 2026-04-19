@@ -5,7 +5,7 @@ export interface AchievementData {
   title: string;
   description: string;
   image_url: string | null;
-  date: string | null;
+  date: string | Date | null;
   created_at?: Date;
   updated_at?: Date;
 }

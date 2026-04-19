@@ -57,7 +57,7 @@ export class AchievementService {
 
   static async createAchievement(data: AchievementData) {
     const achievement = await AchievementRepository.create(data);
-    revalidateTag('achievements', 'max');
+    revalidateTag('achievements', { expire: 0 });
     return {
       status: 201,
       message: 'Achievement created successfully',
@@ -69,8 +69,8 @@ export class AchievementService {
     const achievement = await AchievementRepository.update(id, data);
     if (!achievement) throw new Error('Achievement not found');
 
-    revalidateTag('achievements', 'max');
-    revalidateTag(`achievement_${id}`, 'max');
+    revalidateTag('achievements', { expire: 0 });
+    revalidateTag(`achievement_${id}`, { expire: 0 });
 
     return {
       status: 200,
@@ -83,8 +83,8 @@ export class AchievementService {
     const success = await AchievementRepository.delete(id);
     if (!success) throw new Error('Achievement not found');
 
-    revalidateTag('achievements', 'max');
-    revalidateTag(`achievement_${id}`, 'max');
+    revalidateTag('achievements', { expire: 0 });
+    revalidateTag(`achievement_${id}`, { expire: 0 });
 
     return {
       status: 200,

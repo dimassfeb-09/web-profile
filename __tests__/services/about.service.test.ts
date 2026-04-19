@@ -60,7 +60,7 @@ describe('AboutService', () => {
       const result = await AboutService.updateAboutData(input);
 
       expect(MockedRepo.update).toHaveBeenCalledWith(input);
-      expect(revalidateTag).toHaveBeenCalledWith('about', 'max');
+      expect(revalidateTag).toHaveBeenCalledWith('about', { expire: 0 });
       expect(result.status).toBe(200);
     });
 

@@ -60,7 +60,7 @@ describe('HomeService', () => {
       const result = await HomeService.updateHomeData(input);
 
       expect(MockedRepo.update).toHaveBeenCalledWith(input);
-      expect(revalidateTag).toHaveBeenCalledWith('home', 'max');
+      expect(revalidateTag).toHaveBeenCalledWith('home', { expire: 0 });
       expect(result.status).toBe(200);
     });
 

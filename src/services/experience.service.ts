@@ -31,7 +31,7 @@ export class ExperienceService {
     }
 
     const experience = await ExperienceRepository.create(data);
-    revalidateTag('experience', 'max');
+    revalidateTag('experience', { expire: 0 });
     return {
       status: 201,
       message: 'Experience created successfully',
@@ -46,7 +46,7 @@ export class ExperienceService {
 
     const experience = await ExperienceRepository.update(id, data);
     if (!experience) throw new Error('Experience not found');
-    revalidateTag('experience', 'max');
+    revalidateTag('experience', { expire: 0 });
     return {
       status: 200,
       message: 'Experience updated successfully',
@@ -57,7 +57,7 @@ export class ExperienceService {
   static async deleteExperience(id: number) {
     const success = await ExperienceRepository.delete(id);
     if (!success) throw new Error('Experience not found');
-    revalidateTag('experience', 'max');
+    revalidateTag('experience', { expire: 0 });
     return {
       status: 200,
       message: 'Experience deleted successfully'

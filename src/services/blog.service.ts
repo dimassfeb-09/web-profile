@@ -113,9 +113,9 @@ export class BlogService {
 
       // 3. Invalidate Cache
       revalidateTag('blog', { expire: 0 });
-      revalidateTag(`blog_${id}`, 'max');
+      revalidateTag(`blog_${id}`, { expire: 0 });
       if (blog.slug) {
-        revalidateTag(`blog_slug_${blog.slug}`, 'max');
+        revalidateTag(`blog_slug_${blog.slug}`, { expire: 0 });
       }
     }
 
@@ -135,8 +135,8 @@ export class BlogService {
 
     if (success) {
       revalidateTag('blog', { expire: 0 });
-      revalidateTag(`blog_${id}`, 'max');
-      if (blog?.slug) revalidateTag(`blog_slug_${blog.slug}`, 'max');
+      revalidateTag(`blog_${id}`, { expire: 0 });
+      if (blog?.slug) revalidateTag(`blog_slug_${blog.slug}`, { expire: 0 });
     }
 
     return success;

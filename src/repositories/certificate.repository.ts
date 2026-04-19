@@ -4,11 +4,12 @@ export interface CertificateData {
   id?: string;
   title: string;
   issuer: string;
-  issue_date: string | null;
+  issue_date: string | Date | null;
   credential_url: string | null;
   image_url: string | null;
   created_at?: Date;
   updated_at?: Date;
+  description?: string;
 }
 
 export class CertificateRepository {
@@ -26,26 +27,8 @@ export class CertificateRepository {
 
   static async create(data: CertificateData): Promise<CertificateData> {
     const query = `
-      INSERT INTO certificates (title, issuer, issue_date, credential_url, image_url)
-      VALUES ($1, $2, $3, $4, $5)
-      RETURNING *
-    `;
-    const values = [
-      data.title,
-      data.issuer,
-      data.issue_date,
-      data.credential_url,
-      data.image_url
-    ];
-    const { rows } = await pool.query(query, values);
-    return rows[0];
-  }
-
-  static async update(id: string, data: Partial<CertificateData>): Promise<CertificateData | null> {
-    const query = `
-      UPDATE certificates 
-      SET title = $1, issuer = $2, issue_date = $3, credential_url = $4, image_url = $5, updated_at = CURRENT_TIMESTAMP
-      WHERE id = $6
+      INSERT INTO certificates (title, issuer, issue_date, credential_url, image_url, description)
+      VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING *
     `;
     const values = [
@@ -54,6 +37,26 @@ export class CertificateRepository {
       data.issue_date,
       data.credential_url,
       data.image_url,
+      data.description
+    ];
+    const { rows } = await pool.query(query, values);
+    return rows[0];
+  }
+
+  static async update(id: string, data: Partial<CertificateData>): Promise<CertificateData | null> {
+    const query = `
+      UPDATE certificates 
+      SET title = $1, issuer = $2, issue_date = $3, credential_url = $4, image_url = $5, description = $6, updated_at = CURRENT_TIMESTAMP
+      WHERE id = $7
+      RETURNING *
+    `;
+    const values = [
+      data.title,
+      data.issuer,
+      data.issue_date,
+      data.credential_url,
+      data.image_url,
+      data.description,
       id
     ];
     const { rows } = await pool.query(query, values);

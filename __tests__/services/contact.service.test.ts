@@ -60,7 +60,7 @@ describe('ContactService', () => {
       const result = await ContactService.updateContactData(input);
 
       expect(MockedRepo.update).toHaveBeenCalledWith(input);
-      expect(revalidateTag).toHaveBeenCalledWith('contact', 'max');
+      expect(revalidateTag).toHaveBeenCalledWith('contact', { expire: 0 });
       expect(result.status).toBe(200);
     });
 

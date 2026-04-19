@@ -54,7 +54,7 @@ describe('ExperienceService', () => {
       const result = await ExperienceService.createExperience(input);
 
       expect(MockedRepo.create).toHaveBeenCalledWith(input);
-      expect(revalidateTag).toHaveBeenCalledWith('experience', 'max');
+      expect(revalidateTag).toHaveBeenCalledWith('experience', { expire: 0 });
       expect(result.status).toBe(201);
     });
 
@@ -77,7 +77,7 @@ describe('ExperienceService', () => {
       const result = await ExperienceService.updateExperience(id, input);
 
       expect(MockedRepo.update).toHaveBeenCalledWith(id, input);
-      expect(revalidateTag).toHaveBeenCalledWith('experience', 'max');
+      expect(revalidateTag).toHaveBeenCalledWith('experience', { expire: 0 });
       expect(result.status).toBe(200);
     });
 
@@ -100,7 +100,7 @@ describe('ExperienceService', () => {
       const result = await ExperienceService.deleteExperience(id);
 
       expect(MockedRepo.delete).toHaveBeenCalledWith(id);
-      expect(revalidateTag).toHaveBeenCalledWith('experience', 'max');
+      expect(revalidateTag).toHaveBeenCalledWith('experience', { expire: 0 });
       expect(result.status).toBe(200);
     });
 

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { decrypt, COOKIE_NAME } from './lib/auth';
+import { decrypt, COOKIE_NAME, updateSession } from './lib/auth';
 
 const PROTECTED_ROUTES = ['/admin', '/api/admin']; // Add protected API routes here
 const AUTH_ROUTES = ['/admin/login'];
@@ -26,8 +26,8 @@ export async function middleware(request: NextRequest) {
     }
 
     try {
-      await decrypt(cookie);
-      return NextResponse.next();
+      const res = await updateSession(request);
+      return res || NextResponse.next();
     } catch (error) {
       if (isProtectedApiRoute) {
         return NextResponse.json({ status: 401, message: 'Unauthorized' }, { status: 401 });

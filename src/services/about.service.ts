@@ -35,7 +35,7 @@ export class AboutService {
   static async updateAboutData(data: AboutData) {
     const about = await AboutRepository.update(data);
     if (!about) throw new Error('About data not found');
-    revalidateTag('about', 'max');
+    revalidateTag('about', { expire: 0 });
     return {
       status: 200,
       message: 'About data updated successfully',

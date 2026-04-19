@@ -35,7 +35,7 @@ export class ContactService {
   static async updateContactData(data: ContactData) {
     const contact = await ContactRepository.update(data);
     if (!contact) throw new Error('Contact data not found');
-    revalidateTag('contact', 'max');
+    revalidateTag('contact', { expire: 0 });
     return {
       status: 200,
       message: 'Contact data updated successfully',

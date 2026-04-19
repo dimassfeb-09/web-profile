@@ -1,21 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ContactService } from '@/src/services/contact.service';
+import { requireAuth } from '@/src/lib/auth';
 
 export async function GET() {
   try {
+    await requireAuth();
     const result = await ContactService.getContactData(true);
     return NextResponse.json(result, { status: result.status });
   } catch (error: any) {
-    return NextResponse.json({ status: 500, message: error.message }, { status: 500 });
+    if (error.message === 'UNAUTHORIZED') {
+      return NextResponse.json({ status: 401, message: 'Unauthorized' }, { status: 401 });
+    }
+    console.error('[Admin Contact GET] Error:', error);
+    return NextResponse.json({ status: 500, message: 'Internal Server Error' }, { status: 500 });
   }
 }
 
 export async function PUT(request: NextRequest) {
   try {
+    await requireAuth();
     const data = await request.json();
     const result = await ContactService.updateContactData(data);
     return NextResponse.json(result, { status: result.status });
   } catch (error: any) {
-    return NextResponse.json({ status: 500, message: error.message }, { status: 500 });
+    if (error.message === 'UNAUTHORIZED') {
+      return NextResponse.json({ status: 401, message: 'Unauthorized' }, { status: 401 });
+    }
+    console.error('[Admin Contact PUT] Error:', error);
+    return NextResponse.json({ status: 500, message: 'Internal Server Error' }, { status: 500 });
   }
 }

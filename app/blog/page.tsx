@@ -12,8 +12,6 @@ export default async function BlogListPage() {
   const isMobile = /mobile|android|iphone|ipad/i.test(userAgent);
   const limit = isMobile ? 6 : 9;
 
-  console.log(`[BlogPage] UA: ${userAgent.slice(0, 50)}... | isMobile: ${isMobile} | limit: ${limit}`);
-
   const { blogs, nextCursor, hasMore } = await BlogService.getAllBlogs({ onlyPublished: true, limit });
 
   return (

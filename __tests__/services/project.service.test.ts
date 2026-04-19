@@ -87,7 +87,7 @@ describe('ProjectService', () => {
       const result = await ProjectService.createProject(input);
 
       expect(MockedRepo.create).toHaveBeenCalledWith(input);
-      expect(revalidateTag).toHaveBeenCalledWith('projects', 'max');
+      expect(revalidateTag).toHaveBeenCalledWith('projects', { expire: 0 });
       expect(result.status).toBe(201);
     });
   });
@@ -102,8 +102,8 @@ describe('ProjectService', () => {
       const result = await ProjectService.updateProject(id, input);
 
       expect(MockedRepo.update).toHaveBeenCalledWith(id, input);
-      expect(revalidateTag).toHaveBeenCalledWith('projects', 'max');
-      expect(revalidateTag).toHaveBeenCalledWith(`project_${id}`, 'max');
+      expect(revalidateTag).toHaveBeenCalledWith('projects', { expire: 0 });
+      expect(revalidateTag).toHaveBeenCalledWith(`project_${id}`, { expire: 0 });
       expect(result.status).toBe(200);
     });
 
@@ -121,8 +121,8 @@ describe('ProjectService', () => {
       const result = await ProjectService.deleteProject(id);
 
       expect(MockedRepo.delete).toHaveBeenCalledWith(id);
-      expect(revalidateTag).toHaveBeenCalledWith('projects', 'max');
-      expect(revalidateTag).toHaveBeenCalledWith(`project_${id}`, 'max');
+      expect(revalidateTag).toHaveBeenCalledWith('projects', { expire: 0 });
+      expect(revalidateTag).toHaveBeenCalledWith(`project_${id}`, { expire: 0 });
       expect(result.status).toBe(200);
     });
 
