@@ -87,22 +87,42 @@ export const metadata: Metadata = {
   },
 };
 
-const jsonLd = {
+const personSchema = {
   "@context": "https://schema.org",
   "@type": "Person",
+  "@id": `${BASE_URL}/#person`,
   name: "Dimas Febriyanto",
   url: BASE_URL,
   jobTitle: "Software Engineer",
   email: "dimassfeb@gmail.com",
+  image: "https://www.dimassfeb.com/og-image.jpg",
   address: {
     "@type": "PostalAddress",
     addressLocality: "Bekasi",
+    addressRegion: "Jawa Barat",
     addressCountry: "ID",
   },
   sameAs: [
     "https://www.linkedin.com/in/dimassfeb/",
     "https://github.com/dimassfeb-09",
   ],
+};
+
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": `${BASE_URL}/#website`,
+  name: "Dimas Febriyanto",
+  url: BASE_URL,
+  author: { "@id": `${BASE_URL}/#person` },
+  potentialAction: {
+    "@type": "SearchAction",
+    target: {
+      "@type": "EntryPoint",
+      urlTemplate: `${BASE_URL}/blog?q={search_term_string}`,
+    },
+    "query-input": "required name=search_term_string",
+  },
 };
 
 export default async function RootLayout({
@@ -140,7 +160,7 @@ export default async function RootLayout({
         <IconLoader />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify([personSchema, websiteSchema]) }}
         />
       </head>
       <body

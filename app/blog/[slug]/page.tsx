@@ -4,6 +4,8 @@ import { notFound } from 'next/navigation';
 import { Calendar, ArrowLeft, Clock } from 'lucide-react';
 import Link from 'next/link';
 import TiptapRenderer from '@/src/components/shared/TiptapRenderer';
+import JsonLd from '@/src/components/common/JsonLd';
+import RelatedPosts from '@/src/components/blog/RelatedPosts';
 
 const BASE_URL = "https://www.dimassfeb.com";
 
@@ -72,8 +74,53 @@ export default async function BlogPostPage({ params }: { params: Params }) {
   const wordCount = JSON.stringify(blog.content).length;
   const readTime = Math.ceil(wordCount / 1000);
 
+  const blogPostingSchema = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "@id": `${BASE_URL}/blog/${blog.slug}#article`,
+    headline: blog.title,
+    description: blog.excerpt ?? "",
+    url: `${BASE_URL}/blog/${blog.slug}`,
+    datePublished: blog.published_at
+      ? new Date(blog.published_at).toISOString()
+      : undefined,
+    dateModified: blog.updated_at
+      ? new Date(blog.updated_at).toISOString()
+      : blog.published_at
+        ? new Date(blog.published_at).toISOString()
+        : undefined,
+    author: {
+      "@type": "Person",
+      "@id": `${BASE_URL}/#person`,
+      name: "Dimas Febriyanto",
+      url: BASE_URL,
+    },
+    publisher: {
+      "@type": "Person",
+      "@id": `${BASE_URL}/#person`,
+      name: "Dimas Febriyanto",
+      url: BASE_URL,
+    },
+    image: {
+      "@type": "ImageObject",
+      url: `${BASE_URL}/og-image.jpg`,
+      width: 1200,
+      height: 630,
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `${BASE_URL}/blog/${blog.slug}`,
+    },
+    isPartOf: {
+      "@type": "Blog",
+      "@id": `${BASE_URL}/blog#blog`,
+    },
+    inLanguage: "id-ID",
+  };
+
   return (
     <article className="min-h-screen pt-32 pb-20 px-6 sm:px-10 bg-surface">
+      <JsonLd schema={blogPostingSchema} />
       <div className="max-w-3xl mx-auto space-y-12">
         {/* Navigation */}
         <Link
@@ -95,6 +142,18 @@ export default async function BlogPostPage({ params }: { params: Params }) {
                 day: 'numeric'
               })}
             </div>
+            {blog.updated_at && blog.updated_at !== blog.published_at && (
+              <div className="flex items-center gap-2 text-xs text-on-surface-variant/60">
+                <span>Updated:</span>
+                <time dateTime={new Date(blog.updated_at).toISOString()}>
+                  {new Date(blog.updated_at).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </time>
+              </div>
+            )}
             <div className="flex items-center gap-2">
               <Clock className="w-4 h-4 text-primary" />
               {readTime} min read
@@ -117,6 +176,8 @@ export default async function BlogPostPage({ params }: { params: Params }) {
           content={blog.content}
           className="tiptap-content w-full max-w-none focus:outline-none"
         />
+
+        <RelatedPosts currentSlug={blog.slug} />
 
         {/* Footer */}
         <footer className="pt-12 border-t border-outline-variant/10">

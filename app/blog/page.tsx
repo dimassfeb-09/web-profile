@@ -1,8 +1,28 @@
 import React from 'react';
 import { BlogService } from '@/src/services/blog.service';
 import BlogScrollArea from '@/src/components/blog/BlogScrollArea';
-
+import type { Metadata } from "next";
 import { headers } from 'next/headers';
+
+const BASE_URL = "https://www.dimassfeb.com";
+
+export const metadata: Metadata = {
+  title: "Blog & Insights",
+  description:
+    "Articles about Flutter, Golang, mobile development, and backend engineering by Dimas Febriyanto — Software Engineer from Bekasi, Indonesia.",
+  alternates: {
+    canonical: `${BASE_URL}/blog`,
+  },
+  openGraph: {
+    type: "website",
+    url: `${BASE_URL}/blog`,
+    title: "Blog & Insights | Dimas Febriyanto",
+    description:
+      "Articles about Flutter, Golang, mobile development, and backend engineering.",
+    siteName: "Dimas Febriyanto",
+    images: [{ url: "/og-image.jpg", width: 1200, height: 630, alt: "Blog & Insights" }],
+  },
+};
 
 export const revalidate = 3600; // Revalidate every hour
 
