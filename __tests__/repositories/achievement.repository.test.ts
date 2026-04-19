@@ -7,7 +7,7 @@ jest.mock('@/src/lib/db', () => require('../__mocks__/db').default);
 
 describe('AchievementRepository', () => {
   describe('findAll()', () => {
-    it('should return all achievements ordered by created_at DESC', async () => {
+    it('should return all achievements ordered by created_at DESC (default)', async () => {
       const mockRows = [
         createAchievementData({ id: '1', title: 'Achievement 1' }),
         createAchievementData({ id: '2', title: 'Achievement 2' }),
@@ -17,6 +17,19 @@ describe('AchievementRepository', () => {
       const result = await AchievementRepository.findAll();
 
       expect(mockQuery).toHaveBeenCalledWith('SELECT * FROM achievements ORDER BY created_at DESC');
+      expect(result).toEqual(mockRows);
+    });
+
+    it('should return all achievements ordered by created_at ASC (oldest)', async () => {
+      const mockRows = [
+        createAchievementData({ id: '2', title: 'Achievement 2' }),
+        createAchievementData({ id: '1', title: 'Achievement 1' }),
+      ];
+      mockQuery.mockResolvedValueOnce({ rows: mockRows });
+
+      const result = await AchievementRepository.findAll('oldest');
+
+      expect(mockQuery).toHaveBeenCalledWith('SELECT * FROM achievements ORDER BY created_at ASC');
       expect(result).toEqual(mockRows);
     });
 

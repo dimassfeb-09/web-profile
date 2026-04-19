@@ -14,26 +14,45 @@ export interface BlogData {
 }
 
 export class BlogRepository {
-  static async findAll(options: { onlyPublished?: boolean; cursor?: Date | string | null; limit?: number } = {}): Promise<BlogData[]> {
-    const { onlyPublished = false, cursor, limit = 9 } = options;
+  static async findAll(options: { 
+    onlyPublished?: boolean; 
+    cursor?: Date | string | null; 
+    limit?: number;
+    sort?: 'newest' | 'oldest';
+    search?: string;
+  } = {}): Promise<BlogData[]> {
+    const { 
+      onlyPublished = false, 
+      cursor, 
+      limit = 9, 
+      sort = 'newest',
+      search = ''
+    } = options;
     
     const conditions: string[] = [];
-    const values: any[] = [];
+    const values: unknown[] = [];
     let i = 1;
-
-    const timestampColumn = onlyPublished ? 'published_at' : 'created_at';
-    const orderBy = `ORDER BY ${timestampColumn} DESC`;
 
     if (onlyPublished) {
       conditions.push(`is_published = true`);
     }
 
+    if (search) {
+      conditions.push(`(title ILIKE $${i} OR slug ILIKE $${i})`);
+      values.push(`%${search}%`);
+      i++;
+    }
+
+    const timestampColumn = onlyPublished ? 'published_at' : 'created_at';
+    
     if (cursor) {
-      conditions.push(`${timestampColumn} < $${i++}`);
+      const operator = sort === 'oldest' ? '>' : '<';
+      conditions.push(`${timestampColumn} ${operator} $${i++}`);
       values.push(cursor);
     }
 
     const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+    const orderBy = `ORDER BY ${timestampColumn} ${sort === 'oldest' ? 'ASC' : 'DESC'}, id ${sort === 'oldest' ? 'ASC' : 'DESC'}`;
     
     values.push(limit);
     const query = `
@@ -92,7 +111,7 @@ export class BlogRepository {
 
     // Build dynamic update query
     const fields: string[] = [];
-    const values: any[] = [];
+    const values: unknown[] = [];
     let i = 1;
 
     if (data.title !== undefined) { fields.push(`title = $${i++}`); values.push(data.title); }

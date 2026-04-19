@@ -20,14 +20,14 @@ describe('BlogService', () => {
     it('should call BlogRepository.findAll with default parameter', async () => {
       (BlogRepository.findAll as jest.Mock).mockResolvedValue([]);
       const result = await BlogService.getAllBlogs();
-      expect(BlogRepository.findAll).toHaveBeenCalledWith({ onlyPublished: false, cursor: null, limit: 9 });
+      expect(BlogRepository.findAll).toHaveBeenCalledWith({ onlyPublished: false, cursor: null, limit: 9, sort: 'newest', search: '' });
       expect(result).toEqual({ blogs: [], nextCursor: null, hasMore: false });
     });
 
     it('should call BlogRepository.findAll with specific options', async () => {
       (BlogRepository.findAll as jest.Mock).mockResolvedValue([]);
-      const result = await BlogService.getAllBlogs({ onlyPublished: true, limit: 12 });
-      expect(BlogRepository.findAll).toHaveBeenCalledWith({ onlyPublished: true, cursor: null, limit: 12 });
+      const result = await BlogService.getAllBlogs({ onlyPublished: true, limit: 12, sort: 'oldest', search: 'test' });
+      expect(BlogRepository.findAll).toHaveBeenCalledWith({ onlyPublished: true, cursor: null, limit: 12, sort: 'oldest', search: 'test' });
       expect(result).toEqual({ blogs: [], nextCursor: null, hasMore: false });
     });
 
@@ -75,7 +75,7 @@ describe('BlogService', () => {
       const cursor = '2026-01-01T00:00:00.000Z';
       (BlogRepository.findAll as jest.Mock).mockResolvedValue([]);
       await BlogService.getAllBlogs({ cursor });
-      expect(BlogRepository.findAll).toHaveBeenCalledWith({ onlyPublished: false, cursor, limit: 9 });
+      expect(BlogRepository.findAll).toHaveBeenCalledWith({ onlyPublished: false, cursor, limit: 9, sort: 'newest', search: '' });
     });
 
     it('should call BlogRepository.findById', async () => {
@@ -91,7 +91,7 @@ describe('BlogService', () => {
     it('should bypass cache in all accessor methods', async () => {
       (BlogRepository.findAll as jest.Mock).mockResolvedValue([]);
       await BlogService.getAllBlogs({ bypassCache: true });
-      expect(BlogRepository.findAll).toHaveBeenCalledWith({ onlyPublished: false, cursor: null, limit: 9 });
+      expect(BlogRepository.findAll).toHaveBeenCalledWith({ onlyPublished: false, cursor: null, limit: 9, sort: 'newest', search: '' });
 
       await BlogService.getBlogById('123', true);
       expect(BlogRepository.findById).toHaveBeenCalledWith('123');

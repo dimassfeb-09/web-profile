@@ -13,8 +13,9 @@ export async function createAchievementAction(data: {
     const result = await AchievementService.createAchievement(data);
     revalidateTag('achievements', { expire: 0 });
     return result;
-  } catch (error: any) {
-    return { status: 500, message: error.message || 'Failed to create achievement' };
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to create achievement';
+    return { status: 500, message };
   }
 }
 
@@ -29,8 +30,9 @@ export async function updateAchievementAction(id: string, data: Partial<{
     revalidateTag('achievements', { expire: 0 });
     revalidateTag(`achievement_${id}`, { expire: 0 });
     return result;
-  } catch (error: any) {
-    return { status: 500, message: error.message || 'Failed to update achievement' };
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to update achievement';
+    return { status: 500, message };
   }
 }
 
@@ -40,7 +42,8 @@ export async function deleteAchievementAction(id: string) {
     revalidateTag('achievements', { expire: 0 });
     revalidateTag(`achievement_${id}`, { expire: 0 });
     return result;
-  } catch (error: any) {
-    return { status: 500, message: error.message || 'Failed to delete achievement' };
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to delete achievement';
+    return { status: 500, message };
   }
 }

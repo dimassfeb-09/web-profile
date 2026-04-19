@@ -21,12 +21,23 @@ describe('ProjectService', () => {
   });
 
   describe('getAllProjects()', () => {
-    it('should return projects', async () => {
+    it('should return projects with default sort', async () => {
       const mockData = [createProjectData({ title: 'P1' })];
       MockedRepo.findAll.mockResolvedValueOnce(mockData);
 
       const result = await ProjectService.getAllProjects();
 
+      expect(MockedRepo.findAll).toHaveBeenCalledWith('newest');
+      expect(result.data).toEqual(mockData);
+    });
+
+    it('should return projects with oldest sort', async () => {
+      const mockData = [createProjectData({ title: 'P1' })];
+      MockedRepo.findAll.mockResolvedValueOnce(mockData);
+
+      const result = await ProjectService.getAllProjects(false, 'oldest');
+
+      expect(MockedRepo.findAll).toHaveBeenCalledWith('oldest');
       expect(result.data).toEqual(mockData);
     });
 

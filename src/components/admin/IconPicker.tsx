@@ -111,7 +111,7 @@ const IconPicker: React.FC<IconPickerProps> = ({ value, onChange }) => {
               ))}
               {filteredIcons.length === 0 && (
                 <div className="col-span-full py-8 text-center text-on-surface-variant font-body text-xs italic">
-                  No icons found matching "{searchTerm}"
+                  No icons found matching &quot;{searchTerm}&quot;
                 </div>
               )}
             </div>

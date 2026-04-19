@@ -11,10 +11,12 @@ const CertificateSchema = z.object({
   image_url: z.string().url().nullable().or(z.literal('')),
 });
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     await requireAuth();
-    const result = await CertificateService.getAllCertificates(true);
+    const { searchParams } = new URL(request.url);
+    const sort = (searchParams.get('sort') === 'oldest' ? 'oldest' : 'newest') as 'newest' | 'oldest';
+    const result = await CertificateService.getAllCertificates(true, sort);
     return NextResponse.json(result, { status: result.status });
   } catch (error: any) {
     if (error.message === 'UNAUTHORIZED') {

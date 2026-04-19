@@ -11,7 +11,8 @@ export async function deleteBlogAction(id: string) {
     revalidateTag('blog', { expire: 0 });
     revalidateTag(`blog_${id}`, { expire: 0 });
     return { status: 200, message: 'Article deleted successfully' };
-  } catch (error: any) {
-    return { status: 500, message: error.message || 'Failed to delete blog' };
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to delete blog';
+    return { status: 500, message };
   }
 }

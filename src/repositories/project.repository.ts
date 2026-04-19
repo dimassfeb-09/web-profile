@@ -8,11 +8,13 @@ export interface ProjectData {
   features: string[];
   link_url: string;
   link_text: string;
+  created_at?: Date;
 }
 
 export class ProjectRepository {
-  static async findAll(): Promise<ProjectData[]> {
-    const query = 'SELECT * FROM projects ORDER BY id DESC';
+  static async findAll(sort: 'newest' | 'oldest' = 'newest'): Promise<ProjectData[]> {
+    const order = sort === 'oldest' ? 'ASC' : 'DESC';
+    const query = `SELECT * FROM projects ORDER BY created_at ${order}, id ${order}`;
     const { rows } = await pool.query(query);
     return rows;
   }

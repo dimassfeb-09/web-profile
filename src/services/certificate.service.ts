@@ -2,11 +2,11 @@ import { CertificateRepository, CertificateData } from '../repositories/certific
 import { unstable_cache, revalidateTag } from 'next/cache';
 
 export class CertificateService {
-  private static getCachedAllCertificates = unstable_cache(
-    async () => CertificateRepository.findAll(),
-    ['certificates_all'],
+  private static getCachedAllCertificates = (sort: 'newest' | 'oldest') => unstable_cache(
+    async () => CertificateRepository.findAll(sort),
+    [`certificates_all_${sort}`],
     { revalidate: 3600, tags: ['certificates'] }
-  );
+  )();
 
   private static getCachedCertificateById = (id: string) => unstable_cache(
     async () => CertificateRepository.findById(id),
@@ -14,11 +14,11 @@ export class CertificateService {
     { revalidate: 3600, tags: ['certificates', `certificate_${id}`] }
   )();
 
-  static async getAllCertificates(bypassCache = false) {
+  static async getAllCertificates(bypassCache = false, sort: 'newest' | 'oldest' = 'newest') {
     try {
       const certificates = bypassCache
-        ? await CertificateRepository.findAll()
-        : await this.getCachedAllCertificates();
+        ? await CertificateRepository.findAll(sort)
+        : await this.getCachedAllCertificates(sort);
       
       return {
         status: 200,

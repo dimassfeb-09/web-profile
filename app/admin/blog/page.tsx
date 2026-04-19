@@ -1,6 +1,7 @@
 import React from 'react';
 import { BlogService } from '@/src/services/blog.service';
 import BlogListClient from './BlogListClient';
+import SortFilter from '@/src/components/common/SortFilter';
 
 export const dynamic = 'force-dynamic';
 
@@ -8,8 +9,18 @@ export const metadata = {
   title: 'Blog Management | Admin',
 };
 
-export default async function BlogManagementPage() {
-  const { blogs } = await BlogService.getAllBlogs({ bypassCache: true });
+export default async function BlogManagementPage(props: {
+  searchParams: Promise<{ [key: string]: string | undefined }>;
+}) {
+  const searchParams = await props.searchParams;
+  const sort = (searchParams.sort === 'oldest' ? 'oldest' : 'newest') as 'newest' | 'oldest';
+  const search = searchParams.search || '';
+
+  const { blogs } = await BlogService.getAllBlogs({ 
+    bypassCache: true,
+    sort,
+    search
+  });
   
   // Map data to match Client Component expectations (serializable strings instead of Date objects)
   const mappedBlogs = blogs.map(blog => ({
@@ -21,5 +32,12 @@ export default async function BlogManagementPage() {
     created_at: (blog.created_at || new Date()).toISOString()
   }));
   
-  return <BlogListClient initialBlogs={mappedBlogs} />;
+  return (
+    <div className="space-y-4">
+      <div className="flex justify-end">
+        <SortFilter />
+      </div>
+      <BlogListClient initialBlogs={mappedBlogs} />
+    </div>
+  );
 }

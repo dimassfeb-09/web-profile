@@ -6,7 +6,7 @@ jest.mock('@/src/lib/db', () => require('../__mocks__/db').default);
 
 describe('CertificateRepository', () => {
   describe('findAll()', () => {
-    it('should return all certificates ordered by created_at DESC', async () => {
+    it('should return all certificates ordered by created_at DESC (default)', async () => {
       const mockRows = [
         createCertificateData({ id: '1', title: 'Cert 1' }),
         createCertificateData({ id: '2', title: 'Cert 2' }),
@@ -16,6 +16,19 @@ describe('CertificateRepository', () => {
       const result = await CertificateRepository.findAll();
 
       expect(mockQuery).toHaveBeenCalledWith('SELECT * FROM certificates ORDER BY created_at DESC');
+      expect(result).toEqual(mockRows);
+    });
+
+    it('should return all certificates ordered by created_at ASC (oldest)', async () => {
+      const mockRows = [
+        createCertificateData({ id: '2', title: 'Cert 2' }),
+        createCertificateData({ id: '1', title: 'Cert 1' }),
+      ];
+      mockQuery.mockResolvedValueOnce({ rows: mockRows });
+
+      const result = await CertificateRepository.findAll('oldest');
+
+      expect(mockQuery).toHaveBeenCalledWith('SELECT * FROM certificates ORDER BY created_at ASC');
       expect(result).toEqual(mockRows);
     });
   });

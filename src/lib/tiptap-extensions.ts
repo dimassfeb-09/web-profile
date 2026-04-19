@@ -17,9 +17,8 @@ export const getBaseExtensions = () => [
     horizontalRule: false,
     codeBlock: false, // Matikan default code block karena kita pakai lowlight
     // Ensure these are NOT in StarterKit to avoid duplicates
-    link: false,
     underline: false,
-  } as any),
+  } as Record<string, unknown>),
   Underline,
   Link.configure({
     openOnClick: false,

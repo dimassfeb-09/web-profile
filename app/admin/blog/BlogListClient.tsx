@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
+import { useDebouncedCallback } from 'use-debounce';
 import { deleteBlogAction } from '@/src/actions/blog.actions';
 import AdminHeader from '@/src/components/admin/ui/AdminHeader';
 
@@ -21,7 +22,26 @@ interface BlogListClientProps {
 
 export default function BlogListClient({ initialBlogs }: BlogListClientProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
   const [isLoading, setIsLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '');
+
+  const debouncedSearch = useDebouncedCallback((value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (value) {
+      params.set('search', value);
+    } else {
+      params.delete('search');
+    }
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  }, 500);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    debouncedSearch(value);
+  };
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this blog? This will also delete all images associated with it.')) return;
@@ -49,6 +69,27 @@ export default function BlogListClient({ initialBlogs }: BlogListClientProps) {
         onButtonClick={() => router.push('/admin/blog/create')}
         icon="add"
       />
+
+      <div className="relative mb-6 group">
+        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/40 group-focus-within:text-primary transition-colors">
+          <span className="material-symbols-outlined text-xl">search</span>
+        </div>
+        <input
+          type="text"
+          placeholder="Cari blog berdasarkan judul atau slug..."
+          value={searchTerm}
+          onChange={handleSearchChange}
+          className="w-full pl-12 pr-4 py-3 rounded-2xl bg-surface-container-low border border-outline-variant/10 focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all text-sm font-body shadow-sm"
+        />
+        {searchTerm && (
+          <button 
+            onClick={() => { setSearchTerm(''); debouncedSearch(''); }}
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant/40 hover:text-error transition-colors"
+          >
+            <span className="material-symbols-outlined text-lg">close</span>
+          </button>
+        )}
+      </div>
 
       <div className="bg-surface-container-low border border-outline-variant/10 rounded-3xl overflow-hidden">
         <div className="table-responsive">
@@ -80,7 +121,7 @@ export default function BlogListClient({ initialBlogs }: BlogListClientProps) {
                     )}
                   </td>
                   <td className="p-6 font-body text-sm text-on-surface-variant whitespace-nowrap">
-                    {new Date(blog.created_at).toLocaleDateString()}
+                    {new Date(blog.created_at).toLocaleDateString('en-GB')}
                   </td>
                   <td className="p-6 text-right">
                     <div className="flex items-center justify-end gap-2">

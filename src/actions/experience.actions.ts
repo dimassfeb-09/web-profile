@@ -14,8 +14,9 @@ export async function createExperienceAction(data: {
     const result = await ExperienceService.createExperience(data);
     revalidateTag('experience', { expire: 0 });
     return result;
-  } catch (error: any) {
-    return { status: 500, message: error.message || 'Failed to create experience' };
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to create experience';
+    return { status: 500, message };
   }
 }
 
@@ -30,8 +31,9 @@ export async function updateExperienceAction(id: number, data: Partial<{
     const result = await ExperienceService.updateExperience(id, data);
     revalidateTag('experience', { expire: 0 });
     return result;
-  } catch (error: any) {
-    return { status: 500, message: error.message || 'Failed to update experience' };
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to update experience';
+    return { status: 500, message };
   }
 }
 
@@ -40,7 +42,8 @@ export async function deleteExperienceAction(id: number) {
     const result = await ExperienceService.deleteExperience(id);
     revalidateTag('experience', { expire: 0 });
     return result;
-  } catch (error: any) {
-    return { status: 500, message: error.message || 'Failed to delete experience' };
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to delete experience';
+    return { status: 500, message };
   }
 }

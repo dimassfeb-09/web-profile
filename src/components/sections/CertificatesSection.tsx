@@ -28,8 +28,8 @@ const CertificatesSection: React.FC<CertificatesSectionProps> = ({ certificates 
         <h2 className="font-headline text-3xl xs:text-4xl lg:text-5xl font-bold tracking-tight text-on-surface mb-4">
           Certificates.
         </h2>
-        <p className="font-body text-on-surface-variant text-base xs:text-lg max-w-xl">
-          Professional certifications and licenses I've earned.
+        <p className="text-zinc-500 font-body text-sm xs:text-base lg:text-lg mb-4 drop-shadow-sm">
+          A showcase of my professional certifications and achievements, highlighting my commitment to continuous learning and excellence in technology. Don&apos;t settle for less.
         </p>
       </div>
       

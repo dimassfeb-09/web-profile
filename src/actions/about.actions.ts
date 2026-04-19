@@ -11,7 +11,8 @@ export async function updateAboutAction(data: {
     const result = await AboutService.updateAboutData(data);
     revalidateTag('about', { expire: 0 });
     return result;
-  } catch (error: any) {
-    return { status: 500, message: error.message || 'Failed to update about section' };
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to update about section';
+    return { status: 500, message };
   }
 }

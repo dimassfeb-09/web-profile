@@ -11,8 +11,9 @@ export interface AchievementData {
 }
 
 export class AchievementRepository {
-  static async findAll(): Promise<AchievementData[]> {
-    const query = 'SELECT * FROM achievements ORDER BY created_at DESC';
+  static async findAll(sort: 'newest' | 'oldest' = 'newest'): Promise<AchievementData[]> {
+    const order = sort === 'oldest' ? 'ASC' : 'DESC';
+    const query = `SELECT * FROM achievements ORDER BY created_at ${order}`;
     const { rows } = await pool.query(query);
     return rows;
   }

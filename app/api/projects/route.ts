@@ -5,8 +5,9 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const bypassCache = searchParams.get('bypassCache') === 'true';
+    const sort = (searchParams.get('sort') === 'oldest' ? 'oldest' : 'newest') as 'newest' | 'oldest';
 
-    const result = await ProjectService.getAllProjects(bypassCache);
+    const result = await ProjectService.getAllProjects(bypassCache, sort);
     return NextResponse.json(result, { status: result.status });
   } catch (error) {
     return NextResponse.json(

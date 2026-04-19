@@ -13,10 +13,12 @@ const ProjectSchema = z.object({
 });
 
 // GET all projects 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     await requireAuth();
-    const result = await ProjectService.getAllProjects(true); // Bypass cache for admin
+    const { searchParams } = new URL(request.url);
+    const sort = (searchParams.get('sort') === 'oldest' ? 'oldest' : 'newest') as 'newest' | 'oldest';
+    const result = await ProjectService.getAllProjects(true, sort); // Bypass cache for admin
     return NextResponse.json(result, { status: result.status });
   } catch (error: any) {
     if (error.message === 'UNAUTHORIZED') {

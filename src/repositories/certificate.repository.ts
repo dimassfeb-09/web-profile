@@ -13,8 +13,9 @@ export interface CertificateData {
 }
 
 export class CertificateRepository {
-  static async findAll(): Promise<CertificateData[]> {
-    const query = 'SELECT * FROM certificates ORDER BY created_at DESC';
+  static async findAll(sort: 'newest' | 'oldest' = 'newest'): Promise<CertificateData[]> {
+    const order = sort === 'oldest' ? 'ASC' : 'DESC';
+    const query = `SELECT * FROM certificates ORDER BY created_at ${order}`;
     const { rows } = await pool.query(query);
     return rows;
   }

@@ -1,4 +1,4 @@
-import { BlogImageRepository, BlogImageData } from '../repositories/blog_image.repository';
+import { BlogImageRepository } from '../repositories/blog_image.repository';
 import { StorageService } from './storage.service';
 
 export class ImageService {

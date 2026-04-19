@@ -14,8 +14,9 @@ export async function createSkillAction(formData: {
     const result = await SkillService.createSkill(formData);
     revalidateTag('skills', { expire: 0 });
     return result;
-  } catch (error: any) {
-    return { status: 500, message: error.message || 'Failed to create skill' };
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to create skill';
+    return { status: 500, message };
   }
 }
 
@@ -30,8 +31,9 @@ export async function updateSkillAction(id: number, formData: {
     const result = await SkillService.updateSkill(id, formData);
     revalidateTag('skills', { expire: 0 });
     return result;
-  } catch (error: any) {
-    return { status: 500, message: error.message || 'Failed to update skill' };
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to update skills';
+    return { status: 500, message };
   }
 }
 
@@ -40,7 +42,8 @@ export async function deleteSkillAction(id: number) {
     const result = await SkillService.deleteSkill(id);
     revalidateTag('skills', { expire: 0 });
     return result;
-  } catch (error: any) {
-    return { status: 500, message: error.message || 'Failed to delete skill' };
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to delete skill';
+    return { status: 500, message };
   }
 }

@@ -9,6 +9,7 @@ import { HomeData } from '@/src/repositories/home.repository';
 import { AdminData } from '@/src/repositories/admin.repository';
 import { BlogData } from '@/src/repositories/blog.repository';
 import { BlogImageData } from '@/src/repositories/blog_image.repository';
+import { SectionOrder } from '@/src/repositories/section_order.repository';
 
 export const createAchievementData = (overrides?: Partial<AchievementData>): AchievementData => ({
   title: 'Default Achievement Title',
@@ -100,5 +101,16 @@ export const createBlogImageData = (overrides?: Partial<BlogImageData>): BlogIma
   file_path: 'blogs/test-uuid/image.png',
   storage_url: 'https://example.com/image.png',
   status: 'unused',
+  ...overrides,
+});
+
+export const createSectionOrderData = (overrides?: Partial<SectionOrder>): SectionOrder => ({
+  id: 'test-uuid',
+  section_key: 'about',
+  section_label: 'About',
+  order_index: 1,
+  is_visible: true,
+  created_at: new Date(),
+  updated_at: new Date(),
   ...overrides,
 });

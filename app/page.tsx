@@ -13,7 +13,9 @@ import { BlogService } from "@/src/services/blog.service";
 // Static Import for Hero (P1: Fastest LCP)
 import HeroSection from "@/src/components/sections/HeroSection";
 
-// Dynamic Imports for Sections Below-the-fold
+import { SectionOrderService } from "@/src/services/section_order.service";
+
+// Dynamic Imports for Sections
 const AboutSection = dynamic(() => import("@/src/components/sections/AboutSection"));
 const SkillsSection = dynamic(() => import("@/src/components/sections/SkillsSection"));
 const ExperienceSection = dynamic(() => import("@/src/components/sections/ExperienceSection"));
@@ -22,6 +24,18 @@ const AchievementSection = dynamic(() => import("@/src/components/sections/Achie
 const CertificatesSection = dynamic(() => import("@/src/components/sections/CertificatesSection"));
 const ContactSection = dynamic(() => import("@/src/components/sections/ContactSection"));
 const BlogSection = dynamic(() => import("@/src/components/sections/BlogSection"));
+
+// Mapping components to keys
+const SECTION_COMPONENTS: Record<string, React.ComponentType<any>> = {
+  about: AboutSectionWrapper,
+  skills: SkillsSectionWrapper,
+  experience: ExperienceSectionWrapper,
+  projects: ProjectsSectionWrapper,
+  achievements: AchievementSectionWrapper,
+  certificates: CertificatesSectionWrapper,
+  blog: BlogSectionWrapper,
+  contact: ContactSectionWrapper,
+};
 
 // Skeleton Fallback
 const SectionSkeleton = () => (
@@ -44,18 +58,18 @@ async function ExperienceSectionWrapper() {
   return <ExperienceSection experiences={experienceData.data || []} />;
 }
 
-async function ProjectsSectionWrapper() {
-  const projectsData = await ProjectService.getAllProjects();
+async function ProjectsSectionWrapper({ sort }: { sort: 'newest' | 'oldest' }) {
+  const projectsData = await ProjectService.getAllProjects(false, sort);
   return <ProjectsSection initialProjects={projectsData.data || []} />;
 }
 
-async function AchievementSectionWrapper() {
-  const achievementsData = await AchievementService.getAllAchievements();
+async function AchievementSectionWrapper({ sort }: { sort: 'newest' | 'oldest' }) {
+  const achievementsData = await AchievementService.getAllAchievements(false, sort);
   return <AchievementSection achievements={achievementsData.data || []} />;
 }
 
-async function CertificatesSectionWrapper() {
-  const certificatesData = await CertificateService.getAllCertificates();
+async function CertificatesSectionWrapper({ sort }: { sort: 'newest' | 'oldest' }) {
+  const certificatesData = await CertificateService.getAllCertificates(false, sort);
   return <CertificatesSection certificates={certificatesData.data || []} />;
 }
 
@@ -69,65 +83,43 @@ async function BlogSectionWrapper() {
   return <BlogSection blogs={blogs || []} />;
 }
 
-export default async function Home() {
-  // Fetch only Hero data first (P1: Fastest TTFB for LCP)
-  const homeData = await HomeService.getHomeData();
+export default async function Home(props: {
+  searchParams: Promise<{ [key: string]: string | undefined }>;
+}) {
+  const searchParams = await props.searchParams;
+  const sort = (searchParams.sort === 'oldest' ? 'oldest' : 'newest') as 'newest' | 'oldest';
+
+  // Fetch all parallel requirements
+  const [homeData, sectionOrderResult] = await Promise.all([
+    HomeService.getHomeData(),
+    SectionOrderService.getAllSections()
+  ]);
 
   if (!homeData.data) {
     return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
   }
 
+  // Filter and sort visible sections
+  const visibleSections = (sectionOrderResult.data || [])
+    .filter(s => s.is_visible)
+    .sort((a, b) => a.order_index - b.order_index);
+
   return (
     <main className="pt-20 xs:pt-24 lg:pt-32 px-6 xs:px-8 md:px-12 lg:px-16 2xl:px-24 max-w-[1920px] mx-auto flex flex-col gap-12 xs:gap-20 lg:gap-24 xl:gap-32 pb-20 xs:pb-32">
       <HeroSection data={homeData.data} />
       
-      <div id="about">
-        <Suspense fallback={<SectionSkeleton />}>
-          <AboutSectionWrapper />
-        </Suspense>
-      </div>
-      
-      <div id="skills">
-        <Suspense fallback={<SectionSkeleton />}>
-          <SkillsSectionWrapper />
-        </Suspense>
-      </div>
-      
-      <div id="experience">
-        <Suspense fallback={<SectionSkeleton />}>
-          <ExperienceSectionWrapper />
-        </Suspense>
-      </div>
-      
-      <div id="projects">
-        <Suspense fallback={<SectionSkeleton />}>
-          <ProjectsSectionWrapper />
-        </Suspense>
-      </div>
-      
-      <div id="achievements">
-        <Suspense fallback={<SectionSkeleton />}>
-          <AchievementSectionWrapper />
-        </Suspense>
-      </div>
-      
-      <div id="certificates">
-        <Suspense fallback={<SectionSkeleton />}>
-          <CertificatesSectionWrapper />
-        </Suspense>
-      </div>
-      
-      <div id="blog">
-        <Suspense fallback={<SectionSkeleton />}>
-          <BlogSectionWrapper />
-        </Suspense>
-      </div>
+      {visibleSections.map((section) => {
+        const Component = SECTION_COMPONENTS[section.section_key];
+        if (!Component) return null;
 
-      <div id="contact">
-        <Suspense fallback={<SectionSkeleton />}>
-          <ContactSectionWrapper />
-        </Suspense>
-      </div>
+        return (
+          <div key={section.section_key} id={section.section_key}>
+            <Suspense fallback={<SectionSkeleton />}>
+              <Component sort={sort} />
+            </Suspense>
+          </div>
+        );
+      })}
     </main>
   );
 }

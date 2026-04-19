@@ -10,7 +10,15 @@ export const metadata = {
 
 export default async function ContactManagementPage() {
   const response = await ContactService.getContactData(true);
-  const data = response.data || { headline: '', description: '', email: '', linkedin_url: '' };
+  const data = response.data || { 
+    headline: '', 
+    description: '', 
+    email: '', 
+    linkedin_url: '',
+    github_url: '',
+    instagram_url: '',
+    twitter_url: ''
+  };
 
   return <ContactClient initialData={data} />;
 }

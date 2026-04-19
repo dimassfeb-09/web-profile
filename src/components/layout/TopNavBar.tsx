@@ -6,9 +6,10 @@ import Link from 'next/link';
 
 interface TopNavBarProps {
   cvUrl: string;
+  navLinks?: { name: string; href: string }[];
 }
 
-const TopNavBar = ({ cvUrl }: TopNavBarProps) => {
+const TopNavBar = ({ cvUrl, navLinks = [] }: TopNavBarProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
   const isHome = pathname === '/';
@@ -41,16 +42,6 @@ const TopNavBar = ({ cvUrl }: TopNavBarProps) => {
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
-  const navLinks = [
-    { name: 'About', href: '#about' },
-    { name: 'Skills', href: '#skills' },
-    { name: 'Experience', href: '#experience' },
-    { name: 'Projects', href: '#projects' },
-    { name: 'Achievements', href: '#achievements' },
-    { name: 'Certificates', href: '#certificates' },
-    { name: 'Blog', href: '/blog' },
-    { name: 'Contact', href: '#contact' },
-  ];
 
   return (
     <nav 

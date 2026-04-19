@@ -21,12 +21,23 @@ describe('CertificateService', () => {
   });
 
   describe('getAllCertificates()', () => {
-    it('should return certificates from cache/repo', async () => {
+    it('should return certificates with default sort', async () => {
       const mockData = [createCertificateData({ title: 'C1' })];
       MockedRepo.findAll.mockResolvedValueOnce(mockData);
 
       const result = await CertificateService.getAllCertificates();
 
+      expect(MockedRepo.findAll).toHaveBeenCalledWith('newest');
+      expect(result.data).toEqual(mockData);
+    });
+
+    it('should return certificates with oldest sort', async () => {
+      const mockData = [createCertificateData({ title: 'C1' })];
+      MockedRepo.findAll.mockResolvedValueOnce(mockData);
+
+      const result = await CertificateService.getAllCertificates(false, 'oldest');
+
+      expect(MockedRepo.findAll).toHaveBeenCalledWith('oldest');
       expect(result.data).toEqual(mockData);
     });
 

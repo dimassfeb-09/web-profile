@@ -22,12 +22,6 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ initialProjects }) =>
   const [visibleCount, setVisibleCount] = useState(6);
   const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-    const cols = getColumnCount();
-    setVisibleCount(cols === 1 ? 2 : cols);
-  }, []);
-
   const getColumnCount = () => {
     if (typeof window === 'undefined') return 3;
     const width = window.innerWidth;
@@ -36,6 +30,13 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ initialProjects }) =>
     if (width >= 640) return 2;
     return 1;
   };
+
+  useEffect(() => {
+    // Only set mounted and calculate columns on client
+    setMounted(true);
+    const cols = getColumnCount();
+    setVisibleCount(cols === 1 ? 2 : cols);
+  }, []); // Run once on mount
 
   const handleLoadMore = () => {
     const cols = getColumnCount();
@@ -64,6 +65,7 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ initialProjects }) =>
             features={project.features}
             linkUrl={project.link_url}
             linkText={project.link_text}
+            priority={index <= 1}
           />
         ))}
       </div>

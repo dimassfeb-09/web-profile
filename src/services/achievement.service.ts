@@ -2,11 +2,11 @@ import { AchievementRepository, AchievementData } from '../repositories/achievem
 import { unstable_cache, revalidateTag } from 'next/cache';
 
 export class AchievementService {
-  private static getCachedAllAchievements = unstable_cache(
-    async () => AchievementRepository.findAll(),
-    ['achievements_all'],
+  private static getCachedAllAchievements = (sort: 'newest' | 'oldest') => unstable_cache(
+    async () => AchievementRepository.findAll(sort),
+    [`achievements_all_${sort}`],
     { revalidate: 3600, tags: ['achievements'] }
-  );
+  )();
 
   private static getCachedAchievementById = (id: string) => unstable_cache(
     async () => AchievementRepository.findById(id),
@@ -14,11 +14,11 @@ export class AchievementService {
     { revalidate: 3600, tags: ['achievements', `achievement_${id}`] }
   )();
 
-  static async getAllAchievements(bypassCache = false) {
+  static async getAllAchievements(bypassCache = false, sort: 'newest' | 'oldest' = 'newest') {
     try {
       const achievements = bypassCache
-        ? await AchievementRepository.findAll()
-        : await this.getCachedAllAchievements();
+        ? await AchievementRepository.findAll(sort)
+        : await this.getCachedAllAchievements(sort);
 
       return {
         status: 200,

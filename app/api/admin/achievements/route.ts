@@ -10,10 +10,12 @@ const AchievementSchema = z.object({
   date: z.string().nullable(),
 });
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     await requireAuth();
-    const result = await AchievementService.getAllAchievements(true);
+    const { searchParams } = new URL(request.url);
+    const sort = (searchParams.get('sort') === 'oldest' ? 'oldest' : 'newest') as 'newest' | 'oldest';
+    const result = await AchievementService.getAllAchievements(true, sort);
     return NextResponse.json(result, { status: result.status });
   } catch (error: any) {
     if (error.message === 'UNAUTHORIZED') {

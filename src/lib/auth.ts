@@ -40,9 +40,9 @@ export async function login(payload: AuthPayload) {
   const session = await encrypt(payload);
 
   const cookieStore = await cookies();
-  cookieStore.set(COOKIE_NAME, session, { 
-    expires, 
-    httpOnly: true, 
+  cookieStore.set(COOKIE_NAME, session, {
+    expires,
+    httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
     path: '/'
@@ -51,12 +51,12 @@ export async function login(payload: AuthPayload) {
 
 export async function logout() {
   const cookieStore = await cookies();
-  cookieStore.set(COOKIE_NAME, '', { 
-    expires: new Date(0), 
+  cookieStore.set(COOKIE_NAME, '', {
+    expires: new Date(0),
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
-    path: '/' 
+    path: '/'
   });
 }
 
@@ -66,7 +66,7 @@ export async function getSession() {
   if (!session) return null;
   try {
     return await decrypt(session);
-  } catch (err) {
+  } catch {
     return null;
   }
 }
@@ -103,7 +103,7 @@ export async function updateSession(request: NextRequest) {
       path: '/'
     });
     return res;
-  } catch (err) {
+  } catch {
     return;
   }
 }

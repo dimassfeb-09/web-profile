@@ -28,17 +28,26 @@ export class BlogService {
     onlyPublished?: boolean;
     cursor?: string | null;
     limit?: number;
-    bypassCache?: boolean
+    bypassCache?: boolean;
+    sort?: 'newest' | 'oldest';
+    search?: string;
   } = {}): Promise<{ blogs: BlogData[]; nextCursor: string | null; hasMore: boolean }> {
-    const { onlyPublished = false, cursor = null, limit = 9, bypassCache = false } = options;
+    const { 
+      onlyPublished = false, 
+      cursor = null, 
+      limit = 9, 
+      bypassCache = false,
+      sort = 'newest',
+      search = ''
+    } = options;
 
-    const fetchBlogs = async () => BlogRepository.findAll({ onlyPublished, cursor, limit });
+    const fetchBlogs = async () => BlogRepository.findAll({ onlyPublished, cursor, limit, sort, search });
 
     let blogs: BlogData[];
     if (bypassCache) {
       blogs = await fetchBlogs();
     } else {
-      const cacheKey = `blogs_all_${onlyPublished}_${cursor ?? 'none'}_${limit}`;
+      const cacheKey = `blogs_all_${onlyPublished}_${cursor ?? 'none'}_${limit}_${sort}_${search || 'none'}`;
       blogs = await unstable_cache(
         fetchBlogs,
         [cacheKey],

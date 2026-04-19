@@ -15,8 +15,9 @@ export async function createCertificateAction(data: {
     const result = await CertificateService.createCertificate(data);
     revalidateTag('certificates', { expire: 0 });
     return result;
-  } catch (error: any) {
-    return { status: 500, message: error.message || 'Failed to create certificate' };
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to create certificate';
+    return { status: 500, message };
   }
 }
 
@@ -33,8 +34,9 @@ export async function updateCertificateAction(id: string, data: Partial<{
     revalidateTag('certificates', { expire: 0 });
     revalidateTag(`certificate_${id}`, { expire: 0 });
     return result;
-  } catch (error: any) {
-    return { status: 500, message: error.message || 'Failed to update certificate' };
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to update certificate';
+    return { status: 500, message };
   }
 }
 
@@ -44,7 +46,8 @@ export async function deleteCertificateAction(id: string) {
     revalidateTag('certificates', { expire: 0 });
     revalidateTag(`certificate_${id}`, { expire: 0 });
     return result;
-  } catch (error: any) {
-    return { status: 500, message: error.message || 'Failed to delete certificate' };
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to delete certificate';
+    return { status: 500, message };
   }
 }

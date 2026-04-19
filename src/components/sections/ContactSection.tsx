@@ -1,10 +1,15 @@
 import React from 'react';
+import { Mail } from 'lucide-react';
+import SocialIcon from '../ui/SocialIcon';
 
 interface ContactData {
   headline: string;
   description: string;
   email: string;
   linkedin_url: string;
+  github_url?: string;
+  instagram_url?: string;
+  twitter_url?: string;
 }
 
 interface ContactSectionProps {
@@ -41,9 +46,41 @@ const ContactSection: React.FC<ContactSectionProps> = ({ data }) => {
             <span className="material-symbols-outlined text-sm">open_in_new</span>
           </a>
         </div>
-        <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-surface-container-low border border-outline-variant/20">
-          <span className="material-symbols-outlined text-on-surface-variant text-sm">mail</span>
+        <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-surface-container-low border border-outline-variant/20 mb-12">
+          <Mail className="w-4 h-4 text-on-surface-variant" />
           <span className="text-on-surface-variant font-label text-sm tracking-wide">{data.email}</span>
+        </div>
+
+        {/* Social Links Row */}
+        <div className="flex items-center justify-center gap-6">
+          {data.linkedin_url && (
+            <a href={data.linkedin_url} target="_blank" rel="noopener noreferrer" 
+               className="p-3 rounded-2xl bg-surface-container-low border border-outline-variant/10 text-on-surface-variant hover:text-primary hover:border-primary/30 transition-all hover:-translate-y-1"
+               title="LinkedIn">
+              <SocialIcon platform="linkedin" className="w-6 h-6" />
+            </a>
+          )}
+          {data.github_url && (
+            <a href={data.github_url} target="_blank" rel="noopener noreferrer" 
+               className="p-3 rounded-2xl bg-surface-container-low border border-outline-variant/10 text-on-surface-variant hover:text-primary hover:border-primary/30 transition-all hover:-translate-y-1"
+               title="GitHub">
+              <SocialIcon platform="github" className="w-6 h-6" />
+            </a>
+          )}
+          {data.instagram_url && (
+            <a href={data.instagram_url} target="_blank" rel="noopener noreferrer" 
+               className="p-3 rounded-2xl bg-surface-container-low border border-outline-variant/10 text-on-surface-variant hover:text-primary hover:border-primary/30 transition-all hover:-translate-y-1"
+               title="Instagram">
+              <SocialIcon platform="instagram" className="w-6 h-6" />
+            </a>
+          )}
+          {data.twitter_url && (
+            <a href={data.twitter_url} target="_blank" rel="noopener noreferrer" 
+               className="p-3 rounded-2xl bg-surface-container-low border border-outline-variant/10 text-on-surface-variant hover:text-primary hover:border-primary/30 transition-all hover:-translate-y-1"
+               title="Twitter / X">
+              <SocialIcon platform="twitter" className="w-6 h-6" />
+            </a>
+          )}
         </div>
       </div>
     </section>

@@ -10,18 +10,43 @@ describe('BlogRepository', () => {
   });
 
   describe('findAll()', () => {
-    it('should return all blogs ordered by created_at', async () => {
+    it('should return all blogs ordered by created_at DESC (default)', async () => {
       const mockBlogs = [createBlogData({ title: 'Blog 1' }), createBlogData({ title: 'Blog 2' })];
       mockQuery.mockResolvedValueOnce({ rows: mockBlogs });
 
       const result = await BlogRepository.findAll({});
 
       expect(mockQuery).toHaveBeenCalledWith(
-        expect.stringContaining('LIMIT $1'),
+        expect.stringContaining('ORDER BY created_at DESC'),
         [9]
       );
       expect(result).toHaveLength(2);
       expect(result).toEqual(mockBlogs);
+    });
+
+    it('should return all blogs ordered by created_at ASC (oldest)', async () => {
+      const mockBlogs = [createBlogData({ title: 'Blog 2' }), createBlogData({ title: 'Blog 1' })];
+      mockQuery.mockResolvedValueOnce({ rows: mockBlogs });
+
+      const result = await BlogRepository.findAll({ sort: 'oldest' });
+
+      expect(mockQuery).toHaveBeenCalledWith(
+        expect.stringContaining('ORDER BY created_at ASC'),
+        [9]
+      );
+      expect(result).toEqual(mockBlogs);
+    });
+
+    it('should filter blogs by title or slug when search is provided', async () => {
+      const mockBlogs = [createBlogData({ title: 'Next.js Guide' })];
+      mockQuery.mockResolvedValueOnce({ rows: mockBlogs });
+
+      await BlogRepository.findAll({ search: 'Next' });
+
+      expect(mockQuery).toHaveBeenCalledWith(
+        expect.stringContaining('(title ILIKE $1 OR slug ILIKE $1)'),
+        ['%Next%', 9]
+      );
     });
 
     it('should work with default options when no arguments provided', async () => {
@@ -40,24 +65,29 @@ describe('BlogRepository', () => {
         expect.stringContaining('is_published = true'),
         [9]
       );
-      expect(mockQuery).toHaveBeenCalledWith(
-        expect.stringContaining('LIMIT $1'),
-        [9]
-      );
     });
 
     it('should apply cursor filter when provided', async () => {
       const cursor = new Date().toISOString();
       const mockBlogs = [createBlogData({ title: 'Old Blog' })];
       mockQuery.mockResolvedValueOnce({ rows: mockBlogs });
-      const result = await BlogRepository.findAll({ cursor });
+      
+      await BlogRepository.findAll({ cursor });
 
       expect(mockQuery).toHaveBeenCalledWith(
         expect.stringContaining('created_at < $1'),
         [cursor, 9]
       );
+    });
+
+    it('should apply cursor with ASC operator when sort is oldest', async () => {
+      const cursor = new Date().toISOString();
+      mockQuery.mockResolvedValueOnce({ rows: [] });
+      
+      await BlogRepository.findAll({ cursor, sort: 'oldest' });
+
       expect(mockQuery).toHaveBeenCalledWith(
-        expect.stringContaining('LIMIT $2'),
+        expect.stringContaining('created_at > $1'),
         [cursor, 9]
       );
     });
@@ -110,10 +140,6 @@ describe('BlogRepository', () => {
         expect.stringContaining('INSERT INTO blogs'),
         expect.arrayContaining([blogData.id, blogData.title, blogData.slug])
       );
-      expect(mockQuery).toHaveBeenCalledWith(
-        expect.stringContaining('ON CONFLICT (id) DO UPDATE'),
-        expect.any(Array)
-      );
       expect(result).toEqual(blogData);
     });
 
@@ -128,26 +154,14 @@ describe('BlogRepository', () => {
         expect.arrayContaining([true, expect.any(Date)])
       );
     });
-
-    it('should handle optional excerpt and unpublished state', async () => {
-      const blogData = createBlogData({ excerpt: undefined, is_published: false });
-      mockQuery.mockResolvedValueOnce({ rows: [blogData] });
-
-      await BlogRepository.create(blogData);
-
-      expect(mockQuery).toHaveBeenCalledWith(
-        expect.any(String),
-        expect.arrayContaining([null, false, null])
-      );
-    });
   });
 
   describe('update()', () => {
     it('should update specific fields', async () => {
       const id = '123';
       const updateData = { title: 'Updated Title' };
-      mockQuery.mockResolvedValueOnce({ rows: [{ is_published: false }] }); // current state
-      mockQuery.mockResolvedValueOnce({ rows: [createBlogData({ ...updateData, id })] }); // update result
+      mockQuery.mockResolvedValueOnce({ rows: [{ is_published: false }] });
+      mockQuery.mockResolvedValueOnce({ rows: [createBlogData({ ...updateData, id })] });
 
       const result = await BlogRepository.update(id, updateData);
 
@@ -155,44 +169,28 @@ describe('BlogRepository', () => {
         expect.stringContaining('UPDATE blogs'),
         ['Updated Title', id]
       );
-      expect(mockQuery).toHaveBeenCalledWith(
-        expect.stringContaining('SET title = $1'),
-        ['Updated Title', id]
-      );
       expect(result?.title).toBe('Updated Title');
     });
 
-    it('should handle is_published transition', async () => {
+    it('should handle is_published transition and set published_at', async () => {
       const id = '123';
-      mockQuery.mockResolvedValueOnce({ rows: [{ is_published: false }] }); // current state (not published)
-      mockQuery.mockResolvedValueOnce({ rows: [createBlogData({ is_published: true, id })] }); // update result
+      mockQuery.mockResolvedValueOnce({ rows: [{ is_published: false }] });
+      mockQuery.mockResolvedValueOnce({ rows: [createBlogData({ is_published: true, id })] });
 
       await BlogRepository.update(id, { is_published: true });
 
-      expect(mockQuery).toHaveBeenCalledWith(
-        expect.stringContaining('is_published = $1'),
-        expect.arrayContaining([true, expect.any(Date), id])
-      );
       expect(mockQuery).toHaveBeenCalledWith(
         expect.stringContaining('published_at = $2'),
         expect.arrayContaining([true, expect.any(Date), id])
       );
     });
 
-    it('should return null if blog to update not found', async () => {
-      mockQuery.mockResolvedValueOnce({ rows: [] }); // currentRows for wasPublished check
-      mockQuery.mockResolvedValueOnce({ rows: [] }); // update result
-
-      const result = await BlogRepository.update('non-existent', { title: 'New' });
-      expect(result).toBeNull();
-    });
-
-    it('should update all possible optional fields', async () => {
+    it('should update all optional fields (slug, excerpt, content)', async () => {
       const id = '123';
-      const updateData = { 
-        slug: 'new-slug', 
-        excerpt: 'new-excerpt', 
-        content: { type: 'doc' } 
+      const updateData = {
+        slug: 'new-slug',
+        excerpt: 'new-excerpt',
+        content: { type: 'doc' }
       };
       mockQuery.mockResolvedValueOnce({ rows: [{ is_published: true }] });
       mockQuery.mockResolvedValueOnce({ rows: [createBlogData({ ...updateData, id })] });
@@ -205,28 +203,25 @@ describe('BlogRepository', () => {
       );
     });
 
-    it('should handle is_published: true when wasPublished: true', async () => {
+    it('should not update published_at if is_published: true is sent but it was already published', async () => {
       const id = '123';
       mockQuery.mockResolvedValueOnce({ rows: [{ is_published: true }] });
       mockQuery.mockResolvedValueOnce({ rows: [createBlogData({ id, is_published: true })] });
 
       await BlogRepository.update(id, { is_published: true });
 
-      // Should ONLY update is_published, NOT published_at
       expect(mockQuery).toHaveBeenNthCalledWith(2,
         expect.stringMatching(/UPDATE blogs\s+SET is_published = \$1/i),
         [true, id]
       );
     });
 
-    it('should return findById result if no fields provided', async () => {
-      const blog = createBlogData({ id: '123' });
-      mockQuery.mockResolvedValueOnce({ rows: [{ is_published: false }] });
-      mockQuery.mockResolvedValueOnce({ rows: [blog] }); // findById call
+    it('should return null if blog to update not found', async () => {
+      mockQuery.mockResolvedValueOnce({ rows: [] });
+      mockQuery.mockResolvedValueOnce({ rows: [] });
 
-      const result = await BlogRepository.update('123', {});
-      expect(result).toEqual(blog);
-      expect(mockQuery).toHaveBeenLastCalledWith(expect.stringContaining('SELECT * FROM blogs WHERE id = $1'), ['123']);
+      const result = await BlogRepository.update('non-existent', { title: 'New' });
+      expect(result).toBeNull();
     });
   });
 

@@ -22,17 +22,24 @@ describe('AchievementService', () => {
   });
 
   describe('getAllAchievements()', () => {
-    it('should return achievements through cache', async () => {
+    it('should return achievements with default sort', async () => {
       const mockData = [createAchievementData({ title: 'A1' })];
       MockedRepo.findAll.mockResolvedValueOnce(mockData);
 
       const result = await AchievementService.getAllAchievements();
 
-      expect(result).toEqual({
-        status: 200,
-        message: 'Achievements retrieved successfully',
-        data: mockData,
-      });
+      expect(MockedRepo.findAll).toHaveBeenCalledWith('newest');
+      expect(result.data).toEqual(mockData);
+    });
+
+    it('should return achievements with oldest sort', async () => {
+      const mockData = [createAchievementData({ title: 'A1' })];
+      MockedRepo.findAll.mockResolvedValueOnce(mockData);
+
+      const result = await AchievementService.getAllAchievements(false, 'oldest');
+
+      expect(MockedRepo.findAll).toHaveBeenCalledWith('oldest');
+      expect(result.data).toEqual(mockData);
     });
 
     it('should bypass cache when requested', async () => {

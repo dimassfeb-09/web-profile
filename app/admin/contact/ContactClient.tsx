@@ -9,6 +9,9 @@ interface ContactData {
   description: string;
   email: string;
   linkedin_url: string;
+  github_url?: string;
+  instagram_url?: string;
+  twitter_url?: string;
 }
 
 interface ContactClientProps {
@@ -88,6 +91,39 @@ export default function ContactClient({ initialData }: ContactClientProps) {
               required
               value={formData.linkedin_url}
               onChange={(e) => setFormData({ ...formData, linkedin_url: e.target.value })}
+              className="w-full px-5 py-4 rounded-2xl bg-surface-container-high border border-outline-variant/20 focus:outline-none focus:border-primary transition-all font-body text-sm"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="space-y-2">
+            <label className="font-label text-sm text-on-surface-variant ml-1">GitHub Profile URL</label>
+            <input
+              type="url"
+              placeholder="https://github.com/..."
+              value={formData.github_url || ''}
+              onChange={(e) => setFormData({ ...formData, github_url: e.target.value })}
+              className="w-full px-5 py-4 rounded-2xl bg-surface-container-high border border-outline-variant/20 focus:outline-none focus:border-primary transition-all font-body text-sm"
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="font-label text-sm text-on-surface-variant ml-1">Instagram URL</label>
+            <input
+              type="url"
+              placeholder="https://instagram.com/..."
+              value={formData.instagram_url || ''}
+              onChange={(e) => setFormData({ ...formData, instagram_url: e.target.value })}
+              className="w-full px-5 py-4 rounded-2xl bg-surface-container-high border border-outline-variant/20 focus:outline-none focus:border-primary transition-all font-body text-sm"
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="font-label text-sm text-on-surface-variant ml-1">Twitter / X URL</label>
+            <input
+              type="url"
+              placeholder="https://x.com/..."
+              value={formData.twitter_url || ''}
+              onChange={(e) => setFormData({ ...formData, twitter_url: e.target.value })}
               className="w-full px-5 py-4 rounded-2xl bg-surface-container-high border border-outline-variant/20 focus:outline-none focus:border-primary transition-all font-body text-sm"
             />
           </div>

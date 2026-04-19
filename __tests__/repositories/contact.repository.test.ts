@@ -12,7 +12,7 @@ describe('ContactRepository', () => {
 
       const result = await ContactRepository.findFirst();
 
-      expect(mockQuery).toHaveBeenCalledWith(expect.stringContaining('SELECT headline, description, email, linkedin_url FROM contact_section'));
+      expect(mockQuery).toHaveBeenCalledWith(expect.stringContaining('SELECT headline, description, email, linkedin_url, github_url, instagram_url, twitter_url FROM contact_section'));
       expect(result).toEqual(mockData);
     });
 
@@ -32,7 +32,15 @@ describe('ContactRepository', () => {
 
       expect(mockQuery).toHaveBeenCalledWith(
         expect.stringContaining('UPDATE contact_section'),
-        [input.headline, input.description, input.email, input.linkedin_url]
+        [
+          input.headline, 
+          input.description, 
+          input.email, 
+          input.linkedin_url,
+          null, // github_url
+          null, // instagram_url
+          null  // twitter_url
+        ]
       );
       expect(result).toEqual(input);
     });

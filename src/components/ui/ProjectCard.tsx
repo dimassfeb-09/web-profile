@@ -8,6 +8,7 @@ interface ProjectCardProps {
   features: string[];
   linkUrl: string;
   linkText: string;
+  priority?: boolean;
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({
@@ -17,6 +18,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   features,
   linkUrl,
   linkText,
+  priority = false,
 }) => {
   const fallbackImage = '/images/project-placeholder.jpeg';
   const [imgSrc, setImgSrc] = React.useState(imageUrl || fallbackImage);
@@ -29,6 +31,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           className="object-cover transition-transform duration-500 group-hover:scale-105"
           src={imgSrc}
           fill
+          priority={priority}
           sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
           onError={() => setImgSrc(fallbackImage)}
         />

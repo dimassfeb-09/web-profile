@@ -14,7 +14,8 @@ export async function updateHomeAction(data: {
     const result = await HomeService.updateHomeData(data);
     revalidateTag('home', { expire: 0 });
     return result;
-  } catch (error: any) {
-    return { status: 500, message: error.message || 'Failed to update home section' };
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to update home section';
+    return { status: 500, message };
   }
 }

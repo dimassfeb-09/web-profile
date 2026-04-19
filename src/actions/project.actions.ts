@@ -15,8 +15,9 @@ export async function createProjectAction(data: {
     const result = await ProjectService.createProject(data);
     revalidateTag('projects', { expire: 0 });
     return result;
-  } catch (error: any) {
-    return { status: 500, message: error.message || 'Failed to create project' };
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to create project';
+    return { status: 500, message };
   }
 }
 
@@ -33,8 +34,9 @@ export async function updateProjectAction(id: string, data: Partial<{
     revalidateTag('projects', { expire: 0 });
     revalidateTag(`project_${id}`, { expire: 0 });
     return result;
-  } catch (error: any) {
-    return { status: 500, message: error.message || 'Failed to update project' };
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to update project';
+    return { status: 500, message };
   }
 }
 
@@ -44,7 +46,8 @@ export async function deleteProjectAction(id: string) {
     revalidateTag('projects', { expire: 0 });
     revalidateTag(`project_${id}`, { expire: 0 });
     return result;
-  } catch (error: any) {
-    return { status: 500, message: error.message || 'Failed to delete project' };
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to delete project';
+    return { status: 500, message };
   }
 }

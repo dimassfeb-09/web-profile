@@ -6,7 +6,7 @@ jest.mock('@/src/lib/db', () => require('../__mocks__/db').default);
 
 describe('ProjectRepository', () => {
   describe('findAll()', () => {
-    it('should return all projects ordered by id DESC', async () => {
+    it('should return all projects ordered by created_at DESC (default)', async () => {
       const mockRows = [
         createProjectData({ id: '1', title: 'Project 1' }),
         createProjectData({ id: '2', title: 'Project 2' }),
@@ -15,7 +15,20 @@ describe('ProjectRepository', () => {
 
       const result = await ProjectRepository.findAll();
 
-      expect(mockQuery).toHaveBeenCalledWith('SELECT * FROM projects ORDER BY id DESC');
+      expect(mockQuery).toHaveBeenCalledWith('SELECT * FROM projects ORDER BY created_at DESC, id DESC');
+      expect(result).toEqual(mockRows);
+    });
+
+    it('should return all projects ordered by created_at ASC (oldest)', async () => {
+      const mockRows = [
+        createProjectData({ id: '2', title: 'Project 2' }),
+        createProjectData({ id: '1', title: 'Project 1' }),
+      ];
+      mockQuery.mockResolvedValueOnce({ rows: mockRows });
+
+      const result = await ProjectRepository.findAll('oldest');
+
+      expect(mockQuery).toHaveBeenCalledWith('SELECT * FROM projects ORDER BY created_at ASC, id ASC');
       expect(result).toEqual(mockRows);
     });
   });

@@ -6,6 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 
 const menuItems = [
   { name: 'Dashboard', href: '/admin/dashboard', icon: 'dashboard' },
+  { name: 'Layout & Urutan', href: '/admin/layout-order', icon: 'format_list_numbered' },
   { name: 'Home', href: '/admin/home', icon: 'home' },
   { name: 'About', href: '/admin/about', icon: 'person' },
   { name: 'Skills', href: '/admin/skills', icon: 'psychology' },
