@@ -24,14 +24,44 @@ export class BlogService {
     return urls;
   }
 
-  static async getAllBlogs(onlyPublished = false, bypassCache = false): Promise<BlogData[]> {
-    if (bypassCache) return BlogRepository.findAll(onlyPublished);
+  static async getAllBlogs(options: {
+    onlyPublished?: boolean;
+    cursor?: string | null;
+    limit?: number;
+    bypassCache?: boolean
+  } = {}): Promise<{ blogs: BlogData[]; nextCursor: string | null; hasMore: boolean }> {
+    const { onlyPublished = false, cursor = null, limit = 9, bypassCache = false } = options;
 
-    return unstable_cache(
-      async () => BlogRepository.findAll(onlyPublished),
-      [`blogs_all_${onlyPublished}`],
-      { revalidate: 3600, tags: ['blog'] }
-    )();
+    const fetchBlogs = async () => BlogRepository.findAll({ onlyPublished, cursor, limit });
+
+    let blogs: BlogData[];
+    if (bypassCache) {
+      blogs = await fetchBlogs();
+    } else {
+      const cacheKey = `blogs_all_${onlyPublished}_${cursor ?? 'none'}_${limit}`;
+      blogs = await unstable_cache(
+        fetchBlogs,
+        [cacheKey],
+        { revalidate: 3600, tags: ['blog'] }
+      )();
+    }
+
+    const hasMore = blogs.length === limit;
+    let nextCursor: string | null = null;
+
+    if (hasMore && blogs.length > 0) {
+      const lastBlog = blogs[blogs.length - 1];
+      const timestamp = onlyPublished ? lastBlog.published_at : lastBlog.created_at;
+      if (timestamp) {
+        nextCursor = new Date(timestamp).toISOString();
+      }
+    }
+
+    return {
+      blogs,
+      nextCursor,
+      hasMore
+    };
   }
 
   static async getBlogById(id: string, bypassCache = false): Promise<BlogData | null> {
@@ -65,7 +95,7 @@ export class BlogService {
     await ImageService.markImagesActive(blog.id, usedUrls);
 
     // 4. Invalidate Cache
-    revalidateTag('blog', 'max');
+    revalidateTag('blog', { expire: 0 });
 
     return blog;
   }
@@ -82,7 +112,7 @@ export class BlogService {
       }
 
       // 3. Invalidate Cache
-      revalidateTag('blog', 'max');
+      revalidateTag('blog', { expire: 0 });
       revalidateTag(`blog_${id}`, 'max');
       if (blog.slug) {
         revalidateTag(`blog_slug_${blog.slug}`, 'max');
@@ -104,7 +134,7 @@ export class BlogService {
     const success = await BlogRepository.delete(id);
 
     if (success) {
-      revalidateTag('blog', 'max');
+      revalidateTag('blog', { expire: 0 });
       revalidateTag(`blog_${id}`, 'max');
       if (blog?.slug) revalidateTag(`blog_slug_${blog.slug}`, 'max');
     }

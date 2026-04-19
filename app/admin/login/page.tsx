@@ -57,6 +57,7 @@ const AdminLoginPage = () => {
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-5 py-4 rounded-2xl bg-surface-container-high border border-outline-variant/30 text-on-surface font-body focus:outline-none focus:border-primary transition-all"
               required
+              suppressHydrationWarning
             />
           </div>
 
@@ -72,6 +73,7 @@ const AdminLoginPage = () => {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-5 py-4 rounded-2xl bg-surface-container-high border border-outline-variant/30 text-on-surface font-body focus:outline-none focus:border-primary transition-all"
               required
+              suppressHydrationWarning
             />
           </div>
 
@@ -85,6 +87,7 @@ const AdminLoginPage = () => {
             type="submit"
             disabled={isLoading}
             className="w-full py-4 rounded-2xl bg-gradient-to-br from-primary to-primary-container text-white font-label font-medium tracking-wide transition-all duration-300 hover:shadow-lg hover:shadow-primary/20 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+            suppressHydrationWarning
           >
             {isLoading ? (
               <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>

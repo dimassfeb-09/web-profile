@@ -65,8 +65,8 @@ async function ContactSectionWrapper() {
 }
 
 async function BlogSectionWrapper() {
-  const blogsData = await BlogService.getAllBlogs(true);
-  return <BlogSection blogs={blogsData || []} />;
+  const { blogs } = await BlogService.getAllBlogs({ onlyPublished: true });
+  return <BlogSection blogs={blogs || []} />;
 }
 
 export default async function Home() {

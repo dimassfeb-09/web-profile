@@ -14,11 +14,36 @@ export interface BlogData {
 }
 
 export class BlogRepository {
-  static async findAll(onlyPublished = false): Promise<BlogData[]> {
-    const query = onlyPublished 
-      ? 'SELECT * FROM blogs WHERE is_published = true ORDER BY published_at DESC'
-      : 'SELECT * FROM blogs ORDER BY created_at DESC';
-    const { rows } = await pool.query(query);
+  static async findAll(options: { onlyPublished?: boolean; cursor?: Date | string | null; limit?: number } = {}): Promise<BlogData[]> {
+    const { onlyPublished = false, cursor, limit = 9 } = options;
+    
+    const conditions: string[] = [];
+    const values: any[] = [];
+    let i = 1;
+
+    const timestampColumn = onlyPublished ? 'published_at' : 'created_at';
+    const orderBy = `ORDER BY ${timestampColumn} DESC`;
+
+    if (onlyPublished) {
+      conditions.push(`is_published = true`);
+    }
+
+    if (cursor) {
+      conditions.push(`${timestampColumn} < $${i++}`);
+      values.push(cursor);
+    }
+
+    const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+    
+    values.push(limit);
+    const query = `
+      SELECT * FROM blogs 
+      ${whereClause}
+      ${orderBy}
+      LIMIT $${i}
+    `;
+
+    const { rows } = await pool.query(query, values);
     return rows;
   }
 

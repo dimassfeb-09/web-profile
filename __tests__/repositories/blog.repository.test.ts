@@ -14,21 +14,52 @@ describe('BlogRepository', () => {
       const mockBlogs = [createBlogData({ title: 'Blog 1' }), createBlogData({ title: 'Blog 2' })];
       mockQuery.mockResolvedValueOnce({ rows: mockBlogs });
 
-      const result = await BlogRepository.findAll();
+      const result = await BlogRepository.findAll({});
 
-      expect(mockQuery).toHaveBeenCalledWith(expect.stringContaining('SELECT * FROM blogs ORDER BY created_at DESC'));
+      expect(mockQuery).toHaveBeenCalledWith(
+        expect.stringContaining('LIMIT $1'),
+        [9]
+      );
       expect(result).toHaveLength(2);
       expect(result).toEqual(mockBlogs);
+    });
+
+    it('should work with default options when no arguments provided', async () => {
+      mockQuery.mockResolvedValueOnce({ rows: [] });
+      await BlogRepository.findAll();
+      expect(mockQuery).toHaveBeenCalledWith(expect.stringContaining('LIMIT $1'), [9]);
     });
 
     it('should return only published blogs when onlyPublished is true', async () => {
       const mockBlogs = [createBlogData({ title: 'Published Blog', is_published: true })];
       mockQuery.mockResolvedValueOnce({ rows: mockBlogs });
 
-      await BlogRepository.findAll(true);
+      await BlogRepository.findAll({ onlyPublished: true });
 
-      expect(mockQuery).toHaveBeenCalledWith(expect.stringContaining('is_published = true'));
-      expect(mockQuery).toHaveBeenCalledWith(expect.stringContaining('ORDER BY published_at DESC'));
+      expect(mockQuery).toHaveBeenCalledWith(
+        expect.stringContaining('is_published = true'),
+        [9]
+      );
+      expect(mockQuery).toHaveBeenCalledWith(
+        expect.stringContaining('LIMIT $1'),
+        [9]
+      );
+    });
+
+    it('should apply cursor filter when provided', async () => {
+      const cursor = new Date().toISOString();
+      const mockBlogs = [createBlogData({ title: 'Old Blog' })];
+      mockQuery.mockResolvedValueOnce({ rows: mockBlogs });
+      const result = await BlogRepository.findAll({ cursor });
+
+      expect(mockQuery).toHaveBeenCalledWith(
+        expect.stringContaining('created_at < $1'),
+        [cursor, 9]
+      );
+      expect(mockQuery).toHaveBeenCalledWith(
+        expect.stringContaining('LIMIT $2'),
+        [cursor, 9]
+      );
     });
   });
 

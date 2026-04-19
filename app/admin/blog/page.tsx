@@ -22,7 +22,7 @@ const BlogManagement = () => {
       const res = await fetch('/api/blog');
       const json = await res.json();
       if (json.status === 200) {
-        setBlogs(json.data);
+        setBlogs(json.data.blogs);
       }
     } catch (err) {
       console.error('Failed to fetch blogs:', err);

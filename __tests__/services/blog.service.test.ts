@@ -18,13 +18,64 @@ describe('BlogService', () => {
 
   describe('accessors', () => {
     it('should call BlogRepository.findAll with default parameter', async () => {
-      await BlogService.getAllBlogs();
-      expect(BlogRepository.findAll).toHaveBeenCalledWith(false);
+      (BlogRepository.findAll as jest.Mock).mockResolvedValue([]);
+      const result = await BlogService.getAllBlogs();
+      expect(BlogRepository.findAll).toHaveBeenCalledWith({ onlyPublished: false, cursor: null, limit: 9 });
+      expect(result).toEqual({ blogs: [], nextCursor: null, hasMore: false });
     });
 
-    it('should call BlogRepository.findAll', async () => {
-      await BlogService.getAllBlogs(true);
-      expect(BlogRepository.findAll).toHaveBeenCalledWith(true);
+    it('should call BlogRepository.findAll with specific options', async () => {
+      (BlogRepository.findAll as jest.Mock).mockResolvedValue([]);
+      const result = await BlogService.getAllBlogs({ onlyPublished: true, limit: 12 });
+      expect(BlogRepository.findAll).toHaveBeenCalledWith({ onlyPublished: true, cursor: null, limit: 12 });
+      expect(result).toEqual({ blogs: [], nextCursor: null, hasMore: false });
+    });
+
+    it('should return nextCursor and hasMore true when blogs length equals limit', async () => {
+      const limit = 2;
+      const mockResult = [
+        createBlogData({ id: '1', created_at: new Date('2026-01-02') }),
+        createBlogData({ id: '2', created_at: new Date('2026-01-01') })
+      ];
+      (BlogRepository.findAll as jest.Mock).mockResolvedValue(mockResult);
+
+      const result = await BlogService.getAllBlogs({ limit });
+
+      expect(result.hasMore).toBe(true);
+      expect(result.nextCursor).toBe(new Date('2026-01-01').toISOString());
+      expect(result.blogs).toHaveLength(2);
+    });
+
+    it('should use published_at for nextCursor when onlyPublished is true', async () => {
+      const limit = 1;
+      const publishedAt = new Date('2026-02-01');
+      const mockResult = [
+        createBlogData({ id: '1', is_published: true, published_at: publishedAt })
+      ];
+      (BlogRepository.findAll as jest.Mock).mockResolvedValue(mockResult);
+
+      const result = await BlogService.getAllBlogs({ onlyPublished: true, limit });
+
+      expect(result.nextCursor).toBe(publishedAt.toISOString());
+    });
+
+    it('should not set nextCursor if last blog has no timestamp', async () => {
+      const limit = 1;
+      const mockResult = [
+        createBlogData({ id: '1', created_at: undefined as any })
+      ];
+      (BlogRepository.findAll as jest.Mock).mockResolvedValue(mockResult);
+
+      const result = await BlogService.getAllBlogs({ limit });
+
+      expect(result.nextCursor).toBeNull();
+    });
+
+    it('should call BlogRepository.findAll with cursor', async () => {
+      const cursor = '2026-01-01T00:00:00.000Z';
+      (BlogRepository.findAll as jest.Mock).mockResolvedValue([]);
+      await BlogService.getAllBlogs({ cursor });
+      expect(BlogRepository.findAll).toHaveBeenCalledWith({ onlyPublished: false, cursor, limit: 9 });
     });
 
     it('should call BlogRepository.findById', async () => {
@@ -38,8 +89,9 @@ describe('BlogService', () => {
     });
 
     it('should bypass cache in all accessor methods', async () => {
-      await BlogService.getAllBlogs(false, true);
-      expect(BlogRepository.findAll).toHaveBeenCalledWith(false);
+      (BlogRepository.findAll as jest.Mock).mockResolvedValue([]);
+      await BlogService.getAllBlogs({ bypassCache: true });
+      expect(BlogRepository.findAll).toHaveBeenCalledWith({ onlyPublished: false, cursor: null, limit: 9 });
 
       await BlogService.getBlogById('123', true);
       expect(BlogRepository.findById).toHaveBeenCalledWith('123');
@@ -69,7 +121,7 @@ describe('BlogService', () => {
         blogData.id,
         ['https://example.com/img1.png']
       );
-      expect(revalidateTag).toHaveBeenCalledWith('blog', 'max');
+      expect(revalidateTag).toHaveBeenCalledWith('blog', { expire: 0 });
       expect(result).toEqual(blogData);
     });
 
@@ -115,7 +167,7 @@ describe('BlogService', () => {
         id,
         ['https://example.com/img2.png']
       );
-      expect(revalidateTag).toHaveBeenCalledWith('blog', 'max');
+      expect(revalidateTag).toHaveBeenCalledWith('blog', { expire: 0 });
       expect(revalidateTag).toHaveBeenCalledWith(`blog_${id}`, 'max');
       expect(revalidateTag).toHaveBeenCalledWith(`blog_slug_${updatedBlog.slug}`, 'max');
     });
@@ -156,7 +208,7 @@ describe('BlogService', () => {
 
       expect(ImageService.deleteAllBlogImages).toHaveBeenCalledWith(id);
       expect(BlogRepository.delete).toHaveBeenCalledWith(id);
-      expect(revalidateTag).toHaveBeenCalledWith('blog', 'max');
+      expect(revalidateTag).toHaveBeenCalledWith('blog', { expire: 0 });
       expect(revalidateTag).toHaveBeenCalledWith(`blog_${id}`, 'max');
       expect(result).toBe(true);
     });

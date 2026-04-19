@@ -7,12 +7,14 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const onlyPublished = searchParams.get('published') === 'true';
+    const cursor = searchParams.get('cursor');
+    const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : 9;
     
-    const blogs = await BlogService.getAllBlogs(onlyPublished);
+    const result = await BlogService.getAllBlogs({ onlyPublished, cursor, limit });
     return NextResponse.json({
       status: 200,
       message: 'Success',
-      data: blogs
+      data: result
     });
   } catch (error: any) {
     return NextResponse.json(

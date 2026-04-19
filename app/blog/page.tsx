@@ -1,12 +1,20 @@
 import React from 'react';
-import Link from 'next/link';
 import { BlogService } from '@/src/services/blog.service';
-import { Calendar, ChevronRight } from 'lucide-react';
+import BlogScrollArea from '@/src/components/blog/BlogScrollArea';
+
+import { headers } from 'next/headers';
 
 export const revalidate = 3600; // Revalidate every hour
 
 export default async function BlogListPage() {
-  const blogs = await BlogService.getAllBlogs(true); // Only published
+  const headersList = await headers();
+  const userAgent = headersList.get('user-agent') || '';
+  const isMobile = /mobile|android|iphone|ipad/i.test(userAgent);
+  const limit = isMobile ? 6 : 9;
+
+  console.log(`[BlogPage] UA: ${userAgent.slice(0, 50)}... | isMobile: ${isMobile} | limit: ${limit}`);
+
+  const { blogs, nextCursor, hasMore } = await BlogService.getAllBlogs({ onlyPublished: true, limit });
 
   return (
     <div className="min-h-screen pt-32 pb-20 px-6 sm:px-10 max-w-7xl mx-auto">
@@ -19,39 +27,14 @@ export default async function BlogListPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {blogs.map((blog) => (
-          <Link 
-            key={blog.id} 
-            href={`/blog/${blog.slug}`}
-            className="group flex flex-col bg-surface-container-low border border-outline-variant/10 rounded-[2.5rem] p-8 hover:bg-surface-container-high transition-all duration-500 hover:-translate-y-2"
-          >
-            <div className="flex items-center gap-2 text-xs font-bold text-primary mb-4">
-              <Calendar className="w-3 h-3" />
-              {blog.published_at ? new Date(blog.published_at).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-              }) : 'Draft'}
-            </div>
-            
-            <h2 className="font-headline text-2xl font-bold text-on-surface mb-4 group-hover:text-primary transition-colors">
-              {blog.title}
-            </h2>
-            
-            <p className="font-body text-on-surface-variant text-sm line-clamp-3 mb-8 flex-grow">
-              {blog.excerpt || 'Read the full story to learn more...'}
-            </p>
-            
-            <div className="flex items-center gap-2 text-primary font-bold text-sm tracking-wide">
-              Read Article
-              <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </div>
-          </Link>
-        ))}
-      </div>
-
-      {blogs.length === 0 && (
+      {blogs.length > 0 ? (
+        <BlogScrollArea 
+          initialBlogs={blogs} 
+          initialNextCursor={nextCursor} 
+          initialHasMore={hasMore} 
+          batchSize={limit}
+        />
+      ) : (
         <div className="text-center py-40 bg-surface-container-low rounded-[3rem] border border-dashed border-outline-variant/20">
           <p className="font-body text-on-surface-variant italic">No stories published yet. Stay tuned!</p>
         </div>
