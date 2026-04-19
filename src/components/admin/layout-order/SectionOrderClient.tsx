@@ -5,7 +5,8 @@ import {
   DndContext,
   closestCenter,
   KeyboardSensor,
-  PointerSensor,
+  MouseSensor,
+  TouchSensor,
   useSensor,
   useSensors,
   DragEndEvent,
@@ -37,7 +38,8 @@ export default function SectionOrderClient({ initialSections }: SectionOrderClie
   const [success, setSuccess] = useState(false);
 
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(MouseSensor),
+    useSensor(TouchSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
@@ -138,6 +140,7 @@ export default function SectionOrderClient({ initialSections }: SectionOrderClie
         )}
 
         <DndContext
+          id="section-order-dnd"
           sensors={sensors}
           collisionDetection={closestCenter}
           onDragEnd={handleDragEnd}
