@@ -1,11 +1,66 @@
+import type { Metadata } from 'next';
 import { BlogService } from '@/src/services/blog.service';
 import { notFound } from 'next/navigation';
 import { Calendar, ArrowLeft, Clock } from 'lucide-react';
 import Link from 'next/link';
 import TiptapRenderer from '@/src/components/shared/TiptapRenderer';
 
+const BASE_URL = "https://www.dimassfeb.com";
+
 type Params = Promise<{ slug: string }>;
 
+// ─── generateMetadata ──────────────────────────────────────────────────────────
+export async function generateMetadata(
+  { params }: { params: Params }
+): Promise<Metadata> {
+  const { slug } = await params;
+  const blog = await BlogService.getBlogBySlug(slug);
+
+  if (!blog || !blog.is_published) {
+    return {
+      title: "Article Not Found",
+      robots: { index: false, follow: false },
+    };
+  }
+
+  const canonicalUrl = `${BASE_URL}/blog/${blog.slug}`;
+  const publishedTime = blog.published_at
+    ? new Date(blog.published_at).toISOString()
+    : undefined;
+
+  return {
+    title: blog.title,
+    description: blog.excerpt ?? `Read "${blog.title}" by Dimas Febriyanto`,
+    alternates: {
+      canonical: canonicalUrl,
+    },
+    openGraph: {
+      type: "article",
+      url: canonicalUrl,
+      title: blog.title,
+      description: blog.excerpt ?? `Read "${blog.title}" by Dimas Febriyanto`,
+      publishedTime,
+      authors: ["Dimas Febriyanto"],
+      siteName: "Dimas Febriyanto",
+      images: [
+        {
+          url: "/og-image.jpg",
+          width: 1200,
+          height: 630,
+          alt: blog.title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: blog.title,
+      description: blog.excerpt ?? `Read "${blog.title}" by Dimas Febriyanto`,
+      images: ["/og-image.jpg"],
+    },
+  };
+}
+
+// ─── Page Component ────────────────────────────────────────────────────────────
 export default async function BlogPostPage({ params }: { params: Params }) {
   const { slug } = await params;
   const blog = await BlogService.getBlogBySlug(slug);
@@ -21,7 +76,7 @@ export default async function BlogPostPage({ params }: { params: Params }) {
     <article className="min-h-screen pt-32 pb-20 px-6 sm:px-10 bg-surface">
       <div className="max-w-3xl mx-auto space-y-12">
         {/* Navigation */}
-        <Link 
+        <Link
           href="/blog"
           className="inline-flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors font-body text-sm font-bold group"
         >
@@ -58,7 +113,7 @@ export default async function BlogPostPage({ params }: { params: Params }) {
         </header>
 
         {/* Content */}
-        <TiptapRenderer 
+        <TiptapRenderer
           content={blog.content}
           className="tiptap-content w-full max-w-none focus:outline-none"
         />
@@ -71,9 +126,9 @@ export default async function BlogPostPage({ params }: { params: Params }) {
               Feel free to share it with your network or reach out if you have any questions!
             </p>
             <div className="flex justify-center gap-4 pt-4">
-                <Link href="/#contact" className="px-8 py-3 rounded-xl bg-primary text-white font-bold text-sm hover:opacity-90 transition-all">
-                  Get in Touch
-                </Link>
+              <Link href="/#contact" className="px-8 py-3 rounded-xl bg-primary text-white font-bold text-sm hover:opacity-90 transition-all">
+                Get in Touch
+              </Link>
             </div>
           </div>
         </footer>
