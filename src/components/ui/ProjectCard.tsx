@@ -32,7 +32,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         {slug ? (
           <Link href={`/projects/${slug}`}>
             <Image
-              alt={`${title} Screenshot`}
+              alt={`${title} - App Project by Dimas Febriyanto`}
               className="object-cover transition-transform duration-500 group-hover:scale-105"
               src={imgSrc}
               fill
@@ -43,7 +43,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           </Link>
         ) : (
           <Image
-            alt={`${title} Screenshot`}
+            alt={`${title} - App Project by Dimas Febriyanto`}
             className="object-cover transition-transform duration-500 group-hover:scale-105"
             src={imgSrc}
             fill

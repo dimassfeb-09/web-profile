@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Inter, Space_Grotesk } from "next/font/google";
 import Shell from "@/src/components/layout/Shell";
 import IconLoader from "@/src/components/common/IconLoader";
+import Script from "next/script";
 import "./globals.css";
 import "@/src/styles/highlight-theme.css";
 
@@ -25,21 +26,23 @@ const BASE_URL = "https://www.dimassfeb.com";
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: "Dimas Febriyanto — Software Engineer",
+    default: "Dimas Febriyanto — Fullstack & Mobile Developer (Golang + Flutter)",
     template: "%s | Dimas Febriyanto",
   },
   description:
-    "Portfolio of Dimas Febriyanto, a Software Engineer specializing in Flutter & Golang. Building scalable mobile and backend applications from Bekasi, Indonesia.",
+    "Dimas Febriyanto — Software Engineer spesialis Golang & Flutter, Universitas Gunadarma. 3 app live di Play Store, pengalaman magang, certified Junior Mobile Programmer BNSP. Rekruter & klien: cek portofolio lengkap di sini.",
   keywords: [
     "Dimas Febriyanto",
-    "Software Engineer",
-    "Flutter Developer",
-    "Golang Developer",
+    "Dimas Febriyanto Gunadarma",
+    "Dimas Febriyanto Software Engineer",
+    "Fullstack Developer",
     "Mobile Developer",
-    "Backend Engineer",
-    "Bekasi",
-    "Indonesia",
-    "Portfolio",
+    "Flutter Developer Indonesia",
+    "Golang Developer Indonesia",
+    "Flutter Developer Bekasi",
+    "Software Engineer Gunadarma",
+    "Junior Mobile Developer",
+    "Portfolio Developer Indonesia",
   ],
   authors: [{ name: "Dimas Febriyanto", url: BASE_URL }],
   creator: "Dimas Febriyanto",
@@ -54,7 +57,7 @@ export const metadata: Metadata = {
       "Portfolio of Dimas Febriyanto, a Software Engineer specializing in Flutter & Golang.",
     images: [
       {
-        url: "/og-image.jpg",
+        url: "/og-image.png",
         width: 1200,
         height: 630,
         alt: "Dimas Febriyanto — Software Engineer Portfolio",
@@ -66,7 +69,7 @@ export const metadata: Metadata = {
     title: "Dimas Febriyanto — Software Engineer",
     description:
       "Portfolio of Dimas Febriyanto, a Software Engineer specializing in Flutter & Golang.",
-    images: ["/og-image.jpg"],
+    images: ["/og-image.png"],
   },
   robots: {
     index: true,
@@ -90,21 +93,74 @@ export const metadata: Metadata = {
 const personSchema = {
   "@context": "https://schema.org",
   "@type": "Person",
-  "@id": `${BASE_URL}/#person`,
+  "@id": "https://www.dimassfeb.com/#person",
   name: "Dimas Febriyanto",
-  url: BASE_URL,
-  jobTitle: "Software Engineer",
+  givenName: "Dimas",
+  familyName: "Febriyanto",
+  url: "https://www.dimassfeb.com",
+  jobTitle: "Fullstack & Mobile Developer",
+  description:
+    "Fullstack & Mobile Developer spesialisasi Golang (backend) dan Flutter (mobile). Aktif sebagai Junior Mobile Developer di Sagara Technology dan Teaching Lab Assistant di Universitas Gunadarma.",
   email: "dimassfeb@gmail.com",
-  image: "https://www.dimassfeb.com/og-image.jpg",
+  image: {
+    "@type": "ImageObject",
+    url: "https://www.dimassfeb.com/og-image.png",
+    width: 1200,
+    height: 630,
+  },
   address: {
     "@type": "PostalAddress",
     addressLocality: "Bekasi",
     addressRegion: "Jawa Barat",
     addressCountry: "ID",
   },
+  alumniOf: {
+    "@type": "EducationalOrganization",
+    name: "Universitas Gunadarma",
+    url: "https://www.gunadarma.ac.id",
+  },
+  worksFor: {
+    "@type": "Organization",
+    name: "Sagara Technology",
+  },
+  knowsAbout: [
+    "Golang",
+    "Flutter",
+    "Dart",
+    "React.js",
+    "REST API",
+    "Microservices",
+    "PostgreSQL",
+    "MySQL",
+    "Redis",
+    "Docker",
+    "Mobile Application Development",
+    "Backend Development",
+  ],
+  hasCredential: [
+    {
+      "@type": "EducationalOccupationalCredential",
+      name: "Junior Mobile Programmer",
+      credentialCategory: "Professional Certification",
+      recognizedBy: {
+        "@type": "Organization",
+        name: "Badan Nasional Sertifikasi Profesi (BNSP)",
+      },
+    },
+    {
+      "@type": "EducationalOccupationalCredential",
+      name: "Junior Mobile Programmer",
+      credentialCategory: "Professional Certification",
+      recognizedBy: {
+        "@type": "Organization",
+        name: "VSGA Digitalent",
+      },
+    },
+  ],
   sameAs: [
     "https://www.linkedin.com/in/dimassfeb/",
     "https://github.com/dimassfeb-09",
+    "https://www.dimassfeb.com",
   ],
 };
 
@@ -179,6 +235,25 @@ export default async function RootLayout({
         >
           {children}
         </Shell>
+
+        {process.env.NEXT_PUBLIC_GA_ID && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
+              strategy="afterInteractive"
+            />
+            <Script id="google-analytics" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}', {
+                  page_path: window.location.pathname,
+                });
+              `}
+            </Script>
+          </>
+        )}
       </body>
     </html>
   );

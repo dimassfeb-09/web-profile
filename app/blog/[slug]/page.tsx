@@ -3,6 +3,7 @@ import { BlogService } from '@/src/services/blog.service';
 import { notFound } from 'next/navigation';
 import { Calendar, ArrowLeft, Clock } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import TiptapRenderer from '@/src/components/shared/TiptapRenderer';
 import JsonLd from '@/src/components/common/JsonLd';
 import RelatedPosts from '@/src/components/blog/RelatedPosts';
@@ -48,7 +49,7 @@ export async function generateMetadata(
       siteName: "Dimas Febriyanto",
       images: [
         {
-          url: "/og-image.jpg",
+          url: "/og-image.png",
           width: 1200,
           height: 630,
           alt: blog.title,
@@ -59,7 +60,7 @@ export async function generateMetadata(
       card: "summary_large_image",
       title: blog.title,
       description: blog.excerpt ?? `Read "${blog.title}" by Dimas Febriyanto`,
-      images: ["/og-image.jpg"],
+      images: ["/og-image.png"],
     },
   };
 }
@@ -105,7 +106,7 @@ export default async function BlogPostPage({ params }: { params: Params }) {
     },
     image: {
       "@type": "ImageObject",
-      url: `${BASE_URL}/og-image.jpg`,
+      url: `${BASE_URL}/og-image.png`,
       width: 1200,
       height: 630,
     },
@@ -120,9 +121,34 @@ export default async function BlogPostPage({ params }: { params: Params }) {
     inLanguage: "id-ID",
   };
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://www.dimassfeb.com",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Blog",
+        item: "https://www.dimassfeb.com/blog",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: blog.title,
+        item: `https://www.dimassfeb.com/blog/${blog.slug}`,
+      },
+    ],
+  };
+
   return (
     <article className="min-h-screen pt-32 pb-20 px-6 sm:px-10 bg-surface">
-      <JsonLd schema={blogPostingSchema} />
+      <JsonLd schema={[blogPostingSchema, breadcrumbSchema]} />
       <div className="max-w-3xl mx-auto space-y-12">
         <div className="mb-4">
           <BackButton href="/blog" label="Back to Blog" />
@@ -179,6 +205,28 @@ export default async function BlogPostPage({ params }: { params: Params }) {
           content={blog.content}
           className="tiptap-content w-full max-w-none focus:outline-none"
         />
+
+        {/* Author Bio */}
+        <div className="bg-surface-container-low rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row gap-6 items-center sm:items-start border border-outline-variant/10 mt-12">
+          <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden flex-shrink-0 border-4 border-surface shadow-lg bg-surface-container-high relative">
+            <Image 
+              src="/profile-photo.jpg" 
+              alt="Dimas Febriyanto - Fullstack Developer" 
+              fill 
+              className="object-cover" 
+            />
+          </div>
+          <div className="flex flex-col text-center sm:text-left">
+            <h3 className="font-headline text-xl font-bold text-on-surface mb-2">Dimas Febriyanto</h3>
+            <p className="font-body text-sm sm:text-base text-on-surface-variant leading-relaxed mb-4">
+              Fullstack & Mobile Developer spesialis Golang dan Flutter. Aktif sebagai Junior Mobile Developer dan Teaching Lab Assistant di Universitas Gunadarma, Bekasi. Bersemangat membangun aplikasi yang scalable dan berdampak.
+            </p>
+            <Link href="/" className="text-sm font-label font-bold text-primary hover:text-primary/80 transition-colors inline-flex items-center justify-center sm:justify-start gap-1.5 group">
+              Lihat Portofolio 
+              <ArrowLeft className="w-4 h-4 rotate-180 transition-transform group-hover:translate-x-1" />
+            </Link>
+          </div>
+        </div>
 
         <RelatedPosts currentSlug={blog.slug} />
 

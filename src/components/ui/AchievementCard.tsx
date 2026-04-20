@@ -24,7 +24,7 @@ const AchievementCard = ({ id, title, description, imageUrl, date, priority }: A
       <div className="aspect-[1024/500] w-full bg-surface-container-high overflow-hidden relative">
         <Image 
           src={imageUrl || '/placeholder.jpg'} 
-          alt={title} 
+          alt={`${title} - Achievement by Dimas Febriyanto`} 
           fill
           priority={priority}
           className="object-cover transition-transform duration-500 group-hover:scale-105"

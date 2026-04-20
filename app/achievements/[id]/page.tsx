@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
       description: data.description,
       images: data.image_url
         ? [{ url: data.image_url, width: 1200, height: 630, alt: data.title }]
-        : [{ url: '/og-image.jpg', width: 1200, height: 630, alt: data.title }],
+        : [{ url: '/og-image.png', width: 1200, height: 630, alt: data.title }],
     },
   };
 }
@@ -63,7 +63,7 @@ export default async function AchievementDetailPage({ params }: { params: Params
       ? { '@type': 'Organization', name: achievement.event_organizer }
       : undefined,
     url: `${BASE_URL}/achievements/${id}`,
-    image: achievement.image_url || `${BASE_URL}/og-image.jpg`,
+    image: achievement.image_url || `${BASE_URL}/og-image.png`,
   };
 
   return (
@@ -80,7 +80,7 @@ export default async function AchievementDetailPage({ params }: { params: Params
         <div className="relative w-full aspect-[16/7] rounded-3xl overflow-hidden mb-10 border border-outline-variant/10">
           <Image
             src={achievement.image_url}
-            alt={achievement.title}
+            alt={`${achievement.title} - Achievement by Dimas Febriyanto`}
             fill
             priority
             className="object-cover"

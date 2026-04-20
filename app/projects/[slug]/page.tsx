@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
       description: data.description,
       images: data.image_url
         ? [{ url: data.image_url, width: 1200, height: 630, alt: data.title }]
-        : [{ url: '/og-image.jpg', width: 1200, height: 630, alt: data.title }],
+        : [{ url: '/og-image.png', width: 1200, height: 630, alt: data.title }],
     },
   };
 }
@@ -59,9 +59,34 @@ export default async function ProjectDetailPage({ params }: { params: Params }) 
     name: project.title,
     description: project.description,
     url: `${BASE_URL}/projects/${slug}`,
-    image: project.image_url || `${BASE_URL}/og-image.jpg`,
+    image: project.image_url || `${BASE_URL}/og-image.png`,
     applicationCategory: 'WebApplication',
     operatingSystem: 'Any',
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://www.dimassfeb.com",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Projects",
+        item: "https://www.dimassfeb.com/projects",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: project.title,
+        item: `https://www.dimassfeb.com/projects/${slug}`,
+      },
+    ],
   };
 
   const getStatusColor = (status: string | undefined) => {
@@ -72,7 +97,7 @@ export default async function ProjectDetailPage({ params }: { params: Params }) 
 
   return (
     <main className="pt-24 lg:pt-32 px-6 md:px-12 lg:px-16 2xl:px-24 max-w-5xl mx-auto pb-24 relative">
-      <JsonLd schema={schema} />
+      <JsonLd schema={[schema, breadcrumbSchema]} />
       
       {/* Ambient Background specific to project detail */}
       <div className="absolute inset-0 bg-grid-pattern -z-10 opacity-30 pointer-events-none"></div>
@@ -87,7 +112,7 @@ export default async function ProjectDetailPage({ params }: { params: Params }) 
         <div className="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-3xl overflow-hidden mb-10 border border-outline-variant/20 shadow-xl">
           <Image
             src={project.image_url}
-            alt={project.title}
+            alt={`${project.title} - Project by Dimas Febriyanto`}
             fill
             priority
             className="object-cover"
@@ -211,7 +236,7 @@ export default async function ProjectDetailPage({ params }: { params: Params }) 
                   <div key={i} className="relative aspect-[9/16] rounded-2xl overflow-hidden border border-outline-variant/10 shadow-sm group bg-surface-container">
                      <Image
                         src={img}
-                        alt={`${project.title} screenshot ${i + 1}`}
+                        alt={`${project.title} screenshot ${i + 1} - Dimas Febriyanto Portfolio`}
                         fill
                         loading={i === 0 ? 'eager' : 'lazy'}
                         sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"

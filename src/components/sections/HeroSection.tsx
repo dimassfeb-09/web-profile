@@ -23,6 +23,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ data }) => {
         {data.badge_text}
       </Badge>
       <h1 className="font-headline text-4xl xs:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight text-on-surface max-w-4xl leading-[1.1] mb-8">
+        <span className="sr-only">Dimas Febriyanto - </span>
         {data.headline} <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">{data.subheadline}</span>
       </h1>
       <p className="font-body text-base xs:text-lg md:text-xl text-on-surface-variant max-w-2xl leading-relaxed mb-12 font-light">
