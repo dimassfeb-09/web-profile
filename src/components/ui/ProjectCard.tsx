@@ -30,7 +30,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
     <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant/10 overflow-hidden group hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] transition-all duration-300 hover:-translate-y-1 flex flex-col">
       <div className="aspect-[1024/500] w-full bg-surface-container-high relative overflow-hidden">
         {slug ? (
-          <Link href={`/projects/${slug}`}>
+          <Link href={`/projects/${slug}`} className="block w-full h-full relative">
             <Image
               alt={`${title} - App Project by Dimas Febriyanto`}
               className="object-cover transition-transform duration-500 group-hover:scale-105"

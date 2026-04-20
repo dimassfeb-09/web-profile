@@ -26,23 +26,24 @@ const BASE_URL = "https://www.dimassfeb.com";
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: "Dimas Febriyanto — Fullstack & Mobile Developer (Golang + Flutter)",
+    default:
+      "Dimas Febriyanto — Fullstack & Mobile Developer (Golang + Flutter)",
     template: "%s | Dimas Febriyanto",
   },
   description:
-    "Dimas Febriyanto — Software Engineer spesialis Golang & Flutter, Universitas Gunadarma. 3 app live di Play Store, pengalaman magang, certified Junior Mobile Programmer BNSP. Rekruter & klien: cek portofolio lengkap di sini.",
+    "Portfolio of Dimas Febriyanto, Fullstack & Mobile Developer (Golang + Flutter). 3 apps live on Play Store. Berpengalaman di bidang backend microservices dan mobile development lintas platform. Certified Junior Mobile Programmer BNSP.",
   keywords: [
     "Dimas Febriyanto",
-    "Dimas Febriyanto Gunadarma",
     "Dimas Febriyanto Software Engineer",
+    "Dimas Febriyanto Gunadarma",
     "Fullstack Developer",
-    "Mobile Developer",
-    "Flutter Developer Indonesia",
-    "Golang Developer Indonesia",
-    "Flutter Developer Bekasi",
-    "Software Engineer Gunadarma",
-    "Junior Mobile Developer",
-    "Portfolio Developer Indonesia",
+    "Mobile Developer Indonesia",
+    "Flutter Developer",
+    "Golang Backend Engineer",
+    "Jasa Pembuatan Website",
+    "Jasa Pembuatan Aplikasi Mobile",
+    "Freelance Developer Bekasi",
+    "Software Engineer Portfolio",
   ],
   authors: [{ name: "Dimas Febriyanto", url: BASE_URL }],
   creator: "Dimas Febriyanto",
@@ -54,7 +55,7 @@ export const metadata: Metadata = {
     siteName: "Dimas Febriyanto",
     title: "Dimas Febriyanto — Software Engineer",
     description:
-      "Portfolio of Dimas Febriyanto, a Software Engineer specializing in Flutter & Golang.",
+      "Portfolio of Dimas Febriyanto, Fullstack & Mobile Developer specializing in Golang & Flutter. Berpengalaman membangun aplikasi berskala produksi.",
     images: [
       {
         url: "/og-image.png",
@@ -68,7 +69,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Dimas Febriyanto — Software Engineer",
     description:
-      "Portfolio of Dimas Febriyanto, a Software Engineer specializing in Flutter & Golang.",
+      "Portfolio of Dimas Febriyanto, Fullstack & Mobile Developer specializing in Golang & Flutter. Berpengalaman membangun backend dan aplikasi mobile.",
     images: ["/og-image.png"],
   },
   robots: {
@@ -94,13 +95,17 @@ const personSchema = {
   "@context": "https://schema.org",
   "@type": "Person",
   "@id": "https://www.dimassfeb.com/#person",
+  mainEntityOfPage: {
+    "@type": "WebPage",
+    "@id": "https://www.dimassfeb.com/",
+  },
   name: "Dimas Febriyanto",
   givenName: "Dimas",
   familyName: "Febriyanto",
   url: "https://www.dimassfeb.com",
   jobTitle: "Fullstack & Mobile Developer",
   description:
-    "Fullstack & Mobile Developer spesialisasi Golang (backend) dan Flutter (mobile). Aktif sebagai Junior Mobile Developer di Sagara Technology dan Teaching Lab Assistant di Universitas Gunadarma.",
+    "Fullstack & Mobile Developer with expertise in Golang (backend) and Flutter (mobile). Aktif sebagai Junior Mobile Developer di Sagara Technology dan Teaching Lab Assistant di Universitas Gunadarma.",
   email: "dimassfeb@gmail.com",
   image: {
     "@type": "ImageObject",
@@ -142,6 +147,7 @@ const personSchema = {
       "@type": "EducationalOccupationalCredential",
       name: "Junior Mobile Programmer",
       credentialCategory: "Professional Certification",
+      description: "Sertifikasi dari BNSP melalui program VSGA Digitalent",
       recognizedBy: {
         "@type": "Organization",
         name: "Badan Nasional Sertifikasi Profesi (BNSP)",
@@ -162,6 +168,11 @@ const personSchema = {
     "https://github.com/dimassfeb-09",
     "https://www.dimassfeb.com",
   ],
+  nationality: {
+    "@type": "Country",
+    name: "Indonesia",
+  },
+  gender: "Male",
 };
 
 const websiteSchema = {
@@ -192,31 +203,42 @@ export default async function RootLayout({
   const cvUrl = homeData.data?.cv_url || "#";
 
   const { ContactService } = await import("@/src/services/contact.service");
-  const { SectionOrderService } = await import("@/src/services/section_order.service");
-  
+  const { SectionOrderService } =
+    await import("@/src/services/section_order.service");
+
   const [contactData, sectionResult] = await Promise.all([
     ContactService.getContactData(),
-    SectionOrderService.getAllSections()
+    SectionOrderService.getAllSections(),
   ]);
 
   const navLinks = (sectionResult.data || [])
-    .filter(s => s.is_visible)
+    .filter((s) => s.is_visible)
     .sort((a, b) => a.order_index - b.order_index)
-    .map(s => ({
+    .map((s) => ({
       name: s.section_label,
-      href: s.section_key === 'blog' ? '/blog' : `#${s.section_key}`
+      href: s.section_key === "blog" ? "/blog" : `#${s.section_key}`,
     }));
 
   return (
-    <html lang="id" data-scroll-behavior="smooth" className="scroll-smooth">
+    <html lang="en" data-scroll-behavior="smooth" className="scroll-smooth">
       <head>
-        <link rel="preconnect" href="https://atgnqunmelvquqdwkmnq.supabase.co" crossOrigin="anonymous" />
+        <link
+          rel="preconnect"
+          href="https://atgnqunmelvquqdwkmnq.supabase.co"
+          crossOrigin="anonymous"
+        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
         <IconLoader />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify([personSchema, websiteSchema]) }}
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify([personSchema, websiteSchema]),
+          }}
         />
       </head>
       <body
@@ -228,9 +250,9 @@ export default async function RootLayout({
           <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px] blur-ambient mix-blend-multiply opacity-70 translate-x-1/3 -translate-y-1/3"></div>
           <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-secondary/5 rounded-full blur-[100px] blur-ambient mix-blend-multiply opacity-50 -translate-x-1/3 translate-y-1/3"></div>
         </div>
-        <Shell 
-          cvUrl={cvUrl} 
-          contactData={contactData.data || {}} 
+        <Shell
+          cvUrl={cvUrl}
+          contactData={contactData.data || {}}
           navLinks={navLinks}
         >
           {children}

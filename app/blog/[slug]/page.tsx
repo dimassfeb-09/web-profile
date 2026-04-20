@@ -219,7 +219,7 @@ export default async function BlogPostPage({ params }: { params: Params }) {
           <div className="flex flex-col text-center sm:text-left">
             <h3 className="font-headline text-xl font-bold text-on-surface mb-2">Dimas Febriyanto</h3>
             <p className="font-body text-sm sm:text-base text-on-surface-variant leading-relaxed mb-4">
-              Fullstack & Mobile Developer spesialis Golang dan Flutter. Aktif sebagai Junior Mobile Developer dan Teaching Lab Assistant di Universitas Gunadarma, Bekasi. Bersemangat membangun aplikasi yang scalable dan berdampak.
+              Fullstack & Mobile Developer specializing in Golang & Flutter. Aktif sebagai Junior Mobile Developer di Sagara Technology & asisten lab di Universitas Gunadarma. Passionate about building scalable algorithms & high-impact applications.
             </p>
             <Link href="/" className="text-sm font-label font-bold text-primary hover:text-primary/80 transition-colors inline-flex items-center justify-center sm:justify-start gap-1.5 group">
               Lihat Portofolio 
