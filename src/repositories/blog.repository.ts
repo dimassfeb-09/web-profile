@@ -11,6 +11,7 @@ export interface BlogData {
   published_at?: Date;
   created_at?: Date;
   updated_at?: Date;
+  rank?: number;
 }
 
 export class BlogRepository {
@@ -47,6 +48,9 @@ export class BlogRepository {
     
     if (cursor) {
       const operator = sort === 'oldest' ? '>' : '<';
+      // Use tuple comparison for stable cursor pagination if possible, 
+      // but for simplicity and compatibility, we stick to timestamp for now.
+      // However, we ensure the placeholder index is correct.
       conditions.push(`${timestampColumn} ${operator} $${i++}`);
       values.push(cursor);
     }
@@ -54,15 +58,51 @@ export class BlogRepository {
     const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
     const orderBy = `ORDER BY ${timestampColumn} ${sort === 'oldest' ? 'ASC' : 'DESC'}, id ${sort === 'oldest' ? 'ASC' : 'DESC'}`;
     
+    const limitPlaceholder = `$${i++}`;
     values.push(limit);
+    
     const query = `
       SELECT * FROM blogs 
       ${whereClause}
       ${orderBy}
-      LIMIT $${i}
+      LIMIT ${limitPlaceholder}
     `;
 
     const { rows } = await pool.query(query, values);
+    return rows;
+  }
+
+  static async findRelated(
+    currentSlug: string,
+    limit: number = 3
+  ): Promise<BlogData[]> {
+    const query = `
+      WITH source AS (
+        -- Get the title and excerpt of the current article to use as our search query
+        SELECT title, excerpt
+        FROM   blogs
+        WHERE  slug = $1
+          AND  is_published = true
+        LIMIT  1
+      )
+      SELECT
+        b.id,
+        b.title,
+        b.slug,
+        b.excerpt,
+        b.published_at,
+        b.created_at,
+        b.updated_at,
+        ts_rank(b.search_vector, plainto_tsquery('english', source.title || ' ' || COALESCE(source.excerpt, ''))) AS rank
+      FROM   blogs b, source
+      WHERE  b.is_published  = true
+        AND  b.slug          <> $1
+        AND  b.search_vector @@ plainto_tsquery('english', source.title || ' ' || COALESCE(source.excerpt, ''))
+      ORDER BY rank DESC, b.published_at DESC
+      LIMIT  $2
+    `;
+
+    const { rows } = await pool.query(query, [currentSlug, limit]);
     return rows;
   }
 

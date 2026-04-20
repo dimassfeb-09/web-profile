@@ -67,6 +67,9 @@ const nextConfig: NextConfig = {
       {
         pathname: '/api/image-proxy',
       },
+      {
+        pathname: '/**',
+      },
     ],
   },
   allowedDevOrigins: ['192.168.1.4'],

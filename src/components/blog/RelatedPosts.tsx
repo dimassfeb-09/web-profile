@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Calendar } from "lucide-react";
 import { BlogService } from "@/src/services/blog.service";
 
 interface RelatedPostsProps {
@@ -10,15 +11,7 @@ export default async function RelatedPosts({
   currentSlug,
   limit = 3,
 }: RelatedPostsProps) {
-  const { blogs } = await BlogService.getAllBlogs({
-    onlyPublished: true,
-    limit: limit + 1, // Fetch one extra to exclude current
-    bypassCache: false,
-  });
-
-  const related = blogs
-    .filter((b) => b.slug !== currentSlug)
-    .slice(0, limit);
+  const related = await BlogService.getRelatedBlogs(currentSlug, limit);
 
   if (related.length === 0) return null;
 
@@ -41,6 +34,16 @@ export default async function RelatedPosts({
               <p className="mt-2 text-xs text-on-surface-variant line-clamp-2">
                 {post.excerpt}
               </p>
+            )}
+            {post.published_at && (
+              <div className="mt-3 flex items-center gap-1.5 text-xs text-on-surface-variant/60">
+                <Calendar className="w-3 h-3" />
+                {new Date(post.published_at).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                })}
+              </div>
             )}
           </Link>
         ))}

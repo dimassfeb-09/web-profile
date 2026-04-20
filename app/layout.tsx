@@ -178,10 +178,10 @@ const personSchema = {
 const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  "@id": `${BASE_URL}/#website`,
+  "@id": `${BASE_URL}/`,
   name: "Dimas Febriyanto",
   url: BASE_URL,
-  author: { "@id": `${BASE_URL}/#person` },
+  author: { "@id": `${BASE_URL}/` },
   potentialAction: {
     "@type": "SearchAction",
     target: {

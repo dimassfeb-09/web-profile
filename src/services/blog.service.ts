@@ -73,6 +73,39 @@ export class BlogService {
     };
   }
 
+  static async getRelatedBlogs(
+    currentSlug: string,
+    limit: number = 3
+  ): Promise<BlogData[]> {
+    // 1. Try FTS-powered related articles (cached for 1 hour)
+    const ftsResults = await unstable_cache(
+      async () => BlogRepository.findRelated(currentSlug, limit),
+      [`blog_related_fts_${currentSlug}`],
+      { revalidate: 3600, tags: ['blog', `blog_slug_${currentSlug}`] }
+    )();
+
+    // 2. If we have enough results, return early
+    if (ftsResults.length >= limit) {
+      return ftsResults.slice(0, limit);
+    }
+
+    // 3. Fallback: fill remaining slots with latest articles
+    const needed = limit - ftsResults.length;
+    const ftsSlugSet = new Set([currentSlug, ...ftsResults.map((b) => b.slug)]);
+
+    const { blogs: latestBlogs } = await this.getAllBlogs({
+      onlyPublished: true,
+      limit: needed + ftsSlugSet.size, // over-fetch to account for exclusions
+      bypassCache: false,
+    });
+
+    const fallback = latestBlogs
+      .filter((b) => !ftsSlugSet.has(b.slug))
+      .slice(0, needed);
+
+    return [...ftsResults, ...fallback];
+  }
+
   static async getBlogById(id: string, bypassCache = false): Promise<BlogData | null> {
     if (bypassCache) return BlogRepository.findById(id);
 
