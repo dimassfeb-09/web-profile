@@ -2,17 +2,20 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
+import { getCachedImageUrl } from '@/src/lib/utils/image-url';
 
 interface AchievementCardProps {
   id: string;
+  slug: string;
   title: string;
   description: string;
   imageUrl: string | null;
+  imageHash?: string | null;
   date: string | Date | null;
   priority?: boolean;
 }
 
-const AchievementCard = ({ id, title, description, imageUrl, date, priority }: AchievementCardProps) => {
+const AchievementCard = ({ id, slug, title, description, imageUrl, imageHash, date, priority }: AchievementCardProps) => {
   const formatDate = (dateValue: string | Date | null) => {
     if (!dateValue) return '';
     const date = new Date(dateValue);
@@ -20,10 +23,10 @@ const AchievementCard = ({ id, title, description, imageUrl, date, priority }: A
   };
 
   return (
-    <Link href={`/achievements/${id}`} className="group bg-surface-container-low border border-outline-variant/10 rounded-3xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-1 block">
+    <Link href={`/achievements/${slug}`} className="group bg-surface-container-low border border-outline-variant/10 rounded-3xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-1 block">
       <div className="aspect-[1024/500] w-full bg-surface-container-high overflow-hidden relative">
         <Image 
-          src={imageUrl || '/placeholder.jpg'} 
+          src={getCachedImageUrl(imageUrl, imageHash) || '/placeholder.jpg'} 
           alt={`${title} - Achievement by Dimas Febriyanto`} 
           fill
           priority={priority}

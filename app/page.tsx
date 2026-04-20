@@ -64,10 +64,12 @@ async function ProjectsSectionWrapper({ sort }: { sort: 'newest' | 'oldest' }) {
 }
 
 async function AchievementSectionWrapper({ sort }: { sort: 'newest' | 'oldest' }) {
-  const achievementsData = await AchievementService.getAllAchievements(false, sort);
+  const achievementsData = await AchievementService.getAllAchievements(true, sort);
   const achievements = (achievementsData.data || []).map(ach => ({
     ...ach,
-    id: ach.id || ''
+    id: ach.id || '',
+    slug: ach.slug || '',
+    image_hash: ach.image_hash || null
   }));
   return <AchievementSection achievements={achievements} />;
 }

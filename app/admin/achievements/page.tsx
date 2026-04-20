@@ -21,6 +21,7 @@ export default async function AchievementManagementPage(props: {
   // Map data to ensure serializable types and fix TypeScript 'undefined' warnings
   const mappedData = response.data.map(ach => ({
     id: ach.id || '',
+    slug: ach.slug || '',
     title: ach.title,
     description: ach.description,
     image_url: ach.image_url,

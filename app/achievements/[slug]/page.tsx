@@ -1,50 +1,59 @@
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { AchievementService } from '@/src/services/achievement.service';
 import Breadcrumb from '@/src/components/common/Breadcrumb';
 import BackButton from '@/src/components/common/BackButton';
 import JsonLd from '@/src/components/common/JsonLd';
+import { getCachedImageUrl } from '@/src/lib/utils/image-url';
 import { ExternalLink, Calendar, Building2, Tag, Users, Code2 } from 'lucide-react';
 
 const BASE_URL = 'https://www.dimassfeb.com';
 
-type Params = Promise<{ id: string }>;
+type Params = Promise<{ slug: string }>;
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
-  const { id } = await params;
-  const result = await AchievementService.getAchievementById(id);
+  const { slug } = await params;
+  const result = await AchievementService.getAchievementBySlug(slug);
+
+  if (result.status === 301 && typeof result.data === 'string') {
+    redirect(`/achievements/${result.data}`);
+  }
 
   if (!result.data) {
     return { title: 'Achievement Not Found' };
   }
 
-  const { data } = result;
+  const data = result.data as any;
 
   return {
     title: data.title,
     description: data.description,
     alternates: {
-      canonical: `${BASE_URL}/achievements/${id}`,
+      canonical: `${BASE_URL}/achievements/${slug}`,
     },
     openGraph: {
       type: 'article',
-      url: `${BASE_URL}/achievements/${id}`,
+      url: `${BASE_URL}/achievements/${slug}`,
       title: data.title,
       description: data.description,
       images: data.image_url
-        ? [{ url: data.image_url, width: 1200, height: 630, alt: data.title }]
+        ? [{ url: getCachedImageUrl(data.image_url, data.image_hash), width: 1200, height: 630, alt: data.title }]
         : [{ url: '/og-image.png', width: 1200, height: 630, alt: data.title }],
     },
   };
 }
 
 export default async function AchievementDetailPage({ params }: { params: Params }) {
-  const { id } = await params;
-  const result = await AchievementService.getAchievementById(id);
+  const { slug } = await params;
+  const result = await AchievementService.getAchievementBySlug(slug);
 
-  if (!result.data) notFound();
+  if (result.status === 301 && typeof result.data === 'string') {
+    redirect(`/achievements/${result.data}`);
+  }
+
+  if (!result.data || typeof result.data === 'string') notFound();
 
   const achievement = result.data;
 
@@ -62,8 +71,8 @@ export default async function AchievementDetailPage({ params }: { params: Params
     organizer: achievement.event_organizer
       ? { '@type': 'Organization', name: achievement.event_organizer }
       : undefined,
-    url: `${BASE_URL}/achievements/${id}`,
-    image: achievement.image_url || `${BASE_URL}/og-image.png`,
+    url: `${BASE_URL}/achievements/${slug}`,
+    image: getCachedImageUrl(achievement.image_url, achievement.image_hash) || `${BASE_URL}/og-image.png`,
   };
 
   return (
@@ -73,13 +82,13 @@ export default async function AchievementDetailPage({ params }: { params: Params
       <Breadcrumb items={[
         { label: 'Home', href: '/' },
         { label: 'Achievements', href: '/achievements' },
-        { label: achievement.title, href: `/achievements/${id}` },
+        { label: achievement.title, href: `/achievements/${slug}` },
       ]} />
 
       {achievement.image_url && (
         <div className="relative w-full aspect-[16/7] rounded-3xl overflow-hidden mb-10 border border-outline-variant/10">
           <Image
-            src={achievement.image_url}
+            src={getCachedImageUrl(achievement.image_url, achievement.image_hash)}
             alt={`${achievement.title} - Achievement by Dimas Febriyanto`}
             fill
             priority

@@ -52,6 +52,8 @@ export async function POST(request: NextRequest) {
 
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
+    const crypto = await import('crypto');
+    const hash = crypto.createHash('sha256').update(buffer).digest('hex').slice(0, 8);
 
     const uploadUrl = `${cleanUrl}/storage/v1/object/${bucketName}/${uniqueFileName}`;
 
@@ -75,7 +77,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       status: 200,
       message: 'Upload successful',
-      data: { url: publicUrl }
+      data: { url: publicUrl, hash }
     });
 
   } catch (error: any) {

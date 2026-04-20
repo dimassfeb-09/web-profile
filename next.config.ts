@@ -39,10 +39,20 @@ const nextConfig: NextConfig = {
         source: '/(.*)',
         headers: securityHeaders,
       },
+      {
+        source: '/api/image-proxy(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=604800, s-maxage=604800, stale-while-revalidate=86400, immutable',
+          },
+        ],
+      },
     ];
   },
   images: {
     formats: ["image/avif", "image/webp"],
+    minimumCacheTTL: 604800,
     remotePatterns: [
       {
         protocol: 'https',
@@ -51,6 +61,11 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'atgnqunmelvquqdwkmnq.supabase.co',
+      },
+    ],
+    localPatterns: [
+      {
+        pathname: '/api/image-proxy',
       },
     ],
   },

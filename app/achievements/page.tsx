@@ -22,10 +22,12 @@ export default async function AchievementsPage(props: {
   const searchParams = await props.searchParams;
   const sort = (searchParams.sort === 'oldest' ? 'oldest' : 'newest') as 'newest' | 'oldest';
 
-  const response = await AchievementService.getAllAchievements(false, sort);
+  const response = await AchievementService.getAllAchievements(true, sort);
   const achievements = (response.data || []).map(ach => ({
     ...ach,
-    id: ach.id || ''
+    id: ach.id || '',
+    slug: ach.slug || '',
+    image_hash: ach.image_hash || null
   }));
 
   return (

@@ -5,9 +5,18 @@ import { z } from 'zod';
 
 const AchievementSchema = z.object({
   title: z.string().min(1).max(255),
+  slug: z.string().min(1).max(100).regex(/^[a-z0-9-]+$/, 'Slug only contains lowercase, numbers and hyphens'),
   description: z.string().min(1),
   image_url: z.string().url().nullable(),
   date: z.string().nullable(),
+  event_organizer: z.string().nullable().optional(),
+  category: z.string().nullable().optional(),
+  team_members: z.array(z.string()).nullable().optional(),
+  tech_stack: z.array(z.string()).nullable().optional(),
+  problem_statement: z.string().nullable().optional(),
+  solution_overview: z.string().nullable().optional(),
+  credential_url: z.string().url().nullable().optional(),
+  image_hash: z.string().nullable().optional(),
 });
 
 export async function PUT(

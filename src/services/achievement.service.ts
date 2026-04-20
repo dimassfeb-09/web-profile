@@ -10,8 +10,14 @@ export class AchievementService {
 
   private static getCachedAchievementById = (id: string) => unstable_cache(
     async () => AchievementRepository.findById(id),
-    [`achievement_${id}`],
-    { revalidate: 3600, tags: ['achievements', `achievement_${id}`] }
+    [`achievement_id_${id}`],
+    { revalidate: 3600, tags: ['achievements', `achievement_id_${id}`] }
+  )();
+
+  private static getCachedAchievementBySlug = (slug: string) => unstable_cache(
+    async () => AchievementRepository.findBySlug(slug),
+    [`achievement_slug_${slug}`],
+    { revalidate: 3600, tags: ['achievements', `achievement_slug_${slug}`] }
   )();
 
   static async getAllAchievements(bypassCache = false, sort: 'newest' | 'oldest' = 'newest') {
@@ -55,6 +61,55 @@ export class AchievementService {
     }
   }
 
+  static async getAchievementBySlug(slug: string, bypassCache = false) {
+    try {
+      // 1. Try finding by current slug
+      let achievement = bypassCache
+        ? await AchievementRepository.findBySlug(slug)
+        : await this.getCachedAchievementBySlug(slug);
+
+      if (achievement) {
+        return {
+          status: 200,
+          message: 'Achievement retrieved successfully',
+          data: achievement
+        };
+      }
+
+      // 2. Check if it's a UUID (redirect to current slug)
+      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      if (uuidRegex.test(slug)) {
+        const byId = await AchievementRepository.findById(slug);
+        if (byId && byId.slug) {
+          return {
+            status: 301,
+            message: 'Redirecting to current slug',
+            data: byId.slug
+          };
+        }
+      }
+
+      // 3. Check slug history (redirect to current slug)
+      const currentSlug = await AchievementRepository.findSlugByHistory(slug);
+      if (currentSlug) {
+        return {
+          status: 301,
+          message: 'Redirecting to current slug',
+          data: currentSlug
+        };
+      }
+
+      return {
+        status: 404,
+        message: 'Achievement not found',
+        data: null
+      };
+    } catch (error) {
+      console.error('Error in AchievementService.getAchievementBySlug:', error);
+      throw new Error('Failed to fetch achievement');
+    }
+  }
+
   static async createAchievement(data: AchievementData) {
     const achievement = await AchievementRepository.create(data);
     revalidateTag('achievements', { expire: 0 });
@@ -66,11 +121,24 @@ export class AchievementService {
   }
 
   static async updateAchievement(id: string, data: Partial<AchievementData>) {
+    const existing = await AchievementRepository.findById(id);
+    if (!existing) throw new Error('Achievement not found');
+
+    if (data.slug && existing.slug && data.slug !== existing.slug) {
+      await AchievementRepository.addSlugHistory(id, existing.slug);
+    }
+
     const achievement = await AchievementRepository.update(id, data);
-    if (!achievement) throw new Error('Achievement not found');
+    if (!achievement) throw new Error('Failed to update achievement');
 
     revalidateTag('achievements', { expire: 0 });
-    revalidateTag(`achievement_${id}`, { expire: 0 });
+    revalidateTag(`achievement_id_${id}`, { expire: 0 });
+    if (achievement.slug) {
+      revalidateTag(`achievement_slug_${achievement.slug}`, { expire: 0 });
+    }
+    if (existing.slug && existing.slug !== achievement.slug) {
+      revalidateTag(`achievement_slug_${existing.slug}`, { expire: 0 });
+    }
 
     return {
       status: 200,
@@ -80,11 +148,15 @@ export class AchievementService {
   }
 
   static async deleteAchievement(id: string) {
+    const achievement = await AchievementRepository.findById(id);
     const success = await AchievementRepository.delete(id);
     if (!success) throw new Error('Achievement not found');
 
     revalidateTag('achievements', { expire: 0 });
-    revalidateTag(`achievement_${id}`, { expire: 0 });
+    revalidateTag(`achievement_id_${id}`, { expire: 0 });
+    if (achievement?.slug) {
+      revalidateTag(`achievement_slug_${achievement.slug}`, { expire: 0 });
+    }
 
     return {
       status: 200,
