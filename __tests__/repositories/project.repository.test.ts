@@ -61,7 +61,22 @@ describe('ProjectRepository', () => {
 
       expect(mockQuery).toHaveBeenCalledWith(
         expect.stringContaining('INSERT INTO projects'),
-        [input.title, input.description, input.image_url, input.features, input.link_url, input.link_text]
+        [
+          input.title,
+          input.description,
+          input.image_url,
+          input.features,
+          input.link_url,
+          input.link_text,
+          input.slug || null,
+          input.long_description || null,
+          input.tech_stack || [],
+          input.screenshots || [],
+          input.status || 'completed',
+          input.date || null,
+          input.external_links ? JSON.stringify(input.external_links) : null,
+          input.image_hash || null,
+        ]
       );
       expect(result).toEqual(expected);
     });
@@ -78,7 +93,23 @@ describe('ProjectRepository', () => {
 
       expect(mockQuery).toHaveBeenCalledWith(
         expect.stringContaining('UPDATE projects'),
-        [input.title, input.description, input.image_url, input.features, input.link_url, input.link_text, id]
+        [
+          input.title,
+          input.description,
+          input.image_url,
+          input.features,
+          input.link_url,
+          input.link_text,
+          input.slug || null,
+          input.long_description || null,
+          input.tech_stack || [],
+          input.screenshots || [],
+          input.status || 'completed',
+          input.date || null,
+          input.external_links ? JSON.stringify(input.external_links) : null,
+          input.image_hash || null,
+          id,
+        ]
       );
       expect(result).toEqual(expected);
     });

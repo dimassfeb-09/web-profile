@@ -1,5 +1,5 @@
-import React from 'react';
-import ExperienceItem from '../ui/ExperienceItem';
+import React from "react";
+import ExperienceItem from "../ui/ExperienceItem";
 
 interface Experience {
   id?: number;
@@ -14,7 +14,9 @@ interface ExperienceSectionProps {
   experiences: Experience[];
 }
 
-const ExperienceSection: React.FC<ExperienceSectionProps> = ({ experiences }) => {
+const ExperienceSection: React.FC<ExperienceSectionProps> = ({
+  experiences,
+}) => {
   return (
     <section className="pt-12 xs:pt-16 lg:pt-24 min-h-[400px]">
       <div className="mb-12 xs:mb-16">
@@ -22,7 +24,8 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({ experiences }) =>
           Professional Journey.
         </h2>
         <p className="font-body text-on-surface-variant text-base xs:text-lg max-w-xl">
-          My experience in building and shipping software.
+          Experience everything I've worked on throughout my career in software
+          development.
         </p>
       </div>
       <div className="flex flex-col gap-8">

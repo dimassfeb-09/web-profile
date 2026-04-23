@@ -71,7 +71,21 @@ describe('AchievementRepository', () => {
 
       expect(mockQuery).toHaveBeenCalledWith(
         expect.stringContaining('INSERT INTO achievements'),
-        [input.title, input.description, input.image_url, input.date]
+        [
+          input.title,
+          input.slug,
+          input.description,
+          input.image_url,
+          input.date,
+          input.event_organizer ?? null,
+          input.category ?? null,
+          input.team_members ?? null,
+          input.tech_stack ?? null,
+          input.problem_statement ?? null,
+          input.solution_overview ?? null,
+          input.credential_url ?? null,
+          input.image_hash ?? null,
+        ]
       );
       expect(result).toEqual(expected);
     });
@@ -88,7 +102,22 @@ describe('AchievementRepository', () => {
 
       expect(mockQuery).toHaveBeenCalledWith(
         expect.stringContaining('UPDATE achievements'),
-        [input.title, input.description, input.image_url, input.date, id]
+        [
+          input.title,
+          input.slug,
+          input.description,
+          input.image_url,
+          input.date,
+          input.event_organizer ?? null,
+          input.category ?? null,
+          input.team_members ?? null,
+          input.tech_stack ?? null,
+          input.problem_statement ?? null,
+          input.solution_overview ?? null,
+          input.credential_url ?? null,
+          input.image_hash ?? null,
+          id
+        ]
       );
       expect(result).toEqual(expected);
     });

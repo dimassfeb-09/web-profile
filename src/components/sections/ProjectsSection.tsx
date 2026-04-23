@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import ProjectCard from '../ui/ProjectCard';
+import React, { useState, useEffect } from "react";
+import ProjectCard from "../ui/ProjectCard";
 
 interface Project {
   id?: string;
@@ -18,13 +18,15 @@ interface ProjectsSectionProps {
   initialProjects: Project[];
 }
 
-const ProjectsSection: React.FC<ProjectsSectionProps> = ({ initialProjects }) => {
+const ProjectsSection: React.FC<ProjectsSectionProps> = ({
+  initialProjects,
+}) => {
   const [projects] = useState<Project[]>(initialProjects);
   const [visibleCount, setVisibleCount] = useState(6);
   const [mounted, setMounted] = useState(false);
 
   const getColumnCount = () => {
-    if (typeof window === 'undefined') return 3;
+    if (typeof window === "undefined") return 3;
     const width = window.innerWidth;
     if (width >= 1536) return 4;
     if (width >= 1280) return 3;
@@ -42,34 +44,36 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ initialProjects }) =>
   const handleLoadMore = () => {
     const cols = getColumnCount();
     const increment = cols === 1 ? 2 : cols;
-    setVisibleCount(prev => Math.min(prev + increment, projects.length));
+    setVisibleCount((prev) => Math.min(prev + increment, projects.length));
   };
 
   return (
     <section className="pt-16 xs:pt-24 lg:pt-32 pb-12">
       <div className="mb-12 xs:mb-16">
         <h2 className="font-headline text-3xl xs:text-4xl lg:text-5xl font-bold tracking-tight text-on-surface mb-4">
-          Featured Projects.
+          Projects.
         </h2>
         <p className="font-body text-on-surface-variant text-base xs:text-lg max-w-xl">
           A selection of my recent work and applications.
         </p>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 4xl:grid-cols-4 gap-6 xs:gap-8">
-        {(mounted ? projects.slice(0, visibleCount) : projects.slice(0, 3)).map((project, index) => (
-          <ProjectCard
-            key={project.id || index}
-            title={project.title}
-            description={project.description}
-            imageUrl={project.image_url}
-            features={project.features}
-            linkUrl={project.link_url}
-            linkText={project.link_text}
-            priority={index <= 1}
-            slug={project.slug}
-          />
-        ))}
+        {(mounted ? projects.slice(0, visibleCount) : projects.slice(0, 3)).map(
+          (project, index) => (
+            <ProjectCard
+              key={project.id || index}
+              title={project.title}
+              description={project.description}
+              imageUrl={project.image_url}
+              features={project.features}
+              linkUrl={project.link_url}
+              linkText={project.link_text}
+              priority={index <= 1}
+              slug={project.slug}
+            />
+          ),
+        )}
       </div>
 
       {visibleCount < projects.length && (

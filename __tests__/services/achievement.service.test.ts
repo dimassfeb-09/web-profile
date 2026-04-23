@@ -136,13 +136,15 @@ describe('AchievementService', () => {
       const id = 'uuid-123';
       const input = { title: 'Updated' };
       const updated = { id, ...createAchievementData(input) };
+      const existing = createAchievementData({ id, slug: 'old-slug' });
+      MockedRepo.findById.mockResolvedValueOnce(existing);
       MockedRepo.update.mockResolvedValueOnce(updated);
 
       const result = await AchievementService.updateAchievement(id, input);
 
       expect(MockedRepo.update).toHaveBeenCalledWith(id, input);
       expect(revalidateTag).toHaveBeenCalledWith('achievements', { expire: 0 });
-      expect(revalidateTag).toHaveBeenCalledWith(`achievement_${id}`, { expire: 0 });
+      expect(revalidateTag).toHaveBeenCalledWith(`achievement_id_${id}`, { expire: 0 });
       expect(result.status).toBe(200);
     });
 
@@ -157,13 +159,15 @@ describe('AchievementService', () => {
   describe('deleteAchievement()', () => {
     it('should delete and clear cache', async () => {
       const id = 'uuid-123';
+      const existing = createAchievementData({ id, slug: 'deleted-slug' });
+      MockedRepo.findById.mockResolvedValueOnce(existing);
       MockedRepo.delete.mockResolvedValueOnce(true);
 
       const result = await AchievementService.deleteAchievement(id);
 
       expect(MockedRepo.delete).toHaveBeenCalledWith(id);
       expect(revalidateTag).toHaveBeenCalledWith('achievements', { expire: 0 });
-      expect(revalidateTag).toHaveBeenCalledWith(`achievement_${id}`, { expire: 0 });
+      expect(revalidateTag).toHaveBeenCalledWith(`achievement_id_${id}`, { expire: 0 });
       expect(result.status).toBe(200);
     });
 
