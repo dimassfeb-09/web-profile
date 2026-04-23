@@ -7,6 +7,7 @@ import Breadcrumb from '@/src/components/common/Breadcrumb';
 import BackButton from '@/src/components/common/BackButton';
 import JsonLd from '@/src/components/common/JsonLd';
 import { ExternalLink, Calendar, Code2, CheckCircle2, Rocket } from 'lucide-react';
+import GallerySection from '@/src/components/projects/gallery/GallerySection';
 
 const BASE_URL = 'https://www.dimassfeb.com';
 
@@ -227,25 +228,10 @@ export default async function ProjectDetailPage({ params }: { params: Params }) 
         </div>
 
         {project.screenshots && project.screenshots.length > 0 && (
-          <section className="mt-8">
-            <h2 className="font-headline text-2xl font-bold text-on-surface mb-6">
-              Gallery
-            </h2>
-            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-               {project.screenshots.map((img, i) => (
-                  <div key={i} className="relative aspect-[9/16] rounded-2xl overflow-hidden border border-outline-variant/10 shadow-sm group bg-surface-container">
-                     <Image
-                        src={img}
-                        alt={`${project.title} screenshot ${i + 1} - Dimas Febriyanto Portfolio`}
-                        fill
-                        loading={i === 0 ? 'eager' : 'lazy'}
-                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
-                     />
-                  </div>
-               ))}
-            </div>
-          </section>
+          <GallerySection 
+            screenshots={project.screenshots} 
+            projectTitle={project.title} 
+          />
         )}
       </div>
 
