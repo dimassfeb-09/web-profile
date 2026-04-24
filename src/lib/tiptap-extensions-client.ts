@@ -7,8 +7,9 @@ import { getBaseExtensions, getLowlight } from './tiptap-extensions';
 
 const lowlight = getLowlight();
 
-export const tiptapExtensionsClient = [
-  ...getBaseExtensions(),
+export const getTiptapExtensionsClient = () => {
+  const extensions = [
+    ...getBaseExtensions(),
   CodeBlockLowlight.extend({
     addAttributes() {
       return {
@@ -27,4 +28,7 @@ export const tiptapExtensionsClient = [
       return ReactNodeViewRenderer(CodeBlockComponent);
     },
   }).configure({ lowlight }),
-];
+  ];
+  console.log('Tiptap Extensions Loaded:', extensions.length);
+  return extensions;
+};

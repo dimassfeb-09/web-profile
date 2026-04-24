@@ -2,7 +2,8 @@
 
 import React from 'react';
 import { useEditor, EditorContent, JSONContent } from '@tiptap/react';
-import { tiptapExtensionsClient } from '@/src/lib/tiptap-extensions-client';
+import { getTiptapExtensionsClient } from '@/src/lib/tiptap-extensions-client';
+import '../admin/editor.css';
 
 interface TiptapRendererProps {
   content: JSONContent;
@@ -13,7 +14,7 @@ const TiptapRenderer: React.FC<TiptapRendererProps> = ({ content, className }) =
   const editor = useEditor({
     editable: false,
     content: content,
-    extensions: tiptapExtensionsClient,
+    extensions: getTiptapExtensionsClient(),
     immediatelyRender: false,
     editorProps: {
       attributes: {

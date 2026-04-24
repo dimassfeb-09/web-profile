@@ -39,7 +39,7 @@
 /* Horizontal Rule Styling */
 .tiptap hr {
   border: none;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(120, 120, 120, 0.2);
   margin: 3rem 0;
 }
 
@@ -64,4 +64,41 @@
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.1);
+}
+
+/* Task List */
+.tiptap ul[data-type="taskList"] {
+  list-style: none;
+  padding: 0;
+}
+
+.tiptap ul[data-type="taskList"] li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.tiptap ul[data-type="taskList"] label {
+  user-select: none;
+  flex: 0 0 auto;
+}
+
+.tiptap ul[data-type="taskList"] input[type="checkbox"] {
+  cursor: pointer;
+  margin-top: 0.3rem;
+  width: 1rem;
+  height: 1rem;
+  accent-color: #0052ff;
+}
+
+.tiptap ul[data-type="taskList"] div {
+  flex: 1 1 auto;
+}
+
+/* Highlight */
+.tiptap mark {
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  box-decoration-break: clone;
 }
