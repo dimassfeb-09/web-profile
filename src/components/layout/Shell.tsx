@@ -2,13 +2,14 @@
 
 import { usePathname } from 'next/navigation';
 import TopNavBar from './TopNavBar';
+import MobileBottomNav from './MobileBottomNav';
 import Footer from './Footer';
 
 export default function Shell({ 
   children,
   cvUrl,
   contactData,
-  navLinks
+  navLinks = []
 }: { 
   children: React.ReactNode;
   cvUrl: string;
@@ -29,7 +30,10 @@ export default function Shell({
   return (
     <>
       {!isAdmin && <TopNavBar cvUrl={cvUrl} navLinks={navLinks} />}
-      {children}
+      <div className={!isAdmin ? "pb-24 lg:pb-0" : ""}>
+        {children}
+      </div>
+      {!isAdmin && <MobileBottomNav navLinks={navLinks} />}
       {!isAdmin && <Footer data={contactData || undefined} />}
     </>
   );

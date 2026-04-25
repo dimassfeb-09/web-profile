@@ -5,8 +5,10 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const bypassCache = searchParams.get('bypassCache') === 'true';
+    const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : undefined;
+    const offset = searchParams.get('offset') ? parseInt(searchParams.get('offset')!) : undefined;
 
-    const result = await ExperienceService.getAllExperiences(bypassCache);
+    const result = await ExperienceService.getAllExperiences(bypassCache, limit, offset);
     return NextResponse.json(result, { status: result.status });
   } catch (error) {
     return NextResponse.json(

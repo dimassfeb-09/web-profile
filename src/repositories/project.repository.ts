@@ -21,10 +21,21 @@ export interface ProjectData {
 }
 
 export class ProjectRepository {
-  static async findAll(sort: 'newest' | 'oldest' = 'newest'): Promise<ProjectData[]> {
+  static async findAll(sort: 'newest' | 'oldest' = 'newest', limit?: number, offset?: number): Promise<ProjectData[]> {
     const order = sort === 'oldest' ? 'ASC' : 'DESC';
-    const query = `SELECT * FROM projects ORDER BY created_at ${order}, id ${order}`;
-    const { rows } = await pool.query(query);
+    let query = `SELECT * FROM projects ORDER BY created_at ${order}, id ${order}`;
+    const values = [];
+
+    if (limit !== undefined) {
+      query += ` LIMIT $${values.length + 1}`;
+      values.push(limit);
+    }
+    if (offset !== undefined) {
+      query += ` OFFSET $${values.length + 1}`;
+      values.push(offset);
+    }
+
+    const { rows } = await pool.query(query, values);
     return rows;
   }
 

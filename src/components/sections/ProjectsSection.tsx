@@ -21,34 +21,58 @@ interface ProjectsSectionProps {
 const ProjectsSection: React.FC<ProjectsSectionProps> = ({
   initialProjects,
 }) => {
-  const [projects] = useState<Project[]>(initialProjects);
-  const [visibleCount, setVisibleCount] = useState(6);
-  const [mounted, setMounted] = useState(false);
+  const [projects, setProjects] = useState<Project[]>(initialProjects);
+  const [offset, setOffset] = useState(initialProjects.length);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const observerTarget = React.useRef<HTMLDivElement>(null);
+  const PAGE_SIZE = 6;
 
-  const getColumnCount = () => {
-    if (typeof window === "undefined") return 3;
-    const width = window.innerWidth;
-    if (width >= 1536) return 4;
-    if (width >= 1280) return 3;
-    if (width >= 640) return 2;
-    return 1;
-  };
+  const loadMoreProjects = React.useCallback(async () => {
+    if (isLoading || !hasMore) return;
+
+    setIsLoading(true);
+    try {
+      const response = await fetch(`/api/projects?limit=${PAGE_SIZE}&offset=${offset}`);
+      const result = await response.json();
+
+      if (result.status === 200 && result.data) {
+        const newProjects = result.data;
+        if (newProjects.length < PAGE_SIZE) {
+          setHasMore(false);
+        }
+        setProjects((prev) => [...prev, ...newProjects]);
+        setOffset((prev) => prev + newProjects.length);
+      } else {
+        setHasMore(false);
+      }
+    } catch (error) {
+      console.error("Error loading more projects:", error);
+      setHasMore(false);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [offset, isLoading, hasMore]);
 
   useEffect(() => {
-    // Only set mounted and calculate columns on client
-    setMounted(true);
-    const cols = getColumnCount();
-    setVisibleCount(cols === 1 ? 2 : cols);
-  }, []); // Run once on mount
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          loadMoreProjects();
+        }
+      },
+      { threshold: 0.1 }
+    );
 
-  const handleLoadMore = () => {
-    const cols = getColumnCount();
-    const increment = cols === 1 ? 2 : cols;
-    setVisibleCount((prev) => Math.min(prev + increment, projects.length));
-  };
+    if (observerTarget.current) {
+      observer.observe(observerTarget.current);
+    }
+
+    return () => observer.disconnect();
+  }, [loadMoreProjects, hasMore]);
 
   return (
-    <section className="pt-16 xs:pt-24 lg:pt-32 pb-12">
+    <section id="projects" className="pt-16 xs:pt-24 lg:pt-32 pb-12">
       <div className="mb-12 xs:mb-16">
         <h2 className="font-headline text-3xl xs:text-4xl lg:text-5xl font-bold tracking-tight text-on-surface mb-4">
           Projects.
@@ -59,36 +83,38 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 4xl:grid-cols-4 gap-6 xs:gap-8">
-        {(mounted ? projects.slice(0, visibleCount) : projects.slice(0, 3)).map(
-          (project, index) => (
-            <ProjectCard
-              key={project.id || index}
-              title={project.title}
-              description={project.description}
-              imageUrl={project.image_url}
-              features={project.features}
-              linkUrl={project.link_url}
-              linkText={project.link_text}
-              priority={index <= 1}
-              slug={project.slug}
-            />
-          ),
-        )}
+        {projects.map((project, index) => (
+          <ProjectCard
+            key={project.id || index}
+            title={project.title}
+            description={project.description}
+            imageUrl={project.image_url}
+            features={project.features}
+            linkUrl={project.link_url}
+            linkText={project.link_text}
+            priority={index <= 1}
+            slug={project.slug}
+          />
+        ))}
       </div>
 
-      {visibleCount < projects.length && (
-        <div className="mt-16 flex justify-center">
-          <button
-            onClick={handleLoadMore}
-            className="group flex items-center gap-2 px-8 py-4 rounded-full border border-outline-variant text-on-surface font-label font-medium transition-all duration-300 hover:bg-surface-container-high hover:border-outline active:scale-95"
-          >
-            Load More Projects
-            <span className="material-symbols-outlined transition-transform group-hover:translate-y-1">
-              expand_more
-            </span>
-          </button>
-        </div>
-      )}
+      {/* Sentinel Element for Intersection Observer */}
+      <div ref={observerTarget} className="h-20 flex items-center justify-center mt-8">
+        {isLoading && (
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+            <p className="text-xs font-medium text-zinc-400 animate-pulse uppercase tracking-widest">
+              Loading More Projects
+            </p>
+          </div>
+        )}
+        {!hasMore && projects.length > 0 && (
+          <div className="flex flex-col items-center gap-2 py-8">
+            <div className="h-px w-12 bg-zinc-200" />
+            <p className="text-zinc-400 text-sm font-medium">You've reached the end</p>
+          </div>
+        )}
+      </div>
     </section>
   );
 };

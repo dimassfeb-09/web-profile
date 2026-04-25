@@ -2,17 +2,17 @@ import { ExperienceRepository, ExperienceData } from '../repositories/experience
 import { unstable_cache, revalidateTag } from 'next/cache';
 
 export class ExperienceService {
-  private static getCachedExperiences = unstable_cache(
-    async () => ExperienceRepository.findAll(),
-    ['experience_data'],
+  private static getCachedExperiences = (limit?: number, offset?: number) => unstable_cache(
+    async () => ExperienceRepository.findAll(limit, offset),
+    [`experience_data_${limit}_${offset}`],
     { revalidate: 3600, tags: ['experience'] }
-  );
+  )();
 
-  static async getAllExperiences(bypassCache = false) {
+  static async getAllExperiences(bypassCache = false, limit?: number, offset?: number) {
     try {
       const experiences = bypassCache
-        ? await ExperienceRepository.findAll()
-        : await this.getCachedExperiences();
+        ? await ExperienceRepository.findAll(limit, offset)
+        : await this.getCachedExperiences(limit, offset);
 
       return {
         status: 200,

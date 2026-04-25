@@ -10,13 +10,24 @@ export interface ExperienceData {
 }
 
 export class ExperienceRepository {
-  static async findAll(): Promise<ExperienceData[]> {
-    const query = `
+  static async findAll(limit?: number, offset?: number): Promise<ExperienceData[]> {
+    let query = `
       SELECT id, role, company, start_date, end_date, description 
       FROM experiences 
       ORDER BY (end_date IS NULL) DESC, end_date DESC, start_date DESC
     `;
-    const { rows } = await pool.query(query);
+    const values = [];
+
+    if (limit !== undefined) {
+      query += ` LIMIT $${values.length + 1}`;
+      values.push(limit);
+    }
+    if (offset !== undefined) {
+      query += ` OFFSET $${values.length + 1}`;
+      values.push(offset);
+    }
+
+    const { rows } = await pool.query(query, values);
     return rows;
   }
 

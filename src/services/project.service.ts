@@ -2,9 +2,9 @@ import { ProjectRepository, ProjectData } from '../repositories/project.reposito
 import { unstable_cache, revalidateTag } from 'next/cache';
 
 export class ProjectService {
-  private static getCachedAllProjects = (sort: 'newest' | 'oldest') => unstable_cache(
-    async () => ProjectRepository.findAll(sort),
-    [`projects_all_${sort}`],
+  private static getCachedAllProjects = (sort: 'newest' | 'oldest', limit?: number, offset?: number) => unstable_cache(
+    async () => ProjectRepository.findAll(sort, limit, offset),
+    [`projects_all_${sort}_${limit}_${offset}`],
     { revalidate: 3600, tags: ['projects'] }
   )();
 
@@ -20,11 +20,11 @@ export class ProjectService {
     { revalidate: 3600, tags: ['projects', `project_slug_${slug}`] }
   )();
 
-  static async getAllProjects(bypassCache = false, sort: 'newest' | 'oldest' = 'newest') {
+  static async getAllProjects(bypassCache = false, sort: 'newest' | 'oldest' = 'newest', limit?: number, offset?: number) {
     try {
       const projects = bypassCache
-        ? await ProjectRepository.findAll(sort)
-        : await this.getCachedAllProjects(sort);
+        ? await ProjectRepository.findAll(sort, limit, offset)
+        : await this.getCachedAllProjects(sort, limit, offset);
 
       return {
         status: 200,

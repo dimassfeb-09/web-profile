@@ -177,6 +177,23 @@
   .tiptap-content img { @apply rounded-[2rem] shadow-2xl my-10 mx-auto border border-outline-variant/10; }
   .tiptap-content a { @apply text-primary font-bold underline hover:no-underline transition-all; }
   .tiptap-content code { @apply px-2 py-0.5 rounded bg-surface-container-high font-mono text-sm border border-outline-variant/20; }
+
+  /* Safe Area Utilities */
+  .pb-safe-area-inset-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .pt-safe-area-inset-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  /* Hide Scrollbar */
+  .hide-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }
 }
 
 
