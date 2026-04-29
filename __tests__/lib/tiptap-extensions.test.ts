@@ -1,4 +1,4 @@
-import { tiptapExtensions, getLowlight, getBaseExtensions } from '@/src/lib/tiptap-extensions';
+import { getTiptapExtensions, getLowlight, getBaseExtensions } from '@/src/lib/tiptap-extensions';
 
 describe('Tiptap Extensions (Server)', () => {
   it('should have basic extensions defined', () => {
@@ -14,7 +14,8 @@ describe('Tiptap Extensions (Server)', () => {
   });
 
   it('should contain CodeBlockLowlight with filename attribute', () => {
-    const codeBlockExt = tiptapExtensions.find(ext => ext.name === 'codeBlock') as any;
+    const extensions = getTiptapExtensions();
+    const codeBlockExt = extensions.find(ext => ext.name === 'codeBlock') as any;
     expect(codeBlockExt).toBeDefined();
 
     // accessing internal addAttributes for coverage

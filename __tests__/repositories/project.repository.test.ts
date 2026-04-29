@@ -15,7 +15,7 @@ describe('ProjectRepository', () => {
 
       const result = await ProjectRepository.findAll();
 
-      expect(mockQuery).toHaveBeenCalledWith('SELECT * FROM projects ORDER BY created_at DESC, id DESC');
+      expect(mockQuery).toHaveBeenCalledWith('SELECT * FROM projects ORDER BY created_at DESC, id DESC', []);
       expect(result).toEqual(mockRows);
     });
 
@@ -28,8 +28,17 @@ describe('ProjectRepository', () => {
 
       const result = await ProjectRepository.findAll('oldest');
 
-      expect(mockQuery).toHaveBeenCalledWith('SELECT * FROM projects ORDER BY created_at ASC, id ASC');
+      expect(mockQuery).toHaveBeenCalledWith('SELECT * FROM projects ORDER BY created_at ASC, id ASC', []);
       expect(result).toEqual(mockRows);
+    });
+
+    it('should handle limit and offset', async () => {
+      mockQuery.mockResolvedValueOnce({ rows: [] });
+      await ProjectRepository.findAll('newest', 10, 5);
+      expect(mockQuery).toHaveBeenCalledWith(
+        expect.stringContaining('LIMIT $1 OFFSET $2'),
+        [10, 5]
+      );
     });
   });
 
@@ -47,6 +56,24 @@ describe('ProjectRepository', () => {
     it('should return null if not found', async () => {
       mockQuery.mockResolvedValueOnce({ rows: [] });
       const result = await ProjectRepository.findById('non-existent');
+      expect(result).toBeNull();
+    });
+  });
+
+  describe('findBySlug()', () => {
+    it('should return project by slug', async () => {
+      const mockData = createProjectData({ slug: 'test-project' });
+      mockQuery.mockResolvedValueOnce({ rows: [mockData] });
+
+      const result = await ProjectRepository.findBySlug('test-project');
+
+      expect(mockQuery).toHaveBeenCalledWith('SELECT * FROM projects WHERE slug = $1', ['test-project']);
+      expect(result).toEqual(mockData);
+    });
+
+    it('should return null if slug not found', async () => {
+      mockQuery.mockResolvedValueOnce({ rows: [] });
+      const result = await ProjectRepository.findBySlug('missing');
       expect(result).toBeNull();
     });
   });
@@ -79,6 +106,26 @@ describe('ProjectRepository', () => {
         ]
       );
       expect(result).toEqual(expected);
+    });
+
+    it('should create with minimal data (fallback branches)', async () => {
+      const input = { title: 'T', description: 'D', image_url: 'I', features: [], link_url: 'L', link_text: 'LT' };
+      mockQuery.mockResolvedValueOnce({ rows: [{ id: 'new', ...input }] });
+      await ProjectRepository.create(input as any);
+      expect(mockQuery).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.arrayContaining(['completed', null, []])
+      );
+    });
+
+    it('should create with external_links', async () => {
+      const input = { ...createProjectData(), external_links: { demo: 'url' } };
+      mockQuery.mockResolvedValueOnce({ rows: [{ id: 'new', ...input }] });
+      await ProjectRepository.create(input);
+      expect(mockQuery).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.arrayContaining([JSON.stringify({ demo: 'url' })])
+      );
     });
   });
 
@@ -118,6 +165,28 @@ describe('ProjectRepository', () => {
       mockQuery.mockResolvedValueOnce({ rows: [] });
       const result = await ProjectRepository.update('non-existent', {} as any);
       expect(result).toBeNull();
+    });
+
+    it('should update with minimal data (fallback branches)', async () => {
+      const id = '123';
+      const input = { title: 'T' };
+      mockQuery.mockResolvedValueOnce({ rows: [{ id, ...input }] });
+      await ProjectRepository.update(id, input as any);
+      expect(mockQuery).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.arrayContaining(['completed', null, []])
+      );
+    });
+
+    it('should update with external_links', async () => {
+      const id = '123';
+      const input = { external_links: { source: 'git' } };
+      mockQuery.mockResolvedValueOnce({ rows: [{ id, title: 'T' }] });
+      await ProjectRepository.update(id, input as any);
+      expect(mockQuery).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.arrayContaining([JSON.stringify({ source: 'git' }), id])
+      );
     });
   });
 

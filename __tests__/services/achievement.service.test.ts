@@ -113,6 +113,80 @@ describe('AchievementService', () => {
     });
   });
 
+  describe('getAchievementBySlug()', () => {
+    it('should return achievement by slug', async () => {
+      const slug = 'test-slug';
+      const mockData = createAchievementData({ slug });
+      MockedRepo.findBySlug.mockResolvedValueOnce(mockData);
+
+      const result = await AchievementService.getAchievementBySlug(slug);
+
+      expect(result.data).toEqual(mockData);
+    });
+
+    it('should bypass cache when requested', async () => {
+      const slug = 'test-slug';
+      MockedRepo.findBySlug.mockResolvedValueOnce(null);
+      await AchievementService.getAchievementBySlug(slug, true);
+      expect(MockedRepo.findBySlug).toHaveBeenCalledWith(slug);
+    });
+
+    it('should redirect if slug is a UUID and found by id', async () => {
+      const uuid = '550e8400-e29b-41d4-a716-446655440000';
+      const mockData = createAchievementData({ id: uuid, slug: 'real-slug' });
+      MockedRepo.findBySlug.mockResolvedValueOnce(null);
+      MockedRepo.findById.mockResolvedValueOnce(mockData);
+
+      const result = await AchievementService.getAchievementBySlug(uuid);
+
+      expect(result.status).toBe(301);
+      expect(result.data).toBe('real-slug');
+    });
+
+    it('should return 404 if slug is UUID but id not found', async () => {
+      const uuid = '550e8400-e29b-41d4-a716-446655440000';
+      MockedRepo.findBySlug.mockResolvedValueOnce(null);
+      MockedRepo.findById.mockResolvedValueOnce(null);
+
+      const result = await AchievementService.getAchievementBySlug(uuid);
+      expect(result.status).toBe(404);
+    });
+
+    it('should return 404 if slug is UUID but has no slug property', async () => {
+      const uuid = '550e8400-e29b-41d4-a716-446655440000';
+      MockedRepo.findBySlug.mockResolvedValueOnce(null);
+      MockedRepo.findById.mockResolvedValueOnce({ id: uuid } as any);
+
+      const result = await AchievementService.getAchievementBySlug(uuid);
+      expect(result.status).toBe(404);
+    });
+
+    it('should redirect if slug found in history', async () => {
+      const oldSlug = 'old-slug';
+      MockedRepo.findBySlug.mockResolvedValueOnce(null);
+      MockedRepo.findSlugByHistory.mockResolvedValueOnce('new-slug');
+
+      const result = await AchievementService.getAchievementBySlug(oldSlug);
+
+      expect(result.status).toBe(301);
+      expect(result.data).toBe('new-slug');
+    });
+
+    it('should return 404 if not found anywhere', async () => {
+      MockedRepo.findBySlug.mockResolvedValueOnce(null);
+      MockedRepo.findSlugByHistory.mockResolvedValueOnce(null);
+
+      const result = await AchievementService.getAchievementBySlug('missing');
+
+      expect(result.status).toBe(404);
+    });
+
+    it('should throw error when repo fails for slug', async () => {
+      MockedRepo.findBySlug.mockRejectedValueOnce(new Error('Fail'));
+      await expect(AchievementService.getAchievementBySlug('test')).rejects.toThrow('Failed to fetch achievement');
+    });
+  });
+
   describe('createAchievement()', () => {
     it('should create achievement and clear cache', async () => {
       const input = createAchievementData();
@@ -149,10 +223,53 @@ describe('AchievementService', () => {
     });
 
     it('should throw error when achievement not found', async () => {
-      MockedRepo.update.mockResolvedValueOnce(null);
+      MockedRepo.findById.mockResolvedValueOnce(null);
 
       await expect(AchievementService.updateAchievement('invalid', {}))
         .rejects.toThrow('Achievement not found');
+    });
+
+    it('should handle slug change and add history', async () => {
+      const id = 'uuid-123';
+      const existing = createAchievementData({ id, slug: 'old-slug' });
+      const input = { slug: 'new-slug' };
+      const updated = { ...existing, ...input };
+      
+      MockedRepo.findById.mockResolvedValueOnce(existing);
+      MockedRepo.update.mockResolvedValueOnce(updated);
+      MockedRepo.addSlugHistory.mockResolvedValueOnce();
+
+      await AchievementService.updateAchievement(id, input);
+
+      expect(MockedRepo.addSlugHistory).toHaveBeenCalledWith(id, 'old-slug');
+      expect(revalidateTag).toHaveBeenCalledWith('achievement_slug_new-slug', { expire: 0 });
+      expect(revalidateTag).toHaveBeenCalledWith('achievement_slug_old-slug', { expire: 0 });
+    });
+
+    it('should handle same slug during update', async () => {
+      const id = 'uuid-123';
+      const existing = createAchievementData({ id, slug: 's' });
+      MockedRepo.findById.mockResolvedValueOnce(existing);
+      MockedRepo.update.mockResolvedValueOnce(existing);
+      await AchievementService.updateAchievement(id, { slug: 's' });
+      expect(MockedRepo.addSlugHistory).not.toHaveBeenCalled();
+    });
+
+    it('should not revalidate slug if achievement has no slug after update', async () => {
+      const id = '123';
+      MockedRepo.findById.mockResolvedValueOnce(createAchievementData({ id, slug: 's' }));
+      MockedRepo.update.mockResolvedValueOnce({ id, title: 'T' } as any);
+      await AchievementService.updateAchievement(id, {});
+      expect(revalidateTag).not.toHaveBeenCalledWith('achievement_slug_undefined', { expire: 0 });
+    });
+
+    it('should throw error when update fails', async () => {
+      const id = 'uuid-123';
+      MockedRepo.findById.mockResolvedValueOnce(createAchievementData({ id }));
+      MockedRepo.update.mockResolvedValueOnce(null);
+
+      await expect(AchievementService.updateAchievement(id, {}))
+        .rejects.toThrow('Failed to update achievement');
     });
   });
 
@@ -173,9 +290,24 @@ describe('AchievementService', () => {
 
     it('should throw error when deletion failure', async () => {
       MockedRepo.delete.mockResolvedValueOnce(false);
-
       await expect(AchievementService.deleteAchievement('invalid'))
         .rejects.toThrow('Achievement not found');
+    });
+
+    it('should not revalidate slug tag if achievement has no slug on delete', async () => {
+      const id = 'uuid-123';
+      MockedRepo.findById.mockResolvedValueOnce({ id } as any);
+      MockedRepo.delete.mockResolvedValueOnce(true);
+      await AchievementService.deleteAchievement(id);
+      expect(revalidateTag).toHaveBeenCalledWith('achievements', { expire: 0 });
+    });
+
+    it('should handle achievement being null on delete revalidation', async () => {
+      const id = 'uuid-123';
+      MockedRepo.findById.mockResolvedValueOnce(null);
+      MockedRepo.delete.mockResolvedValueOnce(true);
+      await AchievementService.deleteAchievement(id);
+      expect(revalidateTag).toHaveBeenCalledWith('achievements', { expire: 0 });
     });
   });
 });

@@ -48,6 +48,12 @@ describe('SectionOrderService', () => {
       expect(result.status).toBe(500);
       expect(result.message).toBe('Repo Error');
     });
+
+    it('should handle non-Error exceptions', async () => {
+      MockedRepo.findAll.mockRejectedValueOnce('String Error');
+      const result = await SectionOrderService.getAllSections();
+      expect(result.message).toBe('Failed to fetch sections');
+    });
   });
 
   describe('updateOrders()', () => {
@@ -68,6 +74,12 @@ describe('SectionOrderService', () => {
 
       expect(result.status).toBe(500);
       expect(result.message).toBe('Update Error');
+    });
+
+    it('should handle non-Error exceptions on update', async () => {
+      MockedRepo.updateBatch.mockRejectedValueOnce({ msg: 'Object Error' });
+      const result = await SectionOrderService.updateOrders([]);
+      expect(result.message).toBe('Failed to update section orders');
     });
   });
 });

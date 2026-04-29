@@ -12,6 +12,7 @@ interface Project {
   link_url: string;
   link_text: string;
   slug?: string;
+  tech_stack?: string[];
 }
 
 interface ProjectsSectionProps {
@@ -22,6 +23,7 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
   initialProjects,
 }) => {
   const [projects, setProjects] = useState<Project[]>(initialProjects);
+
   const [offset, setOffset] = useState(initialProjects.length);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
@@ -33,7 +35,9 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
 
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/projects?limit=${PAGE_SIZE}&offset=${offset}`);
+      const response = await fetch(
+        `/api/projects?limit=${PAGE_SIZE}&offset=${offset}?bypassCache=true`,
+      );
       const result = await response.json();
 
       if (result.status === 200 && result.data) {
@@ -61,7 +65,7 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
           loadMoreProjects();
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     if (observerTarget.current) {
@@ -94,12 +98,16 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
             linkText={project.link_text}
             priority={index <= 1}
             slug={project.slug}
+            techStack={project.tech_stack}
           />
         ))}
       </div>
 
       {/* Sentinel Element for Intersection Observer */}
-      <div ref={observerTarget} className="h-20 flex items-center justify-center mt-8">
+      <div
+        ref={observerTarget}
+        className="h-20 flex items-center justify-center mt-8"
+      >
         {isLoading && (
           <div className="flex flex-col items-center gap-3">
             <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
@@ -111,7 +119,9 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
         {!hasMore && projects.length > 0 && (
           <div className="flex flex-col items-center gap-2 py-8">
             <div className="h-px w-12 bg-zinc-200" />
-            <p className="text-zinc-400 text-sm font-medium">You've reached the end</p>
+            <p className="text-zinc-400 text-sm font-medium">
+              You've reached the end
+            </p>
           </div>
         )}
       </div>

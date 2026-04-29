@@ -59,7 +59,7 @@ async function ExperienceSectionWrapper() {
 }
 
 async function ProjectsSectionWrapper({ sort }: { sort: 'newest' | 'oldest' }) {
-  const projectsData = await ProjectService.getAllProjects(false, sort);
+  const projectsData = await ProjectService.getAllProjects(true, sort);
   return <ProjectsSection initialProjects={projectsData.data || []} />;
 }
 

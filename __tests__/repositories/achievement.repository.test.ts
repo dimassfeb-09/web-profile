@@ -61,6 +61,24 @@ describe('AchievementRepository', () => {
     });
   });
 
+  describe('findBySlug()', () => {
+    it('should return achievement by slug', async () => {
+      const mockData = createAchievementData({ slug: 'test-slug' });
+      mockQuery.mockResolvedValueOnce({ rows: [mockData] });
+
+      const result = await AchievementRepository.findBySlug('test-slug');
+
+      expect(mockQuery).toHaveBeenCalledWith('SELECT * FROM achievements WHERE slug = $1', ['test-slug']);
+      expect(result).toEqual(mockData);
+    });
+
+    it('should return null if slug not found', async () => {
+      mockQuery.mockResolvedValueOnce({ rows: [] });
+      const result = await AchievementRepository.findBySlug('missing');
+      expect(result).toBeNull();
+    });
+  });
+
   describe('create()', () => {
     it('should insert achievement and return the created row', async () => {
       const input = createAchievementData({ title: 'New Achievement' });
@@ -88,6 +106,31 @@ describe('AchievementRepository', () => {
         ]
       );
       expect(result).toEqual(expected);
+    });
+
+    it('should create achievement with minimal data (null branches)', async () => {
+      const input = { title: 'Min', slug: 'min', description: 'desc', image_url: null, date: null };
+      mockQuery.mockResolvedValueOnce({ rows: [{ id: 'new', ...input }] });
+      await AchievementRepository.create(input as any);
+      expect(mockQuery).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.arrayContaining([null])
+      );
+    });
+
+    it('should create achievement with all fields (non-null branches)', async () => {
+      const input: any = {
+        title: 'Full', slug: 'full', description: 'desc', image_url: 'img', date: '2025',
+        event_organizer: 'EO', category: 'Cat', team_members: ['T1'],
+        tech_stack: ['TS1'], problem_statement: 'P', solution_overview: 'S',
+        credential_url: 'C', image_hash: 'H'
+      };
+      mockQuery.mockResolvedValueOnce({ rows: [{ id: 'new', ...input }] });
+      await AchievementRepository.create(input);
+      expect(mockQuery).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.arrayContaining(['EO', 'Cat', ['T1']])
+      );
     });
   });
 
@@ -124,10 +167,35 @@ describe('AchievementRepository', () => {
 
     it('should return null when achievement not found', async () => {
       mockQuery.mockResolvedValueOnce({ rows: [] });
-
       const result = await AchievementRepository.update('non-existent', {});
-
       expect(result).toBeNull();
+    });
+
+    it('should update with minimal data (null branches)', async () => {
+      const id = '123';
+      const input = { title: 'T' };
+      mockQuery.mockResolvedValueOnce({ rows: [{ id, title: 'T' }] });
+      await AchievementRepository.update(id, input as any);
+      expect(mockQuery).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.arrayContaining([null])
+      );
+    });
+
+    it('should update with all fields (non-null branches)', async () => {
+      const id = '123';
+      const input: any = {
+        title: 'Full', slug: 'full', description: 'desc', image_url: 'img', date: '2025',
+        event_organizer: 'EO', category: 'Cat', team_members: ['T1'],
+        tech_stack: ['TS1'], problem_statement: 'P', solution_overview: 'S',
+        credential_url: 'C', image_hash: 'H'
+      };
+      mockQuery.mockResolvedValueOnce({ rows: [{ id, ...input }] });
+      await AchievementRepository.update(id, input);
+      expect(mockQuery).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.arrayContaining(['EO', 'Cat', ['T1'], id])
+      );
     });
   });
 
@@ -149,6 +217,33 @@ describe('AchievementRepository', () => {
       mockQuery.mockResolvedValueOnce({ rowCount: null });
       result = await AchievementRepository.delete('invalid-id');
       expect(result).toBe(false);
+    });
+  });
+
+  describe('slug history', () => {
+    it('should add slug history', async () => {
+      mockQuery.mockResolvedValueOnce({});
+      await AchievementRepository.addSlugHistory('id1', 'old-slug');
+      expect(mockQuery).toHaveBeenCalledWith(
+        expect.stringContaining('INSERT INTO achievement_slug_history'),
+        ['id1', 'old-slug']
+      );
+    });
+
+    it('should find slug by history', async () => {
+      mockQuery.mockResolvedValueOnce({ rows: [{ slug: 'new-slug' }] });
+      const result = await AchievementRepository.findSlugByHistory('old-slug');
+      expect(mockQuery).toHaveBeenCalledWith(
+        expect.stringContaining('SELECT a.slug'),
+        ['old-slug']
+      );
+      expect(result).toBe('new-slug');
+    });
+
+    it('should return null if history not found', async () => {
+      mockQuery.mockResolvedValueOnce({ rows: [] });
+      const result = await AchievementRepository.findSlugByHistory('missing');
+      expect(result).toBeNull();
     });
   });
 });

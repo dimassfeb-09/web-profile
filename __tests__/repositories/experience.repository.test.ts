@@ -15,8 +15,17 @@ describe('ExperienceRepository', () => {
 
       const result = await ExperienceRepository.findAll();
 
-      expect(mockQuery).toHaveBeenCalledWith(expect.stringContaining('ORDER BY (end_date IS NULL) DESC'));
+      expect(mockQuery).toHaveBeenCalledWith(expect.stringContaining('ORDER BY (end_date IS NULL) DESC'), []);
       expect(result).toEqual(mockRows);
+    });
+
+    it('should handle limit and offset', async () => {
+      mockQuery.mockResolvedValueOnce({ rows: [] });
+      await ExperienceRepository.findAll(5, 10);
+      expect(mockQuery).toHaveBeenCalledWith(
+        expect.stringContaining('LIMIT $1 OFFSET $2'),
+        [5, 10]
+      );
     });
   });
 

@@ -1,4 +1,4 @@
-import { tiptapExtensionsClient } from '@/src/lib/tiptap-extensions-client';
+import { getTiptapExtensionsClient } from '@/src/lib/tiptap-extensions-client';
 
 // Mock ReactNodeViewRenderer since it requires a real DOM/React context
 jest.mock('@tiptap/react', () => ({
@@ -7,7 +7,8 @@ jest.mock('@tiptap/react', () => ({
 
 describe('Tiptap Extensions (Client)', () => {
   it('should contain CodeBlockLowlight with custom attributes and node view', () => {
-    const codeBlockExt = tiptapExtensionsClient.find(ext => ext.name === 'codeBlock') as any;
+    const extensions = getTiptapExtensionsClient();
+    const codeBlockExt = extensions.find(ext => ext.name === 'codeBlock') as any;
     expect(codeBlockExt).toBeDefined();
 
     // Test addAttributes

@@ -101,6 +101,47 @@ describe('BlogService', () => {
     });
   });
 
+  describe('getRelatedBlogs()', () => {
+    it('should return results from FTS if enough results found', async () => {
+      const currentSlug = 'test';
+      const mockRelated = [createBlogData({ slug: 'r1' }), createBlogData({ slug: 'r2' }), createBlogData({ slug: 'r3' })];
+      (BlogRepository.findRelated as jest.Mock).mockResolvedValueOnce(mockRelated);
+
+      const result = await BlogService.getRelatedBlogs(currentSlug, 3);
+
+      expect(BlogRepository.findRelated).toHaveBeenCalledWith(currentSlug, 3);
+      expect(result).toEqual(mockRelated);
+    });
+
+    it('should fallback to latest blogs if FTS results are insufficient', async () => {
+      const currentSlug = 'test';
+      const mockRelated = [createBlogData({ slug: 'r1' })];
+      const mockLatest = [
+        createBlogData({ slug: 'test' }), // same as current
+        createBlogData({ slug: 'r1' }),   // already in related
+        createBlogData({ slug: 'latest1' }),
+        createBlogData({ slug: 'latest2' })
+      ];
+
+      (BlogRepository.findRelated as jest.Mock).mockResolvedValueOnce(mockRelated);
+      (BlogRepository.findAll as jest.Mock).mockResolvedValueOnce(mockLatest);
+
+      const result = await BlogService.getRelatedBlogs(currentSlug, 3);
+
+      expect(result).toHaveLength(3);
+      expect(result[0].slug).toBe('r1');
+      expect(result[1].slug).toBe('latest1');
+      expect(result[2].slug).toBe('latest2');
+    });
+
+    it('should use default limit', async () => {
+      (BlogRepository.findRelated as jest.Mock).mockResolvedValueOnce([]);
+      (BlogRepository.findAll as jest.Mock).mockResolvedValueOnce([]);
+      await BlogService.getRelatedBlogs('test');
+      expect(BlogRepository.findRelated).toHaveBeenCalledWith('test', 3);
+    });
+  });
+
   describe('createBlog()', () => {
     it('should create a blog and mark images as active', async () => {
       const blogData = createBlogData({

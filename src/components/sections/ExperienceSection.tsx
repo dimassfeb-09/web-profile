@@ -19,7 +19,8 @@ interface ExperienceSectionProps {
 const ExperienceSection: React.FC<ExperienceSectionProps> = ({
   experiences: initialExperiences,
 }) => {
-  const [experiences, setExperiences] = React.useState<Experience[]>(initialExperiences);
+  const [experiences, setExperiences] =
+    React.useState<Experience[]>(initialExperiences);
   const [offset, setOffset] = React.useState(initialExperiences.length);
   const [isLoading, setIsLoading] = React.useState(false);
   const [hasMore, setHasMore] = React.useState(true);
@@ -31,7 +32,9 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
 
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/experience?limit=${PAGE_SIZE}&offset=${offset}`);
+      const response = await fetch(
+        `/api/experience?limit=${PAGE_SIZE}&offset=${offset}`,
+      );
       const result = await response.json();
 
       if (result.status === 200 && result.data) {
@@ -59,7 +62,7 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
           loadMoreExperiences();
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     if (observerTarget.current) {
@@ -94,7 +97,10 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
       </div>
 
       {/* Sentinel Element for Infinite Scroll */}
-      <div ref={observerTarget} className="h-20 flex items-center justify-center mt-12">
+      <div
+        ref={observerTarget}
+        className="h-20 flex items-center justify-center mt-12"
+      >
         {isLoading && (
           <div className="flex flex-col items-center gap-3">
             <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
@@ -106,7 +112,9 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
         {!hasMore && experiences.length > 0 && (
           <div className="flex flex-col items-center gap-2 py-8">
             <div className="h-px w-12 bg-zinc-200" />
-            <p className="text-zinc-400 text-sm font-medium">End of Professional Journey</p>
+            <p className="text-zinc-400 text-sm font-medium">
+              End of Professional Journey
+            </p>
           </div>
         )}
       </div>

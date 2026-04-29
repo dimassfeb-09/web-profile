@@ -154,6 +154,16 @@ describe('BlogRepository', () => {
         expect.arrayContaining([true, expect.any(Date)])
       );
     });
+
+    it('should set excerpt to null if missing', async () => {
+      const blogData = createBlogData({ excerpt: undefined });
+      mockQuery.mockResolvedValueOnce({ rows: [blogData] });
+      await BlogRepository.create(blogData);
+      expect(mockQuery).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.arrayContaining([null])
+      );
+    });
   });
 
   describe('update()', () => {
@@ -223,6 +233,16 @@ describe('BlogRepository', () => {
       const result = await BlogRepository.update('non-existent', { title: 'New' });
       expect(result).toBeNull();
     });
+
+    it('should return current blog if no fields provided to update', async () => {
+      const id = '123';
+      const mockBlog = createBlogData({ id });
+      mockQuery.mockResolvedValueOnce({ rows: [{ is_published: true }] });
+      mockQuery.mockResolvedValueOnce({ rows: [mockBlog] });
+      const result = await BlogRepository.update(id, {});
+      expect(result).toEqual(mockBlog);
+      expect(mockQuery).toHaveBeenNthCalledWith(2, expect.stringContaining('SELECT * FROM blogs WHERE id = $1'), [id]);
+    });
   });
 
   describe('delete()', () => {
@@ -237,6 +257,23 @@ describe('BlogRepository', () => {
       mockQuery.mockResolvedValueOnce({ rowCount: null });
       const result = await BlogRepository.delete('123');
       expect(result).toBe(false);
+    });
+  });
+
+  describe('findRelated()', () => {
+    it('should return related blogs', async () => {
+      const mockBlogs = [createBlogData({ title: 'Related 1' })];
+      mockQuery.mockResolvedValueOnce({ rows: mockBlogs });
+
+      const result = await BlogRepository.findRelated('current-slug', 2);
+
+      expect(result).toEqual(mockBlogs);
+    });
+
+    it('should use default limit', async () => {
+      mockQuery.mockResolvedValueOnce({ rows: [] });
+      await BlogRepository.findRelated('current');
+      expect(mockQuery).toHaveBeenCalledWith(expect.any(String), ['current', 3]);
     });
   });
 });
