@@ -19,10 +19,16 @@ const CertificatesSection: React.FC<CertificatesSectionProps> = ({
   certificates,
 }) => {
   const [selectedImage, setSelectedImage] = React.useState<string | null>(null);
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const formatDate = (dateValue: string | Date | null) => {
     if (!dateValue) return "";
     const date = new Date(dateValue);
+    if (!mounted) return "...";
     return new Intl.DateTimeFormat("id-ID", {
       month: "long",
       year: "numeric",

@@ -4,8 +4,8 @@ import { unstable_cache, revalidateTag } from 'next/cache';
 export class ExperienceService {
   private static getCachedExperiences = (limit?: number, offset?: number) => unstable_cache(
     async () => ExperienceRepository.findAll(limit, offset),
-    [`experience_data_${limit}_${offset}`],
-    { revalidate: 3600, tags: ['experience'] }
+    [`experience_v2_${limit}_${offset}`],
+    { revalidate: 3600, tags: ['experience', 'experience_v2'] }
   )();
 
   static async getAllExperiences(bypassCache = false, limit?: number, offset?: number) {

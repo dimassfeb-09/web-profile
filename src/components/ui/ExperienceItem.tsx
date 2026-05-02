@@ -14,9 +14,15 @@ interface ExperienceItemProps {
 }
 
 const ExperienceItem: React.FC<ExperienceItemProps> = ({ company, roles }) => {
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const formatDate = (dateValue: string | Date | null) => {
     if (!dateValue) return "Present";
     const date = new Date(dateValue);
+    if (!mounted) return "..."; // Avoid mismatch during hydration
     return new Intl.DateTimeFormat("id-ID", {
       month: "long",
       year: "numeric",

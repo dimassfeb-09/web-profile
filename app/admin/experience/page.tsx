@@ -8,10 +8,8 @@ export const metadata = {
 };
 
 export default async function ExperienceManagementPage() {
-  // Fetch data directly from the service (Server-side)
   const response = await ExperienceService.getAllExperiences(true);
 
-  // Map data to ensure serializable types and fix TypeScript 'id: undefined' warnings
   const mappedData = response.data.map((exp) => ({
     id: exp.id || 0,
     role: exp.role,
