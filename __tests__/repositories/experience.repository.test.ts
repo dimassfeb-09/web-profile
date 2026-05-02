@@ -39,7 +39,7 @@ describe('ExperienceRepository', () => {
 
       expect(mockQuery).toHaveBeenCalledWith(
         expect.stringContaining('INSERT INTO experiences'),
-        [input.role, input.company, input.start_date, input.end_date, input.description]
+        [input.role, input.company, input.start_date, input.end_date, input.description, input.tags]
       );
       expect(result).toEqual(expected);
     });
@@ -56,7 +56,7 @@ describe('ExperienceRepository', () => {
 
       expect(mockQuery).toHaveBeenCalledWith(
         expect.stringContaining('UPDATE experiences'),
-        [input.role, input.company, input.start_date, input.end_date, input.description, id]
+        [input.role, input.company, input.start_date, input.end_date, input.description, input.tags, id]
       );
       expect(result).toEqual(expected);
     });

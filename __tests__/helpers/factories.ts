@@ -53,6 +53,7 @@ export const createExperienceData = (overrides?: Partial<ExperienceData>): Exper
   start_date: '2022-01-01',
   end_date: null,
   description: ['Build clean architecture', 'Optimize SQL'],
+  tags: [],
   ...overrides,
 });
 

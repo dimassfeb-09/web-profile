@@ -9,6 +9,7 @@ export async function createExperienceAction(data: {
   start_date: string;
   end_date: string | null;
   description: string[];
+  tags?: string[];
 }) {
   try {
     const result = await ExperienceService.createExperience(data);
@@ -26,6 +27,7 @@ export async function updateExperienceAction(id: number, data: Partial<{
   start_date: string;
   end_date: string | null;
   description: string[];
+  tags: string[];
 }>) {
   try {
     const result = await ExperienceService.updateExperience(id, data);
