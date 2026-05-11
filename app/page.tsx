@@ -9,6 +9,7 @@ import { AchievementService } from "@/src/services/achievement.service";
 import { CertificateService } from "@/src/services/certificate.service";
 import { ContactService } from "@/src/services/contact.service";
 import { BlogService } from "@/src/services/blog.service";
+import { EducationService } from "@/src/services/education.service";
 
 // Static Import for Hero (P1: Fastest LCP)
 import HeroSection from "@/src/components/sections/HeroSection";
@@ -16,14 +17,33 @@ import HeroSection from "@/src/components/sections/HeroSection";
 import { SectionOrderService } from "@/src/services/section_order.service";
 
 // Dynamic Imports for Sections
-const AboutSection = dynamic(() => import("@/src/components/sections/AboutSection"));
-const SkillsSection = dynamic(() => import("@/src/components/sections/SkillsSection"));
-const ExperienceSection = dynamic(() => import("@/src/components/sections/ExperienceSection"));
-const ProjectsSection = dynamic(() => import("@/src/components/sections/ProjectsSection"));
-const AchievementSection = dynamic(() => import("@/src/components/sections/AchievementSection"));
-const CertificatesSection = dynamic(() => import("@/src/components/sections/CertificatesSection"));
-const ContactSection = dynamic(() => import("@/src/components/sections/ContactSection"));
-const BlogSection = dynamic(() => import("@/src/components/sections/BlogSection"));
+const AboutSection = dynamic(
+  () => import("@/src/components/sections/AboutSection"),
+);
+const SkillsSection = dynamic(
+  () => import("@/src/components/sections/SkillsSection"),
+);
+const ExperienceSection = dynamic(
+  () => import("@/src/components/sections/ExperienceSection"),
+);
+const ProjectsSection = dynamic(
+  () => import("@/src/components/sections/ProjectsSection"),
+);
+const AchievementSection = dynamic(
+  () => import("@/src/components/sections/AchievementSection"),
+);
+const CertificatesSection = dynamic(
+  () => import("@/src/components/sections/CertificatesSection"),
+);
+const ContactSection = dynamic(
+  () => import("@/src/components/sections/ContactSection"),
+);
+const BlogSection = dynamic(
+  () => import("@/src/components/sections/BlogSection"),
+);
+const EducationSection = dynamic(
+  () => import("@/src/components/sections/EducationSection"),
+);
 
 // Mapping components to keys
 const SECTION_COMPONENTS: Record<string, React.ComponentType<any>> = {
@@ -31,6 +51,7 @@ const SECTION_COMPONENTS: Record<string, React.ComponentType<any>> = {
   skills: SkillsSectionWrapper,
   experience: ExperienceSectionWrapper,
   projects: ProjectsSectionWrapper,
+  education: EducationSectionWrapper,
   achievements: AchievementSectionWrapper,
   certificates: CertificatesSectionWrapper,
   blog: BlogSectionWrapper,
@@ -58,24 +79,59 @@ async function ExperienceSectionWrapper() {
   return <ExperienceSection experiences={experienceData.data || []} />;
 }
 
-async function ProjectsSectionWrapper({ sort }: { sort: 'newest' | 'oldest' }) {
+async function EducationSectionWrapper({
+  sort,
+}: {
+  sort: "newest" | "oldest";
+}) {
+  const educationData = await EducationService.getAllEducations(true, sort);
+  const educations = (educationData.data || []).map((edu) => ({
+    ...edu,
+    id: edu.id || "",
+    degree: edu.degree || null,
+    major: edu.major || null,
+    description: edu.description || null,
+    logo_url: edu.logo_url || null,
+    location: edu.location || null,
+    gpa: edu.gpa || null,
+    projects: edu.projects || [],
+    certificates: edu.certificates || [],
+  }));
+  return <EducationSection educations={educations} />;
+}
+
+async function ProjectsSectionWrapper({ sort }: { sort: "newest" | "oldest" }) {
   const projectsData = await ProjectService.getAllProjects(true, sort);
   return <ProjectsSection initialProjects={projectsData.data || []} />;
 }
 
-async function AchievementSectionWrapper({ sort }: { sort: 'newest' | 'oldest' }) {
-  const achievementsData = await AchievementService.getAllAchievements(true, sort);
-  const achievements = (achievementsData.data || []).map(ach => ({
+async function AchievementSectionWrapper({
+  sort,
+}: {
+  sort: "newest" | "oldest";
+}) {
+  const achievementsData = await AchievementService.getAllAchievements(
+    true,
+    sort,
+  );
+  const achievements = (achievementsData.data || []).map((ach) => ({
     ...ach,
-    id: ach.id || '',
-    slug: ach.slug || '',
-    image_hash: ach.image_hash || null
+    id: ach.id || "",
+    slug: ach.slug || "",
+    image_hash: ach.image_hash || null,
   }));
   return <AchievementSection achievements={achievements} />;
 }
 
-async function CertificatesSectionWrapper({ sort }: { sort: 'newest' | 'oldest' }) {
-  const certificatesData = await CertificateService.getAllCertificates(false, sort);
+async function CertificatesSectionWrapper({
+  sort,
+}: {
+  sort: "newest" | "oldest";
+}) {
+  const certificatesData = await CertificateService.getAllCertificates(
+    false,
+    sort,
+  );
   return <CertificatesSection certificates={certificatesData.data || []} />;
 }
 
@@ -93,27 +149,33 @@ export default async function Home(props: {
   searchParams: Promise<{ [key: string]: string | undefined }>;
 }) {
   const searchParams = await props.searchParams;
-  const sort = (searchParams.sort === 'oldest' ? 'oldest' : 'newest') as 'newest' | 'oldest';
+  const sort = (searchParams.sort === "oldest" ? "oldest" : "newest") as
+    | "newest"
+    | "oldest";
 
   // Fetch all parallel requirements
   const [homeData, sectionOrderResult] = await Promise.all([
     HomeService.getHomeData(),
-    SectionOrderService.getAllSections()
+    SectionOrderService.getAllSections(),
   ]);
 
   if (!homeData.data) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Loading...
+      </div>
+    );
   }
 
   // Filter and sort visible sections
   const visibleSections = (sectionOrderResult.data || [])
-    .filter(s => s.is_visible)
+    .filter((s) => s.is_visible)
     .sort((a, b) => a.order_index - b.order_index);
 
   return (
     <main className="pt-20 xs:pt-24 lg:pt-32 px-6 xs:px-8 md:px-12 lg:px-16 2xl:px-24 max-w-[1920px] mx-auto flex flex-col gap-12 xs:gap-20 lg:gap-24 xl:gap-32 pb-20 xs:pb-32">
       <HeroSection data={homeData.data} />
-      
+
       {visibleSections.map((section) => {
         const Component = SECTION_COMPONENTS[section.section_key];
         if (!Component) return null;

@@ -69,7 +69,7 @@ export default function ImageUploader({
       <div 
         onClick={() => fileInputRef.current?.click()}
         className={cn(
-          "relative group w-full overflow-hidden rounded-2xl border-2 border-dashed border-outline-variant/30 hover:border-primary/50 transition-all cursor-pointer bg-surface-container-low min-h-[140px] flex flex-col items-center justify-center gap-3",
+          "relative group w-full overflow-hidden rounded-2xl border-2 border-dashed border-outline-variant/30 hover:border-primary/50 transition-all cursor-pointer bg-surface-container-low flex flex-col items-center justify-center gap-3",
           aspectRatio
         )}
       >

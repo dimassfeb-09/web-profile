@@ -11,6 +11,7 @@ const menuItems = [
   { name: 'About', href: '/admin/about', icon: 'person' },
   { name: 'Skills', href: '/admin/skills', icon: 'psychology' },
   { name: 'Experience', href: '/admin/experience', icon: 'work' },
+  { name: 'Education', href: '/admin/educations', icon: 'school' },
   { name: 'Projects', href: '/admin/projects', icon: 'folder_open' },
   { name: 'Achievements', href: '/admin/achievements', icon: 'workspace_premium' },
   { name: 'Certificates', href: '/admin/certificates', icon: 'card_membership' },

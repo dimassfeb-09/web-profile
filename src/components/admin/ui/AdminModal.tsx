@@ -9,6 +9,7 @@ interface AdminModalProps {
   title: string;
   children: React.ReactNode;
   className?: string;
+  bodyClassName?: string;
   isLarge?: boolean;
 }
 
@@ -18,6 +19,7 @@ export default function AdminModal({
   title,
   children,
   className,
+  bodyClassName,
   isLarge = false
 }: AdminModalProps) {
   // Handle ESC key
@@ -66,7 +68,7 @@ export default function AdminModal({
         </div>
         
         {/* Body */}
-        <div className="p-6 sm:p-8 overflow-y-auto custom-scrollbar flex-grow">
+        <div className={cn("p-6 sm:p-8 overflow-y-auto custom-scrollbar flex-grow flex flex-col", bodyClassName)}>
           {children}
         </div>
       </div>
