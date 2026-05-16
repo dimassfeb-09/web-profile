@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Inter, Space_Grotesk } from "next/font/google";
-import Shell from "@/src/components/layout/Shell";
 import IconLoader from "@/src/components/common/IconLoader";
 import Script from "next/script";
 import "./globals.css";
@@ -43,6 +42,7 @@ export const metadata: Metadata = {
     "Jasa Pembuatan Website",
     "Jasa Pembuatan Aplikasi Mobile",
     "Freelance Developer Bekasi",
+    "Software Engineer Portfolio",
     "Software Engineer Portfolio",
   ],
   authors: [{ name: "Dimas Febriyanto", url: BASE_URL }],
@@ -141,6 +141,7 @@ const personSchema = {
     "Docker",
     "Mobile Application Development",
     "Backend Development",
+    "Backend Development",
   ],
   hasCredential: [
     {
@@ -192,33 +193,11 @@ const websiteSchema = {
   },
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Pre-fetch home data on server to avoid client-side waterfalls in Navbar
-  const { HomeService } = await import("@/src/services/home.service");
-  const homeData = await HomeService.getHomeData();
-  const cvUrl = homeData.data?.cv_url || "#";
-
-  const { ContactService } = await import("@/src/services/contact.service");
-  const { SectionOrderService } =
-    await import("@/src/services/section_order.service");
-
-  const [contactData, sectionResult] = await Promise.all([
-    ContactService.getContactData(),
-    SectionOrderService.getAllSections(),
-  ]);
-
-  const navLinks = (sectionResult.data || [])
-    .filter((s) => s.is_visible)
-    .sort((a, b) => a.order_index - b.order_index)
-    .map((s) => ({
-      name: s.section_label,
-      href: s.section_key === "blog" ? "/blog" : `#${s.section_key}`,
-    }));
-
   return (
     <html lang="en" data-scroll-behavior="smooth" className="scroll-smooth">
       <head>
@@ -247,16 +226,11 @@ export default async function RootLayout({
       >
         {/* Ambient Background */}
         <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
-          <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px] blur-ambient mix-blend-multiply opacity-70 translate-x-1/3 -translate-y-1/3"></div>
-          <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-secondary/5 rounded-full blur-[100px] blur-ambient mix-blend-multiply opacity-50 -translate-x-1/3 translate-y-1/3"></div>
+          <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px] blur-ambient mix-blend-multiply opacity-70 translate-x-1/3 -translate-y-1/3" />
+          <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-secondary/5 rounded-full blur-[100px] blur-ambient mix-blend-multiply opacity-50 -translate-x-1/3 translate-y-1/3" />
         </div>
-        <Shell
-          cvUrl={cvUrl}
-          contactData={contactData.data || {}}
-          navLinks={navLinks}
-        >
-          {children}
-        </Shell>
+
+        {children}
 
         {process.env.NEXT_PUBLIC_GA_ID && (
           <>

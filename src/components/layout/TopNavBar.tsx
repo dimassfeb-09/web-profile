@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { usePathname } from 'next/navigation';
-import Link from 'next/link';
+import React from "react";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 interface TopNavBarProps {
   cvUrl: string;
@@ -11,18 +11,18 @@ interface TopNavBarProps {
 
 const TopNavBar = ({ cvUrl, navLinks = [] }: TopNavBarProps) => {
   const pathname = usePathname();
-  const [activeHash, setActiveHash] = React.useState('');
+  const [activeHash, setActiveHash] = React.useState("");
   const [isVisible, setIsVisible] = React.useState(true);
   const [lastScrollY, setLastScrollY] = React.useState(0);
-  const isHome = pathname === '/';
+  const isHome = pathname === "/";
 
   // Show/Hide on scroll
   React.useEffect(() => {
     const handleScroll = () => {
       if (typeof window === "undefined") return;
-      
+
       const currentScrollY = window.scrollY;
-      
+
       // Always show at the very top
       if (currentScrollY < 10) {
         setIsVisible(true);
@@ -33,7 +33,7 @@ const TopNavBar = ({ cvUrl, navLinks = [] }: TopNavBarProps) => {
         // Scrolling up -> show
         setIsVisible(true);
       }
-      
+
       setLastScrollY(currentScrollY);
     };
 
@@ -49,11 +49,11 @@ const TopNavBar = ({ cvUrl, navLinks = [] }: TopNavBarProps) => {
 
     // 2. Scroll Spy (Intersection Observer)
     let observer: IntersectionObserver | null = null;
-    
+
     if (isHome && typeof window !== "undefined") {
       const sectionIds = navLinks
-        .filter(link => link.href.startsWith("#"))
-        .map(link => link.href.substring(1));
+        .filter((link) => link.href.startsWith("#"))
+        .map((link) => link.href.substring(1));
 
       observer = new IntersectionObserver(
         (entries) => {
@@ -67,7 +67,7 @@ const TopNavBar = ({ cvUrl, navLinks = [] }: TopNavBarProps) => {
         {
           rootMargin: "-20% 0px -70% 0px",
           threshold: 0,
-        }
+        },
       );
 
       sectionIds.forEach((id) => {
@@ -91,7 +91,7 @@ const TopNavBar = ({ cvUrl, navLinks = [] }: TopNavBarProps) => {
   }, [isHome, navLinks]);
 
   const getHref = (href: string) => {
-    if (href.startsWith('#')) {
+    if (href.startsWith("#")) {
       return isHome ? href : `/${href}`;
     }
     return href;
@@ -107,7 +107,8 @@ const TopNavBar = ({ cvUrl, navLinks = [] }: TopNavBarProps) => {
     }
 
     // Handle Path Links
-    const isPathMatch = pathname === href || (href !== "/" && pathname.startsWith(href));
+    const isPathMatch =
+      pathname === href || (href !== "/" && pathname.startsWith(href));
     if (href === "/" || href === "") {
       return isPathMatch && !hasActiveHash;
     }
@@ -115,7 +116,7 @@ const TopNavBar = ({ cvUrl, navLinks = [] }: TopNavBarProps) => {
   };
 
   return (
-    <nav 
+    <nav
       className={`fixed top-0 w-full z-50 transition-all duration-500 ease-in-out bg-white/95 backdrop-blur-xl border-b border-zinc-200/50 ${
         isVisible ? "translate-y-0" : "-translate-y-full"
       }`}
@@ -136,9 +137,9 @@ const TopNavBar = ({ cvUrl, navLinks = [] }: TopNavBarProps) => {
               <Link
                 key={link.name}
                 className={`transition-all duration-300 ease-in-out hover:opacity-80 border-b-2 py-1 ${
-                  active 
-                    ? 'text-primary border-primary' 
-                    : 'text-zinc-500 border-transparent hover:text-zinc-900 hover:border-primary/30'
+                  active
+                    ? "text-primary border-primary"
+                    : "text-zinc-500 border-transparent hover:text-zinc-900 hover:border-primary/30"
                 }`}
                 href={getHref(link.href)}
                 onClick={() => {

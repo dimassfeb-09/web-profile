@@ -63,9 +63,15 @@
     to { opacity: 1; transform: scale(1); }
   }
 
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
   --animate-slide-right: slide-right 0.3s cubic-bezier(0, 0, 0.2, 1);
   --animate-fade-in: fade-in 0.2s ease-out;
   --animate-scale-up: scale-up 0.2s cubic-bezier(0, 0, 0.2, 1);
+  --animate-shimmer: shimmer 2s infinite linear;
 }
 
 @layer base {
@@ -137,6 +143,17 @@
     -webkit-mask-image: radial-gradient(ellipse at center, black 20%, transparent 80%);
     transform: translateZ(0); /* Hardware Acceleration */
   }
+
+  .skeleton {
+    @apply relative overflow-hidden bg-surface-container-high rounded-lg;
+  }
+  
+  .skeleton::after {
+    @apply absolute inset-0 content-[''];
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    animation: shimmer 1.5s infinite linear;
+    background-size: 200% 100%;
+  }
   
   .material-symbols-outlined {
     font-family: 'Material Symbols Outlined';
@@ -154,6 +171,14 @@
     font-display: block; /* Avoid FOIT */
   }
 
+
+  .fill-1 {
+    font-variation-settings: 'FILL' 1;
+  }
+
+  .font-variation-fill-1 {
+    font-variation-settings: 'FILL' 1;
+  }
 
   /* Optimized Blurs to avoid Paint Bottlenecks */
   .blur-ambient {
