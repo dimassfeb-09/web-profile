@@ -1,7 +1,6 @@
 import { HomeService } from "@/src/services/home.service";
 import { SectionOrderService } from "@/src/services/section_order.service";
 import TopNavBar from "./TopNavBar";
-import MobileBottomNav from "./MobileBottomNav";
 
 export default async function PublicNavigation() {
   // Fetch data parallelly - this Suspense boundary is isolated
@@ -22,7 +21,6 @@ export default async function PublicNavigation() {
   return (
     <>
       <TopNavBar cvUrl={cvUrl} navLinks={navLinks} />
-      <MobileBottomNav navLinks={navLinks} />
     </>
   );
 }

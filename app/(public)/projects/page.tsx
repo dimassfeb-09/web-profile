@@ -1,15 +1,15 @@
-import React, { Suspense } from 'react';
-import { ProjectService } from '@/src/services/project.service';
-import ProjectsSection from '@/src/components/sections/ProjectsSection';
-import SortFilter from '@/src/components/common/SortFilter';
-import Link from 'next/link';
-import BackButton from '@/src/components/common/BackButton';
+import React, { Suspense } from "react";
+import { ProjectService } from "@/src/services/project.service";
+import ProjectsSection from "@/src/components/sections/ProjectsSection";
+import SortFilter from "@/src/components/common/SortFilter";
+import Link from "next/link";
+import BackButton from "@/src/components/common/BackButton";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: 'Projects | Dimas Febriyanto',
-  description: 'A selection of my recent work and applications.',
+  title: "Projects | Dimas Febriyanto",
+  description: "A selection of my recent work and applications.",
 };
 
 const SectionSkeleton = () => (
@@ -20,7 +20,9 @@ export default async function ProjectsPage(props: {
   searchParams: Promise<{ [key: string]: string | undefined }>;
 }) {
   const searchParams = await props.searchParams;
-  const sort = (searchParams.sort === 'oldest' ? 'oldest' : 'newest') as 'newest' | 'oldest';
+  const sort = (searchParams.sort === "oldest" ? "oldest" : "newest") as
+    | "newest"
+    | "oldest";
 
   const response = await ProjectService.getAllProjects(false, sort);
   const projects = response.data || [];
@@ -31,7 +33,7 @@ export default async function ProjectsPage(props: {
         <BackButton href="/#projects" />
         <SortFilter />
       </div>
-      
+
       <Suspense fallback={<SectionSkeleton />}>
         <ProjectsSection initialProjects={projects} />
       </Suspense>

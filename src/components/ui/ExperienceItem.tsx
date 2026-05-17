@@ -15,14 +15,25 @@ interface ExperienceItemProps {
 
 const ExperienceItem: React.FC<ExperienceItemProps> = ({ company, roles }) => {
   const [mounted, setMounted] = React.useState(false);
+  const [expandedRoles, setExpandedRoles] = React.useState<
+    Record<number, boolean>
+  >({});
+
   React.useEffect(() => {
     setMounted(true);
   }, []);
 
+  const toggleExpand = (idx: number) => {
+    setExpandedRoles((prev) => ({
+      ...prev,
+      [idx]: !prev[idx],
+    }));
+  };
+
   const formatDate = (dateValue: string | Date | null) => {
     if (!dateValue) return "Present";
     const date = new Date(dateValue);
-    if (!mounted) return "..."; // Avoid mismatch during hydration
+    if (!mounted) return "...";
     return new Intl.DateTimeFormat("id-ID", {
       month: "long",
       year: "numeric",
@@ -69,15 +80,72 @@ const ExperienceItem: React.FC<ExperienceItemProps> = ({ company, roles }) => {
                 </p>
               )}
 
-              {item.description.length > 1 && (
-                <ul className="list-disc list-outside ml-5 text-on-surface-variant font-body space-y-3">
-                  {item.description.slice(1).map((point, pIdx) => (
-                    <li key={pIdx} className="pl-2">
-                      {point}
-                    </li>
-                  ))}
-                </ul>
-              )}
+              {item.description.length > 1 &&
+                (() => {
+                  const bullets = item.description.slice(1);
+                  const isExpanded = !!expandedRoles[idx];
+                  const visibleCount = 3;
+                  const hasMoreBullets = bullets.length > visibleCount;
+                  const renderedBullets =
+                    hasMoreBullets && !isExpanded
+                      ? bullets.slice(0, visibleCount)
+                      : bullets;
+
+                  return (
+                    <>
+                      <ul className="list-disc list-outside ml-5 text-on-surface-variant font-body space-y-3">
+                        {renderedBullets.map((point, pIdx) => (
+                          <li key={pIdx} className="pl-2">
+                            {point}
+                          </li>
+                        ))}
+                      </ul>
+
+                      {hasMoreBullets && (
+                        <button
+                          onClick={() => toggleExpand(idx)}
+                          className="mt-3 flex items-center gap-1.5 text-xs xs:text-sm font-semibold text-primary hover:opacity-80 active:scale-95 transition-all focus:outline-none"
+                        >
+                          {isExpanded ? (
+                            <>
+                              Show Less
+                              <svg
+                                className="w-3.5 h-3.5"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2.5"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M4.5 15.75l7.5-7.5 7.5 7.5"
+                                />
+                              </svg>
+                            </>
+                          ) : (
+                            <>
+                              Show All ({bullets.length})
+                              <svg
+                                className="w-3.5 h-3.5"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2.5"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+                                />
+                              </svg>
+                            </>
+                          )}
+                        </button>
+                      )}
+                    </>
+                  );
+                })()}
             </div>
 
             {item.tags && item.tags.length > 0 && (

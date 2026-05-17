@@ -12,7 +12,7 @@ interface FooterProps {
 
 const Footer: React.FC<FooterProps> = ({ data }) => {
   return (
-    <footer className="w-full mt-12 xs:mt-16 lg:mt-24 bg-gradient-to-br from-blue-50/50 via-white to-white border-t border-zinc-200/20 flat">
+    <footer className="w-full mt-12 xs:mt-16 lg:mt-24 bg-white border-t border-zinc-200/20">
       <div className="flex flex-col md:flex-row justify-between items-center px-8 xs:px-12 py-10 xs:py-12 lg:py-16 max-w-7xl mx-auto gap-8">
         <div className="flex flex-col md:flex-row items-center gap-6 md:gap-12">
           <p className="font-space-grotesk text-xs uppercase tracking-widest text-zinc-500 opacity-70 hover:opacity-100 duration-500">

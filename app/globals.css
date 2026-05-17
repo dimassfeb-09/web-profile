@@ -75,6 +75,11 @@
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5.5rem; /* 88px navbar clearance margin */
+  }
+
   body {
     @apply bg-background text-on-background font-body antialiased;
   }

@@ -16,7 +16,7 @@ const AboutSection: React.FC<AboutSectionProps> = ({ data }) => {
         <h2 className="font-headline text-3xl xs:text-4xl lg:text-5xl font-bold tracking-tight text-on-surface mb-6">
           {data.headline}
         </h2>
-        <div className="w-20 h-1 bg-gradient-to-r from-primary to-transparent rounded-full"></div>
+        <div className="w-16 h-1 bg-primary rounded-full"></div>
       </div>
       <div className="lg:col-span-7 bg-surface-container-lowest p-6 xs:p-8 md:p-12 rounded-[2rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.03)] border border-outline-variant/10 group hover:shadow-[0_30px_80px_-15px_rgba(0,0,0,0.05)] transition-all duration-500">
         <div className="prose prose-base xs:prose-lg text-on-surface-variant font-body leading-relaxed max-w-none">

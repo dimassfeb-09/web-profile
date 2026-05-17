@@ -23,27 +23,12 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
   initialProjects,
 }) => {
   const [projects, setProjects] = useState<Project[]>(initialProjects);
-  const [selectedTag, setSelectedTag] = useState<string | null>(null);
 
   const [offset, setOffset] = useState(initialProjects.length);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const observerTarget = React.useRef<HTMLDivElement>(null);
   const PAGE_SIZE = 6;
-
-  // Extract unique tags from tech_stack
-  const allTags = React.useMemo(() => {
-    const tags = new Set<string>();
-    projects.forEach((project) => {
-      project.tech_stack?.forEach((tech) => tags.add(tech));
-    });
-    return Array.from(tags).sort();
-  }, [projects]);
-
-  const filteredProjects = React.useMemo(() => {
-    if (!selectedTag) return projects;
-    return projects.filter((project) => project.tech_stack?.includes(selectedTag));
-  }, [projects, selectedTag]);
 
   const loadMoreProjects = React.useCallback(async () => {
     if (isLoading || !hasMore) return;
@@ -76,7 +61,7 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && hasMore && !selectedTag) {
+        if (entries[0].isIntersecting && hasMore) {
           loadMoreProjects();
         }
       },
@@ -88,7 +73,7 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
     }
 
     return () => observer.disconnect();
-  }, [loadMoreProjects, hasMore, selectedTag]);
+  }, [loadMoreProjects, hasMore]);
 
   return (
     <section id="projects" className="pt-16 xs:pt-24 lg:pt-32 pb-12">
@@ -101,37 +86,10 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
             A selection of my recent work and applications.
           </p>
         </div>
-
-        {/* Filter UI */}
-        <div className="flex flex-wrap gap-2">
-          <button
-            onClick={() => setSelectedTag(null)}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-              selectedTag === null
-                ? "bg-primary text-on-primary shadow-lg shadow-primary/20"
-                : "bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest"
-            }`}
-          >
-            All
-          </button>
-          {allTags.map((tag) => (
-            <button
-              key={tag}
-              onClick={() => setSelectedTag(tag)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                selectedTag === tag
-                  ? "bg-primary text-on-primary shadow-lg shadow-primary/20"
-                  : "bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest"
-              }`}
-            >
-              {tag}
-            </button>
-          ))}
-        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 4xl:grid-cols-4 gap-6 xs:gap-8">
-        {filteredProjects.map((project, index) => (
+        {projects.map((project, index) => (
           <ProjectCard
             key={project.id || index}
             title={project.title}
@@ -148,7 +106,7 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
       </div>
 
       {/* Sentinel Element for Intersection Observer */}
-      {!selectedTag && (
+      {true && (
         <div
           ref={observerTarget}
           className="h-20 flex items-center justify-center mt-8"

@@ -169,8 +169,8 @@ const MobileBottomNav = ({ navLinks }: MobileBottomNavProps) => {
           activeHash ? "shadow-primary/10" : ""
         }`}
       >
-        {/* Subtle top accent line (animated glow) */}
-        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary/40 to-transparent animate-pulse" />
+        {/* Subtle top accent line (flat border) */}
+        <div className="absolute top-0 left-0 right-0 h-[1px] bg-zinc-200" />
 
         {/* Links Container */}
         <div className="flex items-center overflow-x-auto hide-scrollbar py-2.5">

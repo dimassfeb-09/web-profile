@@ -100,8 +100,7 @@ export default async function ProjectDetailPage({ params }: { params: Params }) 
     <main className="pt-24 lg:pt-32 px-6 md:px-12 lg:px-16 2xl:px-24 max-w-5xl mx-auto pb-24 relative">
       <JsonLd schema={[schema, breadcrumbSchema]} />
       
-      {/* Ambient Background specific to project detail */}
-      <div className="absolute inset-0 bg-grid-pattern -z-10 opacity-30 pointer-events-none"></div>
+
 
       <Breadcrumb items={[
         { label: 'Home', href: '/' },

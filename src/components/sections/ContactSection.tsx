@@ -1,6 +1,6 @@
-import React from 'react';
-import { Mail } from 'lucide-react';
-import SocialIcon from '../ui/SocialIcon';
+import React from "react";
+import { Mail } from "lucide-react";
+import SocialIcon from "../ui/SocialIcon";
 
 interface ContactData {
   headline: string;
@@ -19,9 +19,6 @@ interface ContactSectionProps {
 const ContactSection: React.FC<ContactSectionProps> = ({ data }) => {
   return (
     <section className="pt-16 xs:pt-24 lg:pt-32 pb-12 text-center relative overflow-hidden">
-      {/* Background Grid Pattern */}
-      <div className="absolute inset-0 bg-grid-pattern -z-10 opacity-40"></div>
-      
       <div className="max-w-3xl mx-auto px-6">
         <h2 className="font-headline text-3xl xs:text-4xl lg:text-5xl font-bold tracking-tight text-on-surface mb-6">
           {data.headline}
@@ -31,7 +28,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({ data }) => {
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-12">
           <a
-            className="w-full sm:w-auto px-8 py-4 rounded-full bg-gradient-to-br from-primary to-primary-container text-white font-label font-medium tracking-wide transition-all duration-300 hover:shadow-[0_8px_40px_rgb(0,62,199,0.3)] hover:-translate-y-1 active:translate-y-0"
+            className="w-full sm:w-auto px-8 py-4 rounded-full bg-primary text-white font-label font-medium tracking-wide transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,62,199,0.25)] hover:-translate-y-1 active:translate-y-0"
             href={`mailto:${data.email}`}
           >
             Send an Email
@@ -43,41 +40,61 @@ const ContactSection: React.FC<ContactSectionProps> = ({ data }) => {
             target="_blank"
           >
             LinkedIn Profile
-            <span className="material-symbols-outlined text-sm">open_in_new</span>
+            <span className="material-symbols-outlined text-sm">
+              open_in_new
+            </span>
           </a>
         </div>
         <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-surface-container-low border border-outline-variant/20 mb-12">
           <Mail className="w-4 h-4 text-on-surface-variant" />
-          <span className="text-on-surface-variant font-label text-sm tracking-wide">{data.email}</span>
+          <span className="text-on-surface-variant font-label text-sm tracking-wide">
+            {data.email}
+          </span>
         </div>
 
         {/* Social Links Row */}
         <div className="flex items-center justify-center gap-6">
           {data.linkedin_url && (
-            <a href={data.linkedin_url} target="_blank" rel="noopener noreferrer" 
-               className="p-3 rounded-2xl bg-surface-container-low border border-outline-variant/10 text-on-surface-variant hover:text-primary hover:border-primary/30 transition-all hover:-translate-y-1"
-               title="LinkedIn">
+            <a
+              href={data.linkedin_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-3 rounded-2xl bg-surface-container-low border border-outline-variant/10 text-on-surface-variant hover:text-primary hover:border-primary/30 transition-all hover:-translate-y-1"
+              title="LinkedIn"
+            >
               <SocialIcon platform="linkedin" className="w-6 h-6" />
             </a>
           )}
           {data.github_url && (
-            <a href={data.github_url} target="_blank" rel="noopener noreferrer" 
-               className="p-3 rounded-2xl bg-surface-container-low border border-outline-variant/10 text-on-surface-variant hover:text-primary hover:border-primary/30 transition-all hover:-translate-y-1"
-               title="GitHub">
+            <a
+              href={data.github_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-3 rounded-2xl bg-surface-container-low border border-outline-variant/10 text-on-surface-variant hover:text-primary hover:border-primary/30 transition-all hover:-translate-y-1"
+              title="GitHub"
+            >
               <SocialIcon platform="github" className="w-6 h-6" />
             </a>
           )}
           {data.instagram_url && (
-            <a href={data.instagram_url} target="_blank" rel="noopener noreferrer" 
-               className="p-3 rounded-2xl bg-surface-container-low border border-outline-variant/10 text-on-surface-variant hover:text-primary hover:border-primary/30 transition-all hover:-translate-y-1"
-               title="Instagram">
+            <a
+              href={data.instagram_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-3 rounded-2xl bg-surface-container-low border border-outline-variant/10 text-on-surface-variant hover:text-primary hover:border-primary/30 transition-all hover:-translate-y-1"
+              title="Instagram"
+            >
               <SocialIcon platform="instagram" className="w-6 h-6" />
             </a>
           )}
           {data.twitter_url && (
-            <a href={data.twitter_url} target="_blank" rel="noopener noreferrer" 
-               className="p-3 rounded-2xl bg-surface-container-low border border-outline-variant/10 text-on-surface-variant hover:text-primary hover:border-primary/30 transition-all hover:-translate-y-1"
-               title="Twitter / X">
+            <a
+              href={data.twitter_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-3 rounded-2xl bg-surface-container-low border border-outline-variant/10 text-on-surface-variant hover:text-primary hover:border-primary/30 transition-all hover:-translate-y-1"
+              title="Twitter / X"
+            >
               <SocialIcon platform="twitter" className="w-6 h-6" />
             </a>
           )}
