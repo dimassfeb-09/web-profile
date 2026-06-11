@@ -3,13 +3,14 @@ import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
 const jwtSecretValue = process.env.JWT_SECRET;
-if (!jwtSecretValue && process.env.NODE_ENV === 'production') {
-  throw new Error('FATAL: JWT_SECRET environment variable is not set.');
+
+// JWT_SECRET is required in ALL environments (including development)
+// Set JWT_SECRET in your .env file
+if (!jwtSecretValue) {
+  throw new Error('FATAL: JWT_SECRET environment variable is not set. Please add JWT_SECRET to your .env file.');
 }
 
-const secret = new TextEncoder().encode(
-  jwtSecretValue || 'development-only-secret-defaults-to-32-chars'
-);
+const secret = new TextEncoder().encode(jwtSecretValue);
 
 export const COOKIE_NAME = 'admin-token';
 

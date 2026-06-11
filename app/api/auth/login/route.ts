@@ -6,9 +6,9 @@ import { checkRateLimit } from '@/src/lib/rateLimit';
 
 export async function POST(request: NextRequest) {
   try {
-    // 1. Rate Limiting based on IP
+    // 1. Rate Limiting based on IP (Redis for production, in-memory for dev)
     const ip = request.headers.get('x-forwarded-for') ?? request.headers.get('x-real-ip') ?? 'unknown';
-    if (!checkRateLimit(ip)) {
+    if (!(await checkRateLimit(ip))) {
       return NextResponse.json(
         { status: 429, message: 'Too many login attempts. Please try again in 15 minutes.' },
         { status: 429 }

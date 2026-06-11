@@ -1,13 +1,32 @@
 import { checkRateLimit } from '@/src/lib/rateLimit';
 
+// Mock environment variables for testing
+jest.mock('@upstash/ratelimit', () => ({
+  Ratelimit: {
+    slidingWindow: jest.fn(() => ({
+      limit: jest.fn().mockResolvedValue({ success: true }),
+    })),
+  },
+}));
+
+jest.mock('@upstash/redis', () => ({
+  Redis: jest.fn().mockImplementation(() => ({})),
+}));
+
+// Mock process.env
+const originalEnv = process.env;
+beforeEach(() => {
+  process.env = { ...originalEnv, UPSTASH_REDIS_REST_URL: '', UPSTASH_REDIS_REST_TOKEN: '' };
+});
+
+afterEach(() => {
+  process.env = originalEnv;
+});
+
 describe('checkRateLimit()', () => {
   const ip = '127.0.0.1';
-  const maxAttempts = 3;
-  const windowMs = 1000;
 
   beforeEach(() => {
-    // Note: since 'attempts' is private and persistent in rateLimit.ts,
-    // we use different IPs to ensure independence or just rely on state.
     jest.useFakeTimers();
   });
 
@@ -15,40 +34,48 @@ describe('checkRateLimit()', () => {
     jest.useRealTimers();
   });
 
-  it('should allow first attempt', () => {
+  it('should allow first attempt', async () => {
     const testIp = 'ip1';
-    expect(checkRateLimit(testIp, maxAttempts, windowMs)).toBe(true);
+    const result = await checkRateLimit(testIp);
+    expect(result).toBe(true);
   });
 
-  it('should allow multiple attempts within limit', () => {
+  it('should allow multiple attempts within limit', async () => {
     const testIp = 'ip2';
-    expect(checkRateLimit(testIp, maxAttempts, windowMs)).toBe(true);
-    expect(checkRateLimit(testIp, maxAttempts, windowMs)).toBe(true);
-    expect(checkRateLimit(testIp, maxAttempts, windowMs)).toBe(true);
+    expect(await checkRateLimit(testIp)).toBe(true);
+    expect(await checkRateLimit(testIp)).toBe(true);
+    expect(await checkRateLimit(testIp)).toBe(true);
+    expect(await checkRateLimit(testIp)).toBe(true);
+    expect(await checkRateLimit(testIp)).toBe(true);
   });
 
-  it('should block after exceeding max attempts', () => {
+  it('should block after exceeding max attempts', async () => {
     const testIp = 'ip3';
-    checkRateLimit(testIp, maxAttempts, windowMs);
-    checkRateLimit(testIp, maxAttempts, windowMs);
-    checkRateLimit(testIp, maxAttempts, windowMs);
-    expect(checkRateLimit(testIp, maxAttempts, windowMs)).toBe(false);
+    // First 5 should pass (default limit is 5)
+    for (let i = 0; i < 5; i++) {
+      expect(await checkRateLimit(testIp)).toBe(true);
+    }
+    // 6th should fail
+    expect(await checkRateLimit(testIp)).toBe(false);
   });
 
-  it('should reset after window expires', () => {
+  it('should reset after window expires', async () => {
     const testIp = 'ip4';
-    checkRateLimit(testIp, maxAttempts, windowMs);
-    checkRateLimit(testIp, maxAttempts, windowMs);
-    checkRateLimit(testIp, maxAttempts, windowMs);
-    expect(checkRateLimit(testIp, maxAttempts, windowMs)).toBe(false);
+    // Use up the limit
+    for (let i = 0; i < 5; i++) {
+      await checkRateLimit(testIp);
+    }
+    expect(await checkRateLimit(testIp)).toBe(false);
 
-    jest.advanceTimersByTime(windowMs + 1);
+    jest.advanceTimersByTime(15 * 60 * 1000 + 1); // 15 minutes + 1ms
     
-    expect(checkRateLimit(testIp, maxAttempts, windowMs)).toBe(true);
+    // Should be reset now
+    expect(await checkRateLimit(testIp)).toBe(true);
   });
 
-  it('should work with default parameters', () => {
+  it('should work with default parameters', async () => {
     const testIp = 'ip-default';
-    expect(checkRateLimit(testIp)).toBe(true);
+    const result = await checkRateLimit(testIp);
+    expect(result).toBe(true);
   });
 });

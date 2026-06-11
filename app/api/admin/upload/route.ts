@@ -5,6 +5,28 @@ const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ALLOWED_BUCKETS = ['projects', 'achievements', 'certificates', 'project-screenshots'];
 
+// Magic bytes untuk validasi tipe file (file signature)
+const MAGIC_BYTES: Record<string, number[][]> = {
+  'image/jpeg': [[0xFF, 0xD8, 0xFF]],
+  'image/png': [[0x89, 0x50, 0x4E, 0x47]],
+  'image/gif': [[0x47, 0x49, 0x46, 0x38]],
+  'image/webp': [[0x52, 0x49, 0x46, 0x46], [0x57, 0x45, 0x42, 0x50]], // RIFF....WEBP
+};
+
+/**
+ * Validasi magic bytes untuk memastikan file sesuai dengan MIME type
+ */
+function validateMagicBytes(buffer: Buffer, mimeType: string): boolean {
+  const signatures = MAGIC_BYTES[mimeType];
+  if (!signatures) return false;
+
+  for (const sig of signatures) {
+    const matches = sig.every((byte, i) => buffer[i] === byte);
+    if (matches) return true;
+  }
+  return false;
+}
+
 export async function POST(request: NextRequest) {
   try {
     await requireAuth();
@@ -26,7 +48,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ status: 400, message: 'File too large (max 5MB)' }, { status: 400 });
     }
 
-    // 3. Get and Whitelist Bucket
+    // 3. Validate Magic Bytes (file signature)
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    if (!validateMagicBytes(buffer, file.type)) {
+      return NextResponse.json({ status: 400, message: 'Invalid file content - file may be corrupted or disguised' }, { status: 400 });
+    }
+
+    // 4. Get and Whitelist Bucket
     const { searchParams } = new URL(request.url);
     const bucketName = searchParams.get('bucket') || 'projects';
     if (!ALLOWED_BUCKETS.includes(bucketName)) {
@@ -50,8 +79,7 @@ export async function POST(request: NextRequest) {
     const ext = MIME_TO_EXT[file.type] || 'webp';
     const uniqueFileName = `${Date.now()}.${ext}`;
 
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
+    // Generate hash for integrity tracking
     const crypto = await import('crypto');
     const hash = crypto.createHash('sha256').update(buffer).digest('hex').slice(0, 8);
 

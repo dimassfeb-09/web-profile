@@ -12,10 +12,11 @@ const securityHeaders = [
     key: 'Content-Security-Policy',
     value: [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com",
+      // Note: 'unsafe-inline' required for Next.js SSR - can be hardened with nonce in future
+      "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
-      "img-src 'self' data: blob: https:",
+      "img-src 'self' data: blob: https://atgnqunmelvquqdwkmnq.supabase.co https://lh3.googleusercontent.com",
       "connect-src 'self' https://atgnqunmelvquqdwkmnq.supabase.co https://www.google-analytics.com https://*.giphy.com",
       "frame-ancestors 'none'",
     ].join('; '),

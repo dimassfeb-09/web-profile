@@ -6,6 +6,8 @@ import { Metadata } from "next";
 import EducationClient from "./EducationClient";
 import { CertificateService } from "@/src/services/certificate.service";
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: "Admin - Education | Dimas Febriyanto",
 };
