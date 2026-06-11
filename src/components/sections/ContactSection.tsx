@@ -1,5 +1,5 @@
 import React from "react";
-import { Mail } from "lucide-react";
+import { Mail, ExternalLink } from "lucide-react";
 import SocialIcon from "../ui/SocialIcon";
 
 interface ContactData {
@@ -40,9 +40,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({ data }) => {
             target="_blank"
           >
             LinkedIn Profile
-            <span className="material-symbols-outlined text-sm">
-              open_in_new
-            </span>
+            <ExternalLink className="w-3.5 h-3.5" />
           </a>
         </div>
         <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-surface-container-low border border-outline-variant/20 mb-12">

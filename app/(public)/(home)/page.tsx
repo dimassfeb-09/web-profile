@@ -45,7 +45,7 @@ const EducationSection = dynamic(
   () => import("@/src/components/sections/EducationSection"),
 );
 
-// Mapping components to keys
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const SECTION_COMPONENTS: Record<string, React.ComponentType<any>> = {
   about: AboutSectionWrapper,
   skills: SkillsSectionWrapper,
@@ -145,13 +145,8 @@ async function BlogSectionWrapper() {
   return <BlogSection blogs={blogs || []} />;
 }
 
-export default async function Home(props: {
-  searchParams: Promise<{ [key: string]: string | undefined }>;
-}) {
-  const searchParams = await props.searchParams;
-  const sort = (searchParams.sort === "oldest" ? "oldest" : "newest") as
-    | "newest"
-    | "oldest";
+export default async function Home() {
+  const sort = "newest";
 
   // Fetch all parallel requirements
   const [homeData, sectionOrderResult] = await Promise.all([

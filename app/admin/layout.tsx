@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import AdminFontLoader from './AdminFontLoader';
 
 const menuItems = [
   { name: 'Dashboard', href: '/admin/dashboard', icon: 'dashboard' },
@@ -40,7 +41,13 @@ export default function AdminLayout({
     }
   };
 
-  const NavLink = ({ item, isCollapsed = false, onClick }: { item: any; isCollapsed?: boolean; onClick?: () => void }) => {
+interface MenuItem {
+  name: string;
+  href: string;
+  icon: string;
+}
+
+  const NavLink = ({ item, isCollapsed = false, onClick }: { item: MenuItem; isCollapsed?: boolean; onClick?: () => void }) => {
     const isActive = pathname === item.href;
     return (
       <Link
@@ -69,6 +76,7 @@ export default function AdminLayout({
 
   return (
     <div className="min-h-screen bg-surface flex selection:bg-primary/10 transition-colors duration-300">
+      <AdminFontLoader />
       
       {/* 1. Sidebar - Desktop (xl and above) */}
       <aside className="hidden xl:flex w-72 bg-surface-container-low border-r border-outline-variant/10 flex-col sticky top-0 h-screen shrink-0">

@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { CheckCircle2 } from "lucide-react";
 
 interface ProjectCardProps {
   title: string;
@@ -146,9 +147,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           <ul className="space-y-3">
             {features.slice(0, 3).map((feature, index) => (
               <li key={index} className="flex items-start gap-3 group/feat">
-                <span className="material-symbols-outlined text-[18px] text-primary/60 mt-0.5 group-hover/feat:text-primary transition-colors">
-                  check_circle
-                </span>
+                <CheckCircle2 className="w-[18.5px] h-[18.5px] text-primary/60 mt-0.5 group-hover/feat:text-primary transition-colors shrink-0" />
                 <span className="text-sm font-body text-on-surface-variant leading-snug">
                   {feature}
                 </span>

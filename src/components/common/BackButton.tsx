@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { cn } from '@/src/lib/utils';
+import { ArrowLeft } from 'lucide-react';
 
 interface BackButtonProps {
   href: string;
@@ -20,7 +21,7 @@ const BackButton: React.FC<BackButtonProps> = ({ href, label = 'Kembali ke Beran
       )}
     >
       <div className="w-9 h-9 rounded-full bg-surface-container-high flex items-center justify-center group-hover:bg-primary group-hover:text-on-primary transition-all duration-300 shadow-sm">
-        <span className="material-symbols-outlined text-base">arrow_back</span>
+        <ArrowLeft className="w-4 h-4" />
       </div>
       {label}
     </Link>

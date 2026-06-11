@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "material-symbols/outlined.css";
 
 @theme {
   --color-primary: #003ec7;

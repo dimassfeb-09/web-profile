@@ -3,6 +3,7 @@
 import React, { Suspense } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { cn } from '@/src/lib/utils';
+import { Clock, History, ChevronDown } from 'lucide-react';
 
 function SortFilterContent() {
   const router = useRouter();
@@ -26,10 +27,8 @@ function SortFilterContent() {
 
   return (
     <div className="relative group min-w-[140px]">
-      <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none text-primary/60 group-hover:text-primary transition-colors">
-        <span className="material-symbols-outlined text-lg">
-          {currentSort === 'newest' ? 'schedule' : 'history'}
-        </span>
+      <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none text-primary/60 group-hover:text-primary transition-colors flex items-center">
+        {currentSort === 'newest' ? <Clock className="w-4 h-4" /> : <History className="w-4 h-4" />}
       </div>
       <select
         value={currentSort}
@@ -45,8 +44,8 @@ function SortFilterContent() {
         <option value="newest">Terbaru</option>
         <option value="oldest">Terlama</option>
       </select>
-      <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant/40">
-        <span className="material-symbols-outlined text-lg">expand_more</span>
+      <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant/40 flex items-center">
+        <ChevronDown className="w-4 h-4" />
       </div>
     </div>
   );
