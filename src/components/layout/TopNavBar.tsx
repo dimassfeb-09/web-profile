@@ -153,6 +153,21 @@ const TopNavBar = ({ cvUrl, navLinks = [] }: TopNavBarProps) => {
     };
   }, [isHome, navLinks]);
 
+  // Dynamic Browser Tab Title based on active section
+  React.useEffect(() => {
+    if (!isHome || typeof window === "undefined") return;
+
+    if (!activeHash || activeHash === "#hero") {
+      document.title = "Dimas Febriyanto — Fullstack & Mobile Developer (Golang + Flutter)";
+      return;
+    }
+
+    const activeLink = navLinks.find((link) => link.href === activeHash);
+    if (activeLink) {
+      document.title = `${activeLink.name} | Dimas Febriyanto`;
+    }
+  }, [activeHash, isHome, navLinks]);
+
   const getHref = (href: string) => {
     if (href.startsWith("#")) {
       return isHome ? href : `/${href}`;
@@ -194,7 +209,17 @@ const TopNavBar = ({ cvUrl, navLinks = [] }: TopNavBarProps) => {
             href="/"
             onClick={() => setIsMobileMenuOpen(false)}
           >
-            Dimas Febriyanto
+            {isHome && activeHash && activeHash !== "#hero" ? (
+              <span className="flex items-center gap-1.5">
+                <span className="text-zinc-400 font-normal">Dimas</span>
+                <span className="text-zinc-300 font-normal">/</span>
+                <span className="text-primary font-black">
+                  {navLinks.find((l) => l.href === activeHash)?.name || ""}
+                </span>
+              </span>
+            ) : (
+              "Dimas Febriyanto"
+            )}
           </Link>
 
           {/* Desktop Links */}
