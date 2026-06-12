@@ -75,21 +75,23 @@ export default function AdminLayout({
         href={item.href}
         onClick={onClick}
         title={isCollapsed ? item.name : ""}
-        className={`flex items-center gap-4 rounded-2xl transition-all duration-200 group ${
-          isCollapsed ? "justify-center p-3.5" : "px-4 py-3.5"
+        className={`flex items-center transition-all duration-200 group ${
+          isCollapsed 
+            ? "justify-center p-2 rounded-xl" 
+            : "px-3 py-2 gap-3 rounded-xl"
         } ${
           isActive
-            ? "bg-primary/10 text-primary"
+            ? "bg-primary/10 text-primary font-bold"
             : "text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface"
         }`}
       >
         <span
-          className={`material-symbols-outlined text-2xl ${isActive ? "fill-1" : ""}`}
+          className={`material-symbols-outlined text-xl ${isActive ? "fill-1" : ""}`}
         >
           {item.icon}
         </span>
         {!isCollapsed && (
-          <span className="font-label text-sm font-medium tracking-wide">
+          <span className="font-label text-xs tracking-wide">
             {item.name}
           </span>
         )}
@@ -102,50 +104,50 @@ export default function AdminLayout({
       <AdminFontLoader />
 
       {/* 1. Sidebar - Desktop (xl and above) */}
-      <aside className="hidden xl:flex w-72 bg-surface-container-low border-r border-outline-variant/10 flex-col sticky top-0 h-screen shrink-0">
-        <div className="p-8">
+      <aside className="hidden xl:flex w-64 bg-surface-container-low border-r border-outline-variant/10 flex-col sticky top-0 h-screen shrink-0">
+        <div className="px-6 py-5">
           <Link
             href="/"
-            className="font-headline text-xl font-black tracking-tighter text-on-surface"
+            className="font-headline text-lg font-black tracking-tighter text-on-surface"
           >
             Admin Panel
           </Link>
         </div>
-        <nav className="grow px-4 space-y-2 overflow-y-auto custom-scrollbar">
+        <nav className="grow px-3 space-y-1 overflow-y-auto custom-scrollbar">
           {menuItems.map((item) => (
             <NavLink key={item.href} item={item} />
           ))}
         </nav>
-        <div className="p-6 border-t border-outline-variant/10">
+        <div className="p-4 border-t border-outline-variant/10">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl text-error hover:bg-error/10 transition-all font-label text-sm font-medium tracking-wide"
+            className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-error hover:bg-error/10 transition-all font-label text-xs font-bold uppercase tracking-wider cursor-pointer"
           >
-            <span className="material-symbols-outlined text-2xl">logout</span>
+            <span className="material-symbols-outlined text-xl">logout</span>
             Logout
           </button>
         </div>
       </aside>
 
       {/* 2. Sidebar - Mini / Tablet (md up to xl) */}
-      <aside className="hidden md:flex xl:hidden w-20 bg-surface-container-low border-r border-outline-variant/10 flex-col sticky top-0 h-screen shrink-0">
-        <div className="py-8 flex justify-center">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-headline font-black text-xs">
+      <aside className="hidden md:flex xl:hidden w-16 bg-surface-container-low border-r border-outline-variant/10 flex-col sticky top-0 h-screen shrink-0">
+        <div className="py-5 flex justify-center">
+          <div className="w-7 h-7 bg-primary rounded-lg flex items-center justify-center text-white font-headline font-black text-[10px]">
             A
           </div>
         </div>
-        <nav className="grow px-3 space-y-2 flex flex-col items-center overflow-y-auto custom-scrollbar">
+        <nav className="grow px-2 space-y-1 flex flex-col items-center overflow-y-auto custom-scrollbar">
           {menuItems.map((item) => (
             <NavLink key={item.href} item={item} isCollapsed />
           ))}
         </nav>
-        <div className="p-3 border-t border-outline-variant/10 flex justify-center">
+        <div className="p-2.5 border-t border-outline-variant/10 flex justify-center">
           <button
             onClick={handleLogout}
-            className="p-3.5 rounded-2xl text-error hover:bg-error/10 transition-all"
+            className="p-2 rounded-xl text-error hover:bg-error/10 transition-all cursor-pointer"
             title="Logout"
           >
-            <span className="material-symbols-outlined text-2xl">logout</span>
+            <span className="material-symbols-outlined text-xl">logout</span>
           </button>
         </div>
       </aside>
@@ -199,22 +201,22 @@ export default function AdminLayout({
             className="absolute inset-0 bg-on-surface/40 backdrop-blur-sm animate-fade-in"
             onClick={() => setIsMobileMenuOpen(false)}
           ></div>
-          <aside className="absolute top-0 bottom-0 left-0 w-72 bg-surface p-6 flex flex-col animate-slide-right shadow-2xl">
-            <div className="flex items-center justify-between mb-8">
-              <span className="font-headline text-lg font-black tracking-tighter text-on-surface">
+          <aside className="absolute top-0 bottom-0 left-0 w-64 bg-surface p-5 flex flex-col animate-slide-right shadow-2xl">
+            <div className="flex items-center justify-between mb-5">
+              <span className="font-headline text-base font-black tracking-tighter text-on-surface">
                 Admin Menu
               </span>
               <button
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="p-2 -mr-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all"
+                className="p-1.5 -mr-1 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all"
               >
-                <span className="material-symbols-outlined text-2xl">
+                <span className="material-symbols-outlined text-xl">
                   close
                 </span>
               </button>
             </div>
 
-            <nav className="grow space-y-2 overflow-y-auto custom-scrollbar pr-1">
+            <nav className="grow space-y-1 overflow-y-auto custom-scrollbar pr-1">
               {menuItems.map((item) => (
                 <NavLink
                   key={item.href}
@@ -224,12 +226,12 @@ export default function AdminLayout({
               ))}
             </nav>
 
-            <div className="mt-auto pt-6 border-t border-outline-variant/10">
+            <div className="mt-auto pt-4 border-t border-outline-variant/10">
               <button
                 onClick={handleLogout}
-                className="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl text-error hover:bg-error/10 transition-all font-label text-sm font-medium tracking-wide"
+                className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-error hover:bg-error/10 transition-all font-label text-xs font-bold uppercase tracking-wider cursor-pointer"
               >
-                <span className="material-symbols-outlined text-2xl">
+                <span className="material-symbols-outlined text-xl">
                   logout
                 </span>
                 Logout
