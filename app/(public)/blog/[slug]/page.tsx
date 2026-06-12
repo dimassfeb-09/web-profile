@@ -10,6 +10,7 @@ import RelatedPosts from '@/src/components/blog/RelatedPosts';
 import Breadcrumb from '@/src/components/common/Breadcrumb';
 import BackButton from '@/src/components/common/BackButton';
 import QuoteShare from '@/src/components/blog/QuoteShare';
+import BlogTracker from '@/src/components/blog/BlogTracker';
 
 const BASE_URL = "https://www.dimassfeb.com";
 
@@ -150,6 +151,7 @@ export default async function BlogPostPage({ params }: { params: Params }) {
   return (
     <article className="min-h-screen pt-32 pb-20 px-6 sm:px-10 bg-surface relative">
       <JsonLd schema={[blogPostingSchema, breadcrumbSchema]} />
+      <BlogTracker title={blog.title} slug={blog.slug} />
       <QuoteShare authorName="Dimas Febriyanto" />
       <div className="max-w-3xl mx-auto space-y-12">
         <div className="mb-4">

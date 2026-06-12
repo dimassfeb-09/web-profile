@@ -8,6 +8,7 @@ import BackButton from '@/src/components/common/BackButton';
 import JsonLd from '@/src/components/common/JsonLd';
 import { ExternalLink, Calendar, Code2, CheckCircle2, Rocket } from 'lucide-react';
 import GallerySection from '@/src/components/projects/gallery/GallerySection';
+import ProjectTracker from '@/src/components/projects/ProjectTracker';
 
 const BASE_URL = 'https://www.dimassfeb.com';
 
@@ -99,6 +100,7 @@ export default async function ProjectDetailPage({ params }: { params: Params }) 
   return (
     <main className="pt-24 lg:pt-32 px-6 md:px-12 lg:px-16 2xl:px-24 max-w-5xl mx-auto pb-24 relative">
       <JsonLd schema={[schema, breadcrumbSchema]} />
+      <ProjectTracker title={project.title} slug={slug} />
       
 
 

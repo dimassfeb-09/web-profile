@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import PublicNavigation from "@/src/components/layout/PublicNavigation";
 import PublicFooter from "@/src/components/layout/PublicFooter";
+import GA4Script from "@/src/components/analytics/GA4Script";
 
 // Navbar skeleton - just a thin bar so there's no layout shift
 function NavbarSkeleton() {
@@ -16,6 +17,7 @@ export default function PublicLayout({
 }) {
   return (
     <>
+      <GA4Script />
       <Suspense fallback={<NavbarSkeleton />}>
         <PublicNavigation />
       </Suspense>
