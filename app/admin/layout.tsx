@@ -42,35 +42,6 @@ export default function AdminLayout({
   const router = useRouter();
   const isLoginPage = pathname === "/admin/login";
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [showTraffic, setShowTraffic] = useState(false);
-
-  // Read initial state from localStorage on mount (hydration safe)
-  React.useEffect(() => {
-    let active = true;
-    const saved = localStorage.getItem("admin_show_traffic");
-    if (saved === "true") {
-      Promise.resolve().then(() => {
-        if (active) {
-          setShowTraffic(true);
-        }
-      });
-    }
-    return () => {
-      active = false;
-    };
-  }, []);
-
-  const handleToggleTraffic = (val: boolean) => {
-    setShowTraffic(val);
-    localStorage.setItem("admin_show_traffic", String(val));
-  };
-
-  const filteredMenuItems = menuItems.filter((item) => {
-    if (item.href === "/admin/traffic") {
-      return showTraffic;
-    }
-    return true;
-  });
 
   if (isLoginPage) return <>{children}</>;
 
@@ -141,33 +112,11 @@ export default function AdminLayout({
           </Link>
         </div>
         <nav className="grow px-4 space-y-2 overflow-y-auto custom-scrollbar">
-          {filteredMenuItems.map((item) => (
+          {menuItems.map((item) => (
             <NavLink key={item.href} item={item} />
           ))}
         </nav>
-        <div className="p-6 border-t border-outline-variant/10 space-y-4">
-          <div className="flex items-center justify-between px-2 py-1.5 text-on-surface-variant">
-            <div className="flex items-center gap-3">
-              <span className="material-symbols-outlined text-2xl">
-                visibility_off
-              </span>
-              <span className="font-label text-xs font-bold uppercase tracking-wider">
-                Tampilkan Traffic
-              </span>
-            </div>
-            <button
-              onClick={() => handleToggleTraffic(!showTraffic)}
-              className={`w-9 h-5 rounded-full p-0.5 transition-colors duration-300 focus:outline-none cursor-pointer ${
-                showTraffic ? "bg-primary" : "bg-outline"
-              }`}
-            >
-              <div
-                className={`w-4 h-4 bg-white rounded-full transition-transform duration-300 shadow-sm ${
-                  showTraffic ? "translate-x-4" : "translate-x-0"
-                }`}
-              />
-            </button>
-          </div>
+        <div className="p-6 border-t border-outline-variant/10">
           <button
             onClick={handleLogout}
             className="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl text-error hover:bg-error/10 transition-all font-label text-sm font-medium tracking-wide"
@@ -186,24 +135,11 @@ export default function AdminLayout({
           </div>
         </div>
         <nav className="grow px-3 space-y-2 flex flex-col items-center overflow-y-auto custom-scrollbar">
-          {filteredMenuItems.map((item) => (
+          {menuItems.map((item) => (
             <NavLink key={item.href} item={item} isCollapsed />
           ))}
         </nav>
-        <div className="p-3 border-t border-outline-variant/10 flex flex-col gap-2 items-center">
-          <button
-            onClick={() => handleToggleTraffic(!showTraffic)}
-            className={`p-3.5 rounded-2xl transition-all cursor-pointer ${
-              showTraffic
-                ? "text-primary hover:bg-primary/10"
-                : "text-on-surface-variant hover:bg-surface-container-high"
-            }`}
-            title={showTraffic ? "Sembunyikan Traffic" : "Tampilkan Traffic"}
-          >
-            <span className="material-symbols-outlined text-2xl">
-              {showTraffic ? "visibility" : "visibility_off"}
-            </span>
-          </button>
+        <div className="p-3 border-t border-outline-variant/10 flex justify-center">
           <button
             onClick={handleLogout}
             className="p-3.5 rounded-2xl text-error hover:bg-error/10 transition-all"
@@ -279,7 +215,7 @@ export default function AdminLayout({
             </div>
 
             <nav className="grow space-y-2 overflow-y-auto custom-scrollbar pr-1">
-              {filteredMenuItems.map((item) => (
+              {menuItems.map((item) => (
                 <NavLink
                   key={item.href}
                   item={item}
@@ -288,29 +224,7 @@ export default function AdminLayout({
               ))}
             </nav>
 
-            <div className="mt-auto pt-6 border-t border-outline-variant/10 space-y-4">
-              <div className="flex items-center justify-between px-2 py-1.5 text-on-surface-variant">
-                <div className="flex items-center gap-3">
-                  <span className="material-symbols-outlined text-2xl">
-                    visibility_off
-                  </span>
-                  <span className="font-label text-xs font-bold uppercase tracking-wider">
-                    Tampilkan Traffic
-                  </span>
-                </div>
-                <button
-                  onClick={() => handleToggleTraffic(!showTraffic)}
-                  className={`w-9 h-5 rounded-full p-0.5 transition-colors duration-300 focus:outline-none cursor-pointer ${
-                    showTraffic ? "bg-primary" : "bg-outline"
-                  }`}
-                >
-                  <div
-                    className={`w-4 h-4 bg-white rounded-full transition-transform duration-300 shadow-sm ${
-                      showTraffic ? "translate-x-4" : "translate-x-0"
-                    }`}
-                  />
-                </button>
-              </div>
+            <div className="mt-auto pt-6 border-t border-outline-variant/10">
               <button
                 onClick={handleLogout}
                 className="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl text-error hover:bg-error/10 transition-all font-label text-sm font-medium tracking-wide"
