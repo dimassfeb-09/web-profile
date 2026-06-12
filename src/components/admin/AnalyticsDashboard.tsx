@@ -23,6 +23,28 @@ export default function AnalyticsDashboard({
   const [period, setPeriod] = useState<string>("30days");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [rowLimit, setRowLimit] = useState<number>(5);
+  const [hideAdminPaths, setHideAdminPaths] = useState<boolean>(true);
+
+  // Sync hideAdminPaths from localStorage
+  useEffect(() => {
+    let active = true;
+    const saved = localStorage.getItem("admin_hide_admin_paths");
+    if (saved !== null) {
+      Promise.resolve().then(() => {
+        if (active) {
+          setHideAdminPaths(saved === "true");
+        }
+      });
+    }
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const handleToggleHideAdmin = (val: boolean) => {
+    setHideAdminPaths(val);
+    localStorage.setItem("admin_hide_admin_paths", String(val));
+  };
 
   const handleRetry = async () => {
     setLoading(true);
@@ -181,9 +203,14 @@ export default function AnalyticsDashboard({
   );
 
   // Filter and limit logic for Top Pages
-  const filteredPages = (data.topPages || []).filter((page) =>
-    (page.path || "").toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredPages = (data.topPages || []).filter((page) => {
+    const path = page.path || "";
+    // If hideAdminPaths is true, exclude paths starting with /admin
+    if (hideAdminPaths && path.startsWith("/admin")) {
+      return false;
+    }
+    return path.toLowerCase().includes(searchQuery.toLowerCase());
+  });
   const displayedPages = filteredPages.slice(0, rowLimit);
 
   return (
@@ -276,6 +303,23 @@ export default function AnalyticsDashboard({
               
               {/* Search and Limit Controls */}
               <div className="flex items-center gap-3 flex-wrap sm:flex-nowrap">
+                {/* Toggle /admin Visibility */}
+                <button
+                  type="button"
+                  onClick={() => handleToggleHideAdmin(!hideAdminPaths)}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-xl border border-outline-variant/10 text-xs font-label font-bold transition-all focus:outline-none cursor-pointer ${
+                    hideAdminPaths 
+                      ? 'bg-primary/10 text-primary border-primary/20 hover:bg-primary/20' 
+                      : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest'
+                  }`}
+                  title={hideAdminPaths ? "Tampilkan halaman admin" : "Sembunyikan halaman admin"}
+                >
+                  <span className="material-symbols-outlined text-sm">
+                    {hideAdminPaths ? 'visibility_off' : 'visibility'}
+                  </span>
+                  <span>Sembunyikan /admin</span>
+                </button>
+
                 <div className="relative w-full sm:w-48">
                   <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/50 text-base">
                     search
