@@ -3,7 +3,6 @@
 import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import AnalyticsDashboard from '@/src/components/admin/AnalyticsDashboard';
 
 interface DashboardClientProps {
   stats: {
@@ -34,10 +33,17 @@ const StatCard = ({ title, value, icon, color, href }: { title: string, value: s
 export default function DashboardClient({ stats }: DashboardClientProps) {
   const router = useRouter();
   const [isMounted, setIsMounted] = React.useState(false);
-  const [refreshKey, setRefreshKey] = React.useState(0);
 
   React.useEffect(() => {
-    setIsMounted(true);
+    let active = true;
+    Promise.resolve().then(() => {
+      if (active) {
+        setIsMounted(true);
+      }
+    });
+    return () => {
+      active = false;
+    };
   }, []);
 
   const quickActions = [
@@ -52,7 +58,7 @@ export default function DashboardClient({ stats }: DashboardClientProps) {
       <div className="flex justify-between items-end">
         <div>
           <h1 className="font-headline text-3xl sm:text-4xl font-bold text-on-surface mb-2 tracking-tight">Dashboard Overview</h1>
-          <p className="font-body text-on-surface-variant opacity-80">Welcome back! Here's what's happening with your portfolio.</p>
+          <p className="font-body text-on-surface-variant opacity-80">Welcome back! Here&apos;s what&apos;s happening with your portfolio.</p>
         </div>
         <div className="flex items-center gap-4">
           {isMounted && (
@@ -63,7 +69,6 @@ export default function DashboardClient({ stats }: DashboardClientProps) {
           <button 
             onClick={() => {
               router.refresh();
-              setRefreshKey((prev) => prev + 1);
             }} 
             className="p-3 rounded-2xl bg-surface-container-high text-on-surface-variant hover:text-primary transition-all flex items-center gap-2 font-label text-xs font-bold uppercase tracking-widest"
             title="Refresh Data"
@@ -98,8 +103,7 @@ export default function DashboardClient({ stats }: DashboardClientProps) {
         />
       </div>
  
-      {/* Analytics Dashboard */}
-      <AnalyticsDashboard refreshKey={refreshKey} />
+
  
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
         {/* Quick Actions */}

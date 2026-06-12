@@ -7,6 +7,7 @@ import AdminFontLoader from './AdminFontLoader';
 
 const menuItems = [
   { name: 'Dashboard', href: '/admin/dashboard', icon: 'dashboard' },
+  { name: 'Traffic', href: '/admin/traffic', icon: 'analytics' },
   { name: 'Layout & Urutan', href: '/admin/layout-order', icon: 'format_list_numbered' },
   { name: 'Home', href: '/admin/home', icon: 'home' },
   { name: 'About', href: '/admin/about', icon: 'person' },
