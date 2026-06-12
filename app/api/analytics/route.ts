@@ -27,7 +27,8 @@ export async function GET(request: NextRequest) {
 
   try {
     // 3. Fetch report data
-    const data = await fetchAnalyticsData(propertyId, credentialsJson);
+    const period = request.nextUrl.searchParams.get('period') || '30days';
+    const data = await fetchAnalyticsData(propertyId, credentialsJson, period);
 
     // 4. Return successful response with caching headers
     const response = NextResponse.json(data);

@@ -20,12 +20,15 @@ export default function AnalyticsDashboard({
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [period, setPeriod] = useState<string>("30days");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [rowLimit, setRowLimit] = useState<number>(5);
 
   const handleRetry = async () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/analytics");
+      const res = await fetch(`/api/analytics?period=${period}`);
       const json = await res.json();
       if (!res.ok) {
         if (json.error === "analytics_not_configured") {
@@ -55,7 +58,7 @@ export default function AnalyticsDashboard({
       setError(null);
 
       try {
-        const res = await fetch("/api/analytics");
+        const res = await fetch(`/api/analytics?period=${period}`);
         const json = await res.json();
         if (!active) return;
 
@@ -84,7 +87,7 @@ export default function AnalyticsDashboard({
     return () => {
       active = false;
     };
-  }, [refreshKey]);
+  }, [refreshKey, period]);
 
   // Format path to max 40 chars with ellipsis
   const formatPath = (path: string) => {
@@ -177,22 +180,52 @@ export default function AnalyticsDashboard({
     0,
   );
 
+  // Filter and limit logic for Top Pages
+  const filteredPages = (data.topPages || []).filter((page) =>
+    (page.path || "").toLowerCase().includes(searchQuery.toLowerCase())
+  );
+  const displayedPages = filteredPages.slice(0, rowLimit);
+
   return (
     <div className="space-y-8 animate-fade-in my-8">
-      {/* Section Divider & Title */}
-      <div className="flex items-center gap-4 pt-4">
-        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-          <span className="material-symbols-outlined text-2xl">analytics</span>
+      {/* Section Divider & Title with Period Selector */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-b border-outline-variant/10 pb-4">
+        <div className="flex items-center gap-4">
+          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shadow-sm">
+            <span className="material-symbols-outlined text-2xl">analytics</span>
+          </div>
+          <div>
+            <h2 className="font-headline text-2xl font-bold text-on-surface">
+              Google Analytics 4
+            </h2>
+            <p className="font-body text-xs text-on-surface-variant/80">
+              Real-time performance metrics for your web profile
+            </p>
+          </div>
         </div>
-        <div>
-          <h2 className="font-headline text-2xl font-bold text-on-surface">
-            Google Analytics 4
-          </h2>
-          <p className="font-body text-xs text-on-surface-variant/80">
-            Real-time performance metrics for the last 30 days
-          </p>
+
+        {/* Period Selector Dropdown */}
+        <div className="flex items-center gap-3">
+          <span className="font-label text-xs font-bold text-on-surface-variant/60 uppercase tracking-wider hidden sm:inline">
+            Periode:
+          </span>
+          <select
+            value={period}
+            onChange={(e) => {
+              setPeriod(e.target.value);
+            }}
+            className="px-4 py-2.5 rounded-2xl bg-surface-container-high border border-outline-variant/10 text-on-surface font-label text-xs font-bold focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all shadow-sm cursor-pointer"
+          >
+            <option value="today">Hari Ini (Today)</option>
+            <option value="yesterday">Kemarin (Yesterday)</option>
+            <option value="week">Minggu Ini (This Week)</option>
+            <option value="month">Bulan Ini (This Month)</option>
+            <option value="7days">7 Hari Terakhir</option>
+            <option value="30days">30 Hari Terakhir</option>
+            <option value="90days">90 Hari Terakhir</option>
+            <option value="year">Tahun Ini (This Year)</option>
+          </select>
         </div>
-        <div className="h-px bg-outline-variant/20 flex-grow ml-4" />
       </div>
 
       {/* Overview Metric Cards */}
@@ -230,15 +263,53 @@ export default function AnalyticsDashboard({
 
       {/* Tables Breakdown Section */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-        {/* Top 5 Pages Table */}
-        <div className="bg-surface-container-low p-8 rounded-[2.5rem] border border-outline-variant/10 shadow-sm xl:col-span-2 flex flex-col justify-between">
+        {/* Pages Visited Table with Search & Limit */}
+        <div className="bg-surface-container-low p-8 rounded-[2.5rem] border border-outline-variant/10 shadow-sm xl:col-span-2 flex flex-col justify-between min-h-[400px]">
           <div>
-            <h3 className="font-headline text-lg font-bold text-on-surface mb-6 flex items-center gap-3">
-              <span className="material-symbols-outlined text-primary">
-                description
-              </span>
-              Top 5 Visited Pages
-            </h3>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+              <h3 className="font-headline text-lg font-bold text-on-surface flex items-center gap-3">
+                <span className="material-symbols-outlined text-primary">
+                  description
+                </span>
+                Visited Pages
+              </h3>
+              
+              {/* Search and Limit Controls */}
+              <div className="flex items-center gap-3 flex-wrap sm:flex-nowrap">
+                <div className="relative w-full sm:w-48">
+                  <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/50 text-base">
+                    search
+                  </span>
+                  <input
+                    type="text"
+                    placeholder="Cari URL..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-9 pr-8 py-2 rounded-xl bg-surface-container-high border border-outline-variant/10 text-xs font-body text-on-surface focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/10 transition-all placeholder-on-surface-variant/40"
+                  />
+                  {searchQuery && (
+                    <button
+                      onClick={() => setSearchQuery("")}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant/50 hover:text-on-surface flex items-center"
+                    >
+                      <span className="material-symbols-outlined text-sm">close</span>
+                    </button>
+                  )}
+                </div>
+
+                <select
+                  value={rowLimit}
+                  onChange={(e) => setRowLimit(Number(e.target.value))}
+                  className="px-3 py-2 rounded-xl bg-surface-container-high border border-outline-variant/10 text-on-surface font-label text-xs font-bold focus:outline-none focus:border-primary/50 transition-all cursor-pointer shadow-sm"
+                >
+                  <option value="5">Tampilkan 5</option>
+                  <option value="10">Tampilkan 10</option>
+                  <option value="25">Tampilkan 25</option>
+                  <option value="100">Semua ({filteredPages.length})</option>
+                </select>
+              </div>
+            </div>
+
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
@@ -250,8 +321,8 @@ export default function AnalyticsDashboard({
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-outline-variant/10">
-                  {data.topPages && data.topPages.length > 0 ? (
-                    data.topPages.map((page, idx) => (
+                  {displayedPages.length > 0 ? (
+                    displayedPages.map((page, idx) => (
                       <tr
                         key={idx}
                         className="group hover:bg-surface-container-high/30 transition-colors"
@@ -278,7 +349,7 @@ export default function AnalyticsDashboard({
                         colSpan={2}
                         className="py-8 text-center text-sm text-on-surface-variant font-body"
                       >
-                        No pages visited yet
+                        {searchQuery ? "Tidak ada halaman yang cocok" : "Belum ada data kunjungan halaman"}
                       </td>
                     </tr>
                   )}
@@ -286,6 +357,20 @@ export default function AnalyticsDashboard({
               </table>
             </div>
           </div>
+
+          {/* Footer Info */}
+          {filteredPages.length > 0 && (
+            <div className="mt-4 pt-4 border-t border-outline-variant/10 flex justify-between items-center text-xs text-on-surface-variant/60 font-body">
+              <span>
+                Menampilkan {displayedPages.length} dari {filteredPages.length} halaman
+              </span>
+              {searchQuery && (
+                <span>
+                  Difilter dari {data.topPages?.length || 0} total path
+                </span>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Traffic Sources Breakdown */}

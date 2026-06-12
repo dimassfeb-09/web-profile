@@ -83,12 +83,55 @@ function validateGA4Response(data: unknown): data is GA4Response {
   return true;
 }
 
+export function getDateRangeForPeriod(period: string): { startDate: string; endDate: string } {
+  const todayStr = 'today';
+  
+  switch (period) {
+    case 'today':
+      return { startDate: 'today', endDate: 'today' };
+    case 'yesterday':
+      return { startDate: 'yesterday', endDate: 'yesterday' };
+    case 'week': {
+      // This week (from Monday)
+      const now = new Date();
+      const day = now.getDay();
+      const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+      const monday = new Date(now.setDate(diff));
+      const year = monday.getFullYear();
+      const month = String(monday.getMonth() + 1).padStart(2, '0');
+      const date = String(monday.getDate()).padStart(2, '0');
+      return { startDate: `${year}-${month}-${date}`, endDate: todayStr };
+    }
+    case 'month': {
+      // This month (from the 1st of the current month)
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      return { startDate: `${year}-${month}-01`, endDate: todayStr };
+    }
+    case '7days':
+      return { startDate: '7daysAgo', endDate: 'today' };
+    case '30days':
+      return { startDate: '30daysAgo', endDate: 'today' };
+    case '90days':
+      return { startDate: '90daysAgo', endDate: 'today' };
+    case 'year': {
+      // This year
+      const now = new Date();
+      return { startDate: `${now.getFullYear()}-01-01`, endDate: todayStr };
+    }
+    default:
+      return { startDate: '30daysAgo', endDate: 'today' };
+  }
+}
+
 /**
  * Fetches analytics data from the Google Analytics Data API.
  */
 export async function fetchAnalyticsData(
   propertyId: string,
-  credentialsJson: string
+  credentialsJson: string,
+  period: string = '30days'
 ): Promise<AnalyticsData> {
   let credentials;
   try {
@@ -107,6 +150,7 @@ export async function fetchAnalyticsData(
   );
 
   const url = `https://analyticsdata.googleapis.com/v1beta/properties/${propertyId}:batchRunReports`;
+  const { startDate, endDate } = getDateRangeForPeriod(period);
 
   const response = await fetch(url, {
     method: 'POST',
@@ -118,20 +162,20 @@ export async function fetchAnalyticsData(
       requests: [
         // 1. Overview (Pageviews and Active Users)
         {
-          dateRanges: [{ startDate: '30daysAgo', endDate: 'today' }],
+          dateRanges: [{ startDate, endDate }],
           metrics: [{ name: 'screenPageViews' }, { name: 'activeUsers' }],
         },
-        // 2. Top 5 pages
+        // 2. Top pages (up to 100)
         {
-          dateRanges: [{ startDate: '30daysAgo', endDate: 'today' }],
+          dateRanges: [{ startDate, endDate }],
           dimensions: [{ name: 'pagePath' }],
           metrics: [{ name: 'screenPageViews' }],
           orderBys: [{ metric: { metricName: 'screenPageViews' }, desc: true }],
-          limit: 5,
+          limit: 100,
         },
         // 3. Traffic sources (up to 10)
         {
-          dateRanges: [{ startDate: '30daysAgo', endDate: 'today' }],
+          dateRanges: [{ startDate, endDate }],
           dimensions: [{ name: 'sessionSourceMedium' }],
           metrics: [{ name: 'sessions' }],
           orderBys: [{ metric: { metricName: 'sessions' }, desc: true }],
@@ -139,7 +183,7 @@ export async function fetchAnalyticsData(
         },
         // 4. Device category breakdown
         {
-          dateRanges: [{ startDate: '30daysAgo', endDate: 'today' }],
+          dateRanges: [{ startDate, endDate }],
           dimensions: [{ name: 'deviceCategory' }],
           metrics: [{ name: 'activeUsers' }],
         },
