@@ -158,6 +158,18 @@
     animation: shimmer 1.5s infinite linear;
     background-size: 200% 100%;
   }
+
+  /* Transparent shimmer block: light white sheen over a near-invisible fill */
+  .shimmer-block {
+    @apply relative overflow-hidden bg-zinc-200/50;
+  }
+
+  .shimmer-block::after {
+    @apply absolute inset-0 content-[''];
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite linear;
+  }
   
   .material-symbols-outlined {
     font-family: 'Material Symbols Outlined';

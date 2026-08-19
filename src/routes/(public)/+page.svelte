@@ -39,7 +39,7 @@
 					lazy={lazySections.has(key)}
 				>
 					{#snippet skeleton()}
-						<SectionSkeleton cards={4} cols={key === 'skills' || key === 'certificates' ? 3 : 1} />
+						<SectionSkeleton variant={key as any} />
 					{/snippet}
 					{#snippet error(retry)}
 						<div class="flex flex-col items-center justify-center gap-4 rounded-xl border border-neutral-800 bg-neutral-900/40 px-6 py-12 text-center">
