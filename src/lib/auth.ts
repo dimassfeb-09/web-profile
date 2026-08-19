@@ -2,18 +2,6 @@ import { env } from '$env/dynamic/private';
 import { SignJWT, jwtVerify } from 'jose';
 import type { Cookies } from '@sveltejs/kit';
 
-const jwtSecretValue = env.JWT_SECRET;
-
-// JWT_SECRET is required in ALL environments (including development)
-// Set JWT_SECRET in your .env file
-if (!jwtSecretValue) {
-	throw new Error(
-		'FATAL: JWT_SECRET environment variable is not set. Please add JWT_SECRET to your .env file.'
-	);
-}
-
-const secret = new TextEncoder().encode(jwtSecretValue);
-
 export const COOKIE_NAME = 'admin-token';
 
 export interface AuthPayload {
@@ -23,16 +11,28 @@ export interface AuthPayload {
 	[key: string]: any;
 }
 
+// JWT_SECRET is required in ALL environments (including development)
+// Read lazily so the module loads during builds where the env var isn't set
+function getSecret(): Uint8Array {
+	const jwtSecretValue = env.JWT_SECRET;
+	if (!jwtSecretValue) {
+		throw new Error(
+			'FATAL: JWT_SECRET environment variable is not set. Please add JWT_SECRET to your .env file.'
+		);
+	}
+	return new TextEncoder().encode(jwtSecretValue);
+}
+
 export async function encrypt(payload: AuthPayload) {
 	return await new SignJWT(payload)
 		.setProtectedHeader({ alg: 'HS256' })
 		.setIssuedAt()
 		.setExpirationTime('24h') // Token valid for 24 hours
-		.sign(secret);
+		.sign(getSecret());
 }
 
 export async function decrypt(input: string): Promise<AuthPayload> {
-	const { payload } = await jwtVerify(input, secret, {
+	const { payload } = await jwtVerify(input, getSecret(), {
 		algorithms: ['HS256'],
 	});
 	return payload as unknown as AuthPayload;
