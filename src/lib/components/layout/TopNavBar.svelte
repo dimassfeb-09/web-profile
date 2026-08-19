@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { pushState } from '$app/navigation';
+	import { goto, pushState } from '$app/navigation';
 	import { page } from '$app/state';
 
 	let {
@@ -177,7 +177,7 @@
 			}
 			pushState(href, {});
 		} else {
-			activeHash = href;
+			goto(`/${href}`);
 		}
 	}
 
