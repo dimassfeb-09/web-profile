@@ -1,0 +1,9 @@
+{
+  "framework": "sveltekit",
+  "crons": [
+    {
+      "path": "/api/cron/cleanup-images",
+      "schedule": "0 0 * * *"
+    }
+  ]
+}

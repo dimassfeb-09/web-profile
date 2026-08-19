@@ -1,0 +1,49 @@
+import { json } from '@sveltejs/kit';
+import { z } from 'zod';
+import { AchievementService } from '../../../../services/achievement.service';
+
+const AchievementSchema = z.object({
+	title: z.string().min(1).max(255),
+	slug: z
+		.string()
+		.min(1)
+		.max(100)
+		.regex(/^[a-z0-9-]+$/, 'Slug only contains lowercase, numbers and hyphens'),
+	description: z.string().min(1),
+	image_url: z.string().url().nullable(),
+	date: z.string().nullable(),
+	event_organizer: z.string().nullable().optional(),
+	category: z.string().nullable().optional(),
+	team_members: z.array(z.string()).nullable().optional(),
+	tech_stack: z.array(z.string()).nullable().optional(),
+	problem_statement: z.string().nullable().optional(),
+	solution_overview: z.string().nullable().optional(),
+	credential_url: z.string().url().nullable().optional(),
+	image_hash: z.string().nullable().optional(),
+});
+
+export async function GET({ url }) {
+	try {
+		const sort = url.searchParams.get('sort') === 'oldest' ? 'oldest' : 'newest';
+		const result = await AchievementService.getAllAchievements(true, sort);
+		return json(result, { status: result.status });
+	} catch (error) {
+		console.error('[Admin Achievement GET] Error:', error);
+		return json({ status: 500, message: 'Internal Server Error' }, { status: 500 });
+	}
+}
+
+export async function POST({ request }) {
+	try {
+		const body = await request.json();
+		const data = AchievementSchema.parse(body);
+		const result = await AchievementService.createAchievement(data);
+		return json(result, { status: result.status });
+	} catch (error) {
+		if (error instanceof z.ZodError) {
+			return json({ status: 400, message: error.issues[0].message }, { status: 400 });
+		}
+		console.error('[Admin Achievement POST] Error:', error);
+		return json({ status: 500, message: 'Internal Server Error' }, { status: 500 });
+	}
+}

@@ -1,0 +1,104 @@
+/* Tiptap Editor Styles */
+.tiptap {
+  min-height: 600px;
+  outline: none;
+}
+
+.tiptap p.is-editor-empty:first-child::before {
+  color: #686b7c;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Flattened Images */
+.tiptap img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 1rem;
+  margin: 2rem 0;
+  box-shadow: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.tiptap img.ProseMirror-selectednode {
+  outline: 3px solid #0052ff;
+  outline-offset: 4px;
+}
+
+/* Better Alignments */
+.tiptap [style*="text-align: center"] {
+  text-align: center;
+}
+
+.tiptap [style*="text-align: right"] {
+  text-align: right;
+}
+
+/* Horizontal Rule Styling */
+.tiptap hr {
+  border: none;
+  border-top: 1px solid rgba(120, 120, 120, 0.2);
+  margin: 3rem 0;
+}
+
+/* Link Styling */
+.tiptap a {
+  cursor: pointer;
+}
+
+/* Task List */
+.tiptap ul[data-type="taskList"] {
+  list-style: none;
+  padding: 0;
+}
+
+.tiptap ul[data-type="taskList"] li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.tiptap ul[data-type="taskList"] label {
+  user-select: none;
+  flex: 0 0 auto;
+}
+
+.tiptap ul[data-type="taskList"] input[type="checkbox"] {
+  cursor: pointer;
+  margin-top: 0.3rem;
+  width: 1rem;
+  height: 1rem;
+  accent-color: #0052ff;
+}
+
+.tiptap ul[data-type="taskList"] div {
+  flex: 1 1 auto;
+}
+
+/* Highlight */
+.tiptap mark {
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  box-decoration-break: clone;
+}
+
+/* Scrollbar Styling for Editor */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(120, 120, 120, 0.3);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(120, 120, 120, 0.5);
+}

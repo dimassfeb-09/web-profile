@@ -1,0 +1,172 @@
+import { BlogRepository } from '../repositories/blog.repository';
+import type { BlogData } from '../repositories/blog.repository';
+import { ImageService } from './image.service';
+import type { JSONContent } from '@tiptap/core';
+import { cached, revalidateTag } from '$lib/cache';
+
+export class BlogService {
+	/**
+	 * Recursive helper to extract all image URLs from Tiptap JSONContent
+	 */
+	private static extractImageUrls(content: JSONContent): string[] {
+		const urls: string[] = [];
+
+		const traverse = (node: JSONContent) => {
+			if (node.type === 'image' && node.attrs?.src) {
+				urls.push(node.attrs.src);
+			}
+
+			if (node.content) {
+				node.content.forEach(traverse);
+			}
+		};
+
+		traverse(content);
+		return urls;
+	}
+
+	static async getAllBlogs(options: {
+		onlyPublished?: boolean;
+		cursor?: string | null;
+		limit?: number;
+		bypassCache?: boolean;
+		sort?: 'newest' | 'oldest';
+		search?: string;
+	} = {}): Promise<{ blogs: BlogData[]; nextCursor: string | null; hasMore: boolean }> {
+		const {
+			onlyPublished = false,
+			cursor = null,
+			limit = 9,
+			bypassCache = false,
+			sort = 'newest',
+			search = '',
+		} = options;
+
+		const fetchBlogs = async () => BlogRepository.findAll({ onlyPublished, cursor, limit, sort, search });
+
+		let blogs: BlogData[];
+		if (bypassCache) {
+			blogs = await fetchBlogs();
+		} else {
+			const cacheKey = `blogs_all_${onlyPublished}_${cursor ?? 'none'}_${limit}_${sort}_${search || 'none'}`;
+			blogs = await cached(cacheKey, fetchBlogs, { ttl: 3600, tags: ['blog'] });
+		}
+
+		const hasMore = blogs.length === limit;
+		let nextCursor: string | null = null;
+
+		if (hasMore && blogs.length > 0) {
+			const lastBlog = blogs[blogs.length - 1];
+			const timestamp = onlyPublished ? lastBlog.published_at : lastBlog.created_at;
+			if (timestamp) {
+				nextCursor = new Date(timestamp).toISOString();
+			}
+		}
+
+		return {
+			blogs,
+			nextCursor,
+			hasMore,
+		};
+	}
+
+	static async getRelatedBlogs(currentSlug: string, limit: number = 3): Promise<BlogData[]> {
+		// 1. Try FTS-powered related articles (cached for 1 hour)
+		const ftsResults = await cached(`blog_related_fts_${currentSlug}`, () => BlogRepository.findRelated(currentSlug, limit), {
+			ttl: 3600,
+			tags: ['blog', `blog_slug_${currentSlug}`],
+		});
+
+		// 2. If we have enough results, return early
+		if (ftsResults.length >= limit) {
+			return ftsResults.slice(0, limit);
+		}
+
+		// 3. Fallback: fill remaining slots with latest articles
+		const needed = limit - ftsResults.length;
+		const ftsSlugSet = new Set([currentSlug, ...ftsResults.map((b) => b.slug)]);
+
+		const { blogs: latestBlogs } = await this.getAllBlogs({
+			onlyPublished: true,
+			limit: needed + ftsSlugSet.size, // over-fetch to account for exclusions
+			bypassCache: false,
+		});
+
+		const fallback = latestBlogs.filter((b) => !ftsSlugSet.has(b.slug)).slice(0, needed);
+
+		return [...ftsResults, ...fallback];
+	}
+
+	static async getBlogById(id: string, bypassCache = false): Promise<BlogData | null> {
+		if (bypassCache) return BlogRepository.findById(id);
+
+		return cached(`blog_${id}`, () => BlogRepository.findById(id), { ttl: 3600, tags: ['blog', `blog_${id}`] });
+	}
+
+	static async getBlogBySlug(slug: string, bypassCache = false): Promise<BlogData | null> {
+		if (bypassCache) return BlogRepository.findBySlug(slug);
+
+		return cached(`blog_slug_${slug}`, () => BlogRepository.findBySlug(slug), {
+			ttl: 3600,
+			tags: ['blog', `blog_slug_${slug}`],
+		});
+	}
+
+	static async createBlog(data: BlogData): Promise<BlogData> {
+		// 1. Save Blog to DB
+		const blog = await BlogRepository.create(data);
+
+		// 2. Extract used images from content
+		const usedUrls = this.extractImageUrls(data.content);
+
+		// 3. Mark extracted images as active
+		await ImageService.markImagesActive(blog.id, usedUrls);
+
+		// 4. Invalidate Cache
+		revalidateTag('blog');
+
+		return blog;
+	}
+
+	static async updateBlog(id: string, data: Partial<BlogData>): Promise<BlogData | null> {
+		// 1. Update Blog in DB
+		const blog = await BlogRepository.update(id, data);
+
+		if (blog) {
+			if (data.content) {
+				// 2. If content was updated, sync image statuses
+				const usedUrls = this.extractImageUrls(data.content);
+				await ImageService.markImagesActive(id, usedUrls);
+			}
+
+			// 3. Invalidate Cache
+			revalidateTag('blog');
+			revalidateTag(`blog_${id}`);
+			if (blog.slug) {
+				revalidateTag(`blog_slug_${blog.slug}`);
+			}
+		}
+
+		return blog;
+	}
+
+	static async deleteBlog(id: string): Promise<boolean> {
+		// 1. Get blog info for slug invalidation before delete if needed,
+		// but usually blog ID is enough.
+		const blog = await BlogRepository.findById(id);
+
+		// 2. Cleanup images from storage first
+		await ImageService.deleteAllBlogImages(id);
+
+		// 3. Delete blog from DB (cascades to blog_images records)
+		const success = await BlogRepository.delete(id);
+
+		if (success) {
+			revalidateTag('blog');
+			revalidateTag(`blog_${id}`);
+			if (blog?.slug) revalidateTag(`blog_slug_${blog.slug}`);
+		}
+
+		return success;
+	}
+}
