@@ -9,6 +9,7 @@ const ExperienceSchema = z.object({
   start_date: z.string().min(1),
   end_date: z.string().nullable(),
   description: z.array(z.string().min(1)),
+  tags: z.array(z.string()).optional(),
 });
 
 export async function GET() {

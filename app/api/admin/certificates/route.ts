@@ -9,6 +9,7 @@ const CertificateSchema = z.object({
   issue_date: z.string().nullable(),
   credential_url: z.string().url().nullable().or(z.literal('')),
   image_url: z.string().url().nullable().or(z.literal('')),
+  description: z.string().optional(),
 });
 
 export async function GET(request: NextRequest) {
