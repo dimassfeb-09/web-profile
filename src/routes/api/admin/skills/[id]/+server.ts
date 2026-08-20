@@ -1,14 +1,7 @@
 import { json } from '@sveltejs/kit';
 import { z } from 'zod';
 import { SkillService } from '../../../../../services/skill.service';
-
-const SkillSchema = z.object({
-	icon: z.string().min(1),
-	title: z.string().min(1).max(100),
-	skills: z.array(z.string().min(1)),
-	color_class: z.string().min(1),
-	delay_class: z.string().min(1),
-});
+import { SkillSchema } from '$lib/schemas/admin.schemas';
 
 export async function PUT({ params, request }) {
 	try {

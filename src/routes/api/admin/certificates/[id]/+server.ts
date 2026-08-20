@@ -1,15 +1,7 @@
 import { json } from '@sveltejs/kit';
 import { z } from 'zod';
 import { CertificateService } from '../../../../../services/certificate.service';
-
-const CertificateSchema = z.object({
-	title: z.string().min(1).max(255),
-	issuer: z.string().min(1).max(255),
-	issue_date: z.string().nullable(),
-	credential_url: z.string().url().nullable().or(z.literal('')),
-	image_url: z.string().url().nullable().or(z.literal('')),
-	description: z.string().optional(),
-});
+import { CertificateSchema } from '$lib/schemas/admin.schemas';
 
 export async function PUT({ params, request }) {
 	try {

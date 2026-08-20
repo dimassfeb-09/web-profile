@@ -1,14 +1,7 @@
 import { json } from '@sveltejs/kit';
 import { z } from 'zod';
 import { HomeService } from '../../../../services/home.service';
-
-const HomeSchema = z.object({
-	badge_text: z.string().min(1).max(100),
-	headline: z.string().min(1),
-	subheadline: z.string().min(1),
-	description: z.string().min(1),
-	cv_url: z.string().url(),
-});
+import { HomeSchema } from '$lib/schemas/admin.schemas';
 
 export async function GET() {
 	try {

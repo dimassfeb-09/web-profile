@@ -1,15 +1,7 @@
 import { json } from '@sveltejs/kit';
 import { z } from 'zod';
 import { ExperienceService } from '../../../../../services/experience.service';
-
-const ExperienceSchema = z.object({
-	role: z.string().min(1).max(200),
-	company: z.string().min(1).max(200),
-	start_date: z.string().min(1),
-	end_date: z.string().nullable(),
-	description: z.array(z.string().min(1)),
-	tags: z.array(z.string()).optional(),
-});
+import { ExperienceSchema } from '$lib/schemas/admin.schemas';
 
 export async function PUT({ params, request }) {
 	try {

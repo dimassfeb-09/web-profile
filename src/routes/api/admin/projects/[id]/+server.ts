@@ -1,22 +1,7 @@
 import { json } from '@sveltejs/kit';
 import { z } from 'zod';
 import { ProjectService } from '../../../../../services/project.service';
-
-const ProjectSchema = z.object({
-	title: z.string().min(1).max(255),
-	description: z.string().min(1),
-	image_url: z.string().url(),
-	features: z.array(z.string()),
-	link_url: z.string().url(),
-	link_text: z.string().min(1),
-	slug: z.string().max(255).optional(),
-	long_description: z.string().optional(),
-	tech_stack: z.array(z.string()).optional(),
-	screenshots: z.array(z.string()).optional(),
-	status: z.string().optional(),
-	date: z.string().nullable().optional(),
-	external_links: z.record(z.string(), z.string()).nullable().optional(),
-});
+import { ProjectSchema } from '$lib/schemas/admin.schemas';
 
 export async function PUT({ params, request }) {
 	try {
