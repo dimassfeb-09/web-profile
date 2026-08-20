@@ -10,6 +10,13 @@ const ProjectSchema = z.object({
   features: z.array(z.string()),
   link_url: z.string().url(),
   link_text: z.string().min(1),
+  slug: z.string().max(255).optional(),
+  long_description: z.string().optional(),
+  tech_stack: z.array(z.string()).optional(),
+  screenshots: z.array(z.string()).optional(),
+  status: z.string().optional(),
+  date: z.string().nullable().optional(),
+  external_links: z.record(z.string(), z.string()).nullable().optional(),
 });
 
 export async function PUT(
