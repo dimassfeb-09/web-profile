@@ -13,7 +13,6 @@ const SECURITY_HEADERS: Record<string, string> = {
 	'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload',
 	'X-Frame-Options': 'SAMEORIGIN',
 	'X-Content-Type-Options': 'nosniff',
-	'X-XSS-Protection': '1; mode=block',
 	'Referrer-Policy': 'strict-origin-when-cross-origin',
 	'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
 	'Content-Security-Policy': [

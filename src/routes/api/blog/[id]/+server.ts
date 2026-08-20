@@ -1,12 +1,17 @@
 import { json } from '@sveltejs/kit';
-import { requireAuth } from '$lib/auth';
+import { requireAuth, getSession } from '$lib/auth';
 import { BlogService } from '../../../../services/blog.service';
 
-export async function GET({ params }) {
+export async function GET({ params, cookies }) {
 	try {
 		const blog = await BlogService.getBlogById(params.id, true);
 
 		if (!blog) {
+			return json({ status: 404, message: 'Blog not found', data: null }, { status: 404 });
+		}
+
+		const session = await getSession(cookies);
+		if (!session && !blog.is_published) {
 			return json({ status: 404, message: 'Blog not found', data: null }, { status: 404 });
 		}
 

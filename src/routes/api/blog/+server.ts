@@ -1,10 +1,11 @@
 import { BlogService } from '../../../services/blog.service';
-import { requireAuth } from '$lib/auth';
+import { requireAuth, getSession } from '$lib/auth';
 import { json } from '@sveltejs/kit';
 
-export async function GET({ url }) {
+export async function GET({ url, cookies }) {
 	try {
-		const onlyPublished = url.searchParams.get('published') === 'true';
+		const session = await getSession(cookies);
+		const onlyPublished = session ? url.searchParams.get('published') === 'true' : true;
 		const cursor = url.searchParams.get('cursor');
 		const limit = Number(url.searchParams.get('limit')) || 9;
 

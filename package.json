@@ -63,6 +63,7 @@
 		"@upstash/ratelimit": "^2.0.8",
 		"bcryptjs": "^3.0.3",
 		"clsx": "^2.1.1",
+		"happy-dom": "^20.8.9",
 		"highlight.js": "^11.12.0",
 		"jose": "^6.2.9",
 		"lowlight": "^3.3.0",
