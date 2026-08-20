@@ -25,22 +25,16 @@
 	}: Props = $props();
 
 	let fileInput = $state<HTMLInputElement | null>(null);
-	let items = $state<ScreenshotItem[]>([]);
+	let fileItems = $state<ScreenshotItem[]>([]);
 
-	$effect(() => {
-		const urlItems: ScreenshotItem[] = existingUrls.map((url, i) => ({
-			type: 'url',
-			url,
-			id: `url-${i}-${url}`
-		}));
-		const currentFiles = items.filter((item) => item.type === 'file');
-		items = [...urlItems, ...currentFiles];
-	});
+	const urlItems = $derived(existingUrls.map((url, i) => ({ type: 'url' as const, url, id: `url-${i}-${url}` })));
+	const items = $derived([...urlItems, ...fileItems]);
 
-	$effect(() => {
-		const fileItems = items.filter((item): item is Extract<ScreenshotItem, { type: 'file' }> => item.type === 'file');
-		onFilesChange(fileItems.map((f) => f.file));
-	});
+	function syncFiles() {
+		onFilesChange(
+			fileItems.filter((i): i is Extract<ScreenshotItem, { type: 'file' }> => i.type === 'file').map((f) => f.file)
+		);
+	}
 
 	function handleFileChange(e: Event) {
 		const input = e.currentTarget as HTMLInputElement;
@@ -76,7 +70,8 @@
 			});
 		}
 
-		items = [...items, ...newItems];
+		fileItems = [...fileItems, ...newItems];
+		syncFiles();
 		input.value = '';
 	}
 
@@ -86,15 +81,12 @@
 
 		if (itemToRemove.type === 'file') {
 			URL.revokeObjectURL(itemToRemove.previewUrl);
+			fileItems = fileItems.filter((i) => i.id !== idToRemove);
+			syncFiles();
 		} else {
-			const currentUrlItems = items.filter(
-				(item): item is Extract<ScreenshotItem, { type: 'url' }> => item.type === 'url'
-			);
-			const updatedUrls = currentUrlItems.filter((i) => i.id !== idToRemove).map((i) => i.url);
+			const updatedUrls = urlItems.filter((i) => i.id !== idToRemove).map((i) => i.url);
 			onUrlsChange(updatedUrls);
 		}
-
-		items = items.filter((item) => item.id !== idToRemove);
 	}
 
 	const currentCount = $derived(items.length);
