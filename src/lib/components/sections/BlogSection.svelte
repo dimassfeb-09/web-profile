@@ -9,13 +9,13 @@
 </script>
 
 {#if displayedBlogs.length > 0}
-	<section class="pt-16 xs:pt-24 lg:pt-32 pb-12">
+	<section class="pt-8 xs:pt-12 lg:pt-16 pb-12">
 		<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 xs:mb-16">
-			<div>
-				<h2 class="font-headline text-3xl xs:text-4xl lg:text-5xl font-bold tracking-tight text-on-surface mb-4">
-					Latest Stories.
+			<div class="max-w-2xl">
+				<h2 class="font-headline text-4xl xs:text-5xl lg:text-6xl font-bold tracking-tight text-zinc-900 leading-[1.1] text-pretty">
+					Latest Stories
 				</h2>
-				<p class="font-body text-on-surface-variant text-base xs:text-lg max-w-xl">
+				<p class="font-body text-zinc-500 text-base xs:text-lg leading-relaxed font-light mt-4">
 					Exploring technology, design, and my journey as a software developer.
 				</p>
 			</div>

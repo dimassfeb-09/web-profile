@@ -19,7 +19,7 @@
 	const lazySections = new Set(['projects', 'education', 'achievements', 'certificates', 'blog']);
 </script>
 
-<main class="pt-20 xs:pt-24 lg:pt-32 px-6 xs:px-8 md:px-12 lg:px-16 2xl:px-24 max-w-[1920px] mx-auto flex flex-col gap-12 xs:gap-20 lg:gap-24 xl:gap-32 pb-20 xs:pb-32">
+<main class="pt-20 xs:pt-24 lg:pt-32 px-6 xs:px-8 md:px-12 lg:px-16 2xl:px-24 max-w-[1920px] mx-auto flex flex-col gap-8 xs:gap-12 lg:gap-16 pb-20 xs:pb-32">
 	<HeroSection data={data.homeData} />
 
 	{#each data.visibleSections as section}

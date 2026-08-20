@@ -1,6 +1,4 @@
 <script lang="ts">
-	import SkillCategory from '../ui/SkillCategory.svelte';
-
 	interface Category {
 		id?: number;
 		icon: string;
@@ -13,32 +11,26 @@
 	let { categories }: { categories: Category[] } = $props();
 </script>
 
-<section id="skills" class="relative pt-12 xs:pt-16 lg:pt-24 scroll-mt-20">
-	<div class="relative mb-12 sm:mb-16">
-		<div class="flex items-center gap-3 mb-4">
-			<div class="h-px w-8 bg-primary/40"></div>
-			<span class="text-primary font-bold text-xs uppercase tracking-[0.2em]">
-				Expertise
-			</span>
-		</div>
-		<h2 class="font-headline text-4xl xs:text-5xl lg:text-6xl font-bold tracking-tight text-zinc-900 mb-6">
-			Tech Stack<span class="text-primary">.</span>
+<section id="skills" class="pt-8 xs:pt-12 lg:pt-16 scroll-mt-20">
+	<div class="max-w-3xl mb-12 xs:mb-16">
+		<h2 class="font-headline text-4xl xs:text-5xl lg:text-6xl font-bold tracking-tight text-zinc-900 leading-[1.1] text-pretty">
+			Tech Stack
 		</h2>
-		<p class="font-body text-zinc-500 text-lg xs:text-xl max-w-2xl leading-relaxed">
+		<p class="font-body text-zinc-500 text-base xs:text-lg leading-relaxed font-light mt-4 max-w-2xl">
 			A curated set of tools, frameworks, and technologies I use to build
 			high-performance digital experiences.
 		</p>
 	</div>
 
-	<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 xs:gap-8">
+	<div class="grid grid-cols-1 md:grid-cols-2">
 		{#each categories as cat, index}
-			<div class="transition-all duration-500 animate-scale-up" style="animation-delay: {index * 100}ms">
-				<SkillCategory
-					title={cat.title}
-					skills={cat.skills}
-					colorClass={cat.color_class}
-					delayClass={cat.delay_class}
-				/>
+			<div class="py-6 border-t border-zinc-200 {index % 2 === 1 ? 'md:border-l md:border-zinc-200 md:pl-16' : 'md:pr-16'}">
+				<h3 class="font-headline text-lg font-bold text-zinc-900 mb-1.5">
+					{cat.title}
+				</h3>
+				<p class="font-body text-zinc-500 leading-relaxed text-pretty">
+					{cat.skills.join(' · ')}
+				</p>
 			</div>
 		{/each}
 	</div>

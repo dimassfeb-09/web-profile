@@ -72,13 +72,13 @@
 	});
 </script>
 
-<section id="experience" class="pt-12 xs:pt-16 lg:pt-24 min-h-[400px]">
+<section id="experience" class="pt-8 xs:pt-12 lg:pt-16 min-h-[400px]">
 	<div class="flex flex-col md:flex-row md:items-end justify-between mb-12 xs:mb-16 gap-6">
-		<div class="max-w-xl">
-			<h2 class="font-headline text-3xl xs:text-4xl lg:text-5xl font-bold tracking-tight text-on-surface mb-4">
-				Professional Journey.
+		<div class="max-w-2xl">
+			<h2 class="font-headline text-4xl xs:text-5xl lg:text-6xl font-bold tracking-tight text-zinc-900 leading-[1.1] text-pretty">
+				Professional Journey
 			</h2>
-			<p class="font-body text-on-surface-variant text-base xs:text-lg">
+			<p class="font-body text-zinc-500 text-base xs:text-lg leading-relaxed font-light mt-4">
 				Experience everything I've worked on throughout my career in software development.
 			</p>
 		</div>

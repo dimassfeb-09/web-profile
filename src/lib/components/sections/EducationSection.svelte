@@ -54,18 +54,12 @@
 	}
 </script>
 
-<section id="education" class="pt-20 lg:pt-32 scroll-mt-20 relative">
-	<div class="max-w-2xl mb-16 relative">
-		<div class="flex items-center gap-3 mb-4">
-			<div class="h-px w-8 bg-zinc-300"></div>
-			<span class="text-zinc-400 font-semibold text-xs uppercase tracking-[0.2em]">
-				Academic
-			</span>
-		</div>
-		<h2 class="font-headline text-4xl xs:text-5xl lg:text-6xl font-bold tracking-tight text-zinc-900 mb-6">
-			Education<span class="text-primary">.</span>
+<section id="education" class="pt-8 xs:pt-12 lg:pt-16 scroll-mt-20 relative">
+	<div class="max-w-2xl mb-16">
+		<h2 class="font-headline text-4xl xs:text-5xl lg:text-6xl font-bold tracking-tight text-zinc-900 leading-[1.1] text-pretty">
+			Education
 		</h2>
-		<p class="font-body text-zinc-500 text-base xs:text-lg leading-relaxed font-light">
+		<p class="font-body text-zinc-500 text-base xs:text-lg leading-relaxed font-light mt-4">
 			My academic journey, campus involvements, and certifications that have shaped my professional foundation.
 		</p>
 	</div>

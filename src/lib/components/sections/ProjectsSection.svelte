@@ -62,13 +62,13 @@
 	});
 </script>
 
-<section id="projects" class="pt-16 xs:pt-24 lg:pt-32 pb-12">
+<section id="projects" class="pt-8 xs:pt-12 lg:pt-16 pb-12">
 	<div class="flex flex-col md:flex-row md:items-end justify-between mb-12 xs:mb-16 gap-6">
-		<div class="max-w-xl">
-			<h2 class="font-headline text-3xl xs:text-4xl lg:text-5xl font-bold tracking-tight text-on-surface mb-4">
-				Projects.
+		<div class="max-w-2xl">
+			<h2 class="font-headline text-4xl xs:text-5xl lg:text-6xl font-bold tracking-tight text-zinc-900 leading-[1.1] text-pretty">
+				Projects
 			</h2>
-			<p class="font-body text-on-surface-variant text-base xs:text-lg">
+			<p class="font-body text-zinc-500 text-base xs:text-lg leading-relaxed font-light mt-4">
 				A selection of my recent work and applications.
 			</p>
 		</div>

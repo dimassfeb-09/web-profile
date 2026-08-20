@@ -20,12 +20,12 @@
 </script>
 
 {#if certificates.length > 0}
-	<section class="pt-12 xs:pt-16 lg:pt-24 pb-20">
+	<section class="pt-8 xs:pt-12 lg:pt-16 pb-20">
 		<div class="mb-12 xs:mb-16">
-			<h2 class="font-headline text-3xl xs:text-4xl lg:text-5xl font-bold tracking-tight text-on-surface mb-4">
-				Certificates.
+			<h2 class="font-headline text-4xl xs:text-5xl lg:text-6xl font-bold tracking-tight text-zinc-900 leading-[1.1] text-pretty max-w-3xl">
+				Certificates
 			</h2>
-			<p class="text-zinc-500 font-body text-sm xs:text-base lg:text-lg mb-4 drop-shadow-sm">
+			<p class="text-zinc-500 font-body text-base xs:text-lg leading-relaxed font-light mt-4 max-w-2xl">
 				A showcase of my professional certifications and achievements, highlighting my commitment to continuous learning and excellence in technology.
 			</p>
 		</div>

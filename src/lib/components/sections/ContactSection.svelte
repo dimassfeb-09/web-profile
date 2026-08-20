@@ -15,9 +15,9 @@
 	let { data }: { data: ContactData } = $props();
 </script>
 
-<section class="pt-16 xs:pt-24 lg:pt-32 pb-12 text-center relative overflow-hidden">
+<section class="pt-8 xs:pt-12 lg:pt-16 pb-12 text-center relative overflow-hidden">
 	<div class="max-w-3xl mx-auto px-6">
-		<h2 class="font-headline text-3xl xs:text-4xl lg:text-5xl font-bold tracking-tight text-on-surface mb-6">
+		<h2 class="font-headline text-4xl xs:text-5xl lg:text-6xl font-bold tracking-tight text-zinc-900 leading-[1.1] mb-6">
 			{data.headline}
 		</h2>
 		<p class="font-body text-base xs:text-lg md:text-xl text-on-surface-variant mb-12 leading-relaxed font-light">

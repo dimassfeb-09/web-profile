@@ -15,12 +15,12 @@
 </script>
 
 {#if achievements.length > 0}
-	<section class="pt-12 xs:pt-16 lg:pt-24 min-h-[400px]">
+	<section class="pt-8 xs:pt-12 lg:pt-16 min-h-[400px]">
 		<div class="mb-12 xs:mb-16">
-			<h2 class="font-headline text-3xl xs:text-4xl lg:text-5xl font-bold tracking-tight text-on-surface mb-4">
-				Achievements.
+			<h2 class="font-headline text-4xl xs:text-5xl lg:text-6xl font-bold tracking-tight text-zinc-900 leading-[1.1] text-pretty max-w-3xl">
+				Achievements
 			</h2>
-			<p class="font-body text-on-surface-variant text-base xs:text-lg max-w-xl">
+			<p class="font-body text-zinc-500 text-base xs:text-lg leading-relaxed font-light mt-4 max-w-2xl">
 				Recognition and milestones attained throughout my journey.
 			</p>
 		</div>

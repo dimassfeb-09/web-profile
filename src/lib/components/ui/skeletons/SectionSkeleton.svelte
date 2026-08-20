@@ -3,9 +3,10 @@
 
 	interface Props {
 		variant?: 'skills' | 'experience' | 'projects' | 'education' | 'achievements' | 'certificates' | 'blog';
+		header?: boolean;
 	}
 
-	let { variant = 'projects' }: Props = $props();
+	let { variant = 'projects', header = true }: Props = $props();
 
 	const isBig = $derived(variant === 'skills' || variant === 'education');
 	const descWidth = $derived(
@@ -15,7 +16,8 @@
 </script>
 
 <div class="w-full">
-	{#if variant === 'blog'}
+	{#if header}
+		{#if variant === 'blog'}
 		<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 xs:mb-16">
 			<div class="flex-1">
 				<Shimmer class="h-9 xs:h-11 lg:h-12 w-48 xs:w-56 mb-4 rounded-xl" />
@@ -24,11 +26,12 @@
 			<Shimmer class="hidden md:block h-11 w-36 xs:w-40 rounded-xl flex-shrink-0" />
 		</div>
 	{:else}
-		<div class="mb-12 xs:mb-16">
-			<Shimmer class="{isBig ? 'h-12 xs:h-14 w-48 xs:w-56 mb-6' : 'h-9 xs:h-11 lg:h-12 w-40 xs:w-44 mb-4'} rounded-xl" />
-			<Shimmer class="{descHeight} w-full rounded-lg" />
-			<Shimmer class="mt-2 {descHeight} {descWidth} rounded-lg" />
-		</div>
+			<div class="mb-12 xs:mb-16">
+				<Shimmer class="{isBig ? 'h-12 xs:h-14 w-48 xs:w-56 mb-6' : 'h-9 xs:h-11 lg:h-12 w-40 xs:w-44 mb-4'} rounded-xl" />
+				<Shimmer class="{descHeight} w-full rounded-lg" />
+				<Shimmer class="mt-2 {descHeight} {descWidth} rounded-lg" />
+			</div>
+		{/if}
 	{/if}
 
 	{#if variant === 'skills'}

@@ -8,7 +8,7 @@
 	} = $props();
 </script>
 
-<section class="min-h-[calc(100svh-5rem)] xs:min-h-[calc(100svh-6rem)] lg:min-h-[calc(100svh-8rem)] grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 content-center items-center pt-8 pb-16 relative overflow-hidden">
+<section class="min-h-[calc(100svh-5rem)] xs:min-h-[calc(100svh-6rem)] lg:min-h-[calc(100svh-8rem)] grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 content-center items-center pt-8 pb-16 relative">
 	<div class="lg:col-span-7 flex flex-col items-start text-left relative z-10">
 		<Badge className="mb-6">{data.badge_text}</Badge>
 		<h1 class="font-headline text-4xl xs:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-zinc-900 leading-[1.1] mb-6">
@@ -36,13 +36,15 @@
 		</div>
 	</div>
 
-	<div class="mt-8 lg:mt-0 lg:col-span-5 relative flex items-center justify-center lg:justify-end w-full min-h-[440px] xs:min-h-[460px] lg:min-h-[520px] group/hero-card">
+	<div class="mt-4 lg:mt-0 lg:col-span-5 relative flex items-center justify-center lg:justify-end w-full min-h-[440px] xs:min-h-[460px] lg:min-h-[560px] group/hero-card">
 		<div class="absolute right-12 top-12 w-64 h-64 bg-primary/4 rounded-full blur-[80px] pointer-events-none"></div>
 
-		<div class="relative w-full max-w-[270px] xs:max-w-[310px] mx-auto lg:mr-16 lg:ml-auto">
+		<div class="relative w-full max-w-[300px] xs:max-w-[340px] lg:max-w-[360px] mx-auto lg:mr-16 lg:ml-auto animate-fade-up"
+			style="animation-fill-mode: both;"
+		>
 			<div
-				class="absolute -top-20 xs:-top-24 sm:-top-14 lg:-top-18 left-6 xs:left-8 sm:left-auto sm:-left-18 lg:-left-24 w-[125px] xs:w-[145px] p-3.5 xs:p-4.5 rounded-3xl bg-zinc-900 text-white shadow-2xl -rotate-3 xs:-rotate-6 z-10 group-hover/hero-card:rotate-[-6deg] sm:group-hover/hero-card:rotate-[-22deg] group-hover/hero-card:-translate-y-6 xs:group-hover/hero-card:-translate-y-8 sm:group-hover/hero-card:-translate-y-12 group-hover/hero-card:-translate-x-0.5 xs:group-hover/hero-card:-translate-x-1 sm:group-hover/hero-card:-translate-x-24 will-change-transform pointer-events-none"
-				style="transition: transform 750ms cubic-bezier(0.34, 1.56, 0.64, 1)"
+				class="absolute -top-16 xs:-top-20 sm:-top-14 lg:-top-24 left-0 xs:-left-4 sm:left-auto sm:-left-18 lg:-left-28 w-[140px] xs:w-[160px] p-3.5 xs:p-4.5 rounded-3xl bg-zinc-900 text-white shadow-2xl -rotate-3 xs:-rotate-6 z-10 group-hover/hero-card:-translate-y-3 group-hover/hero-card:-rotate-[6deg] will-change-transform pointer-events-none"
+				style="transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);"
 			>
 				<span class="text-[9px] font-black uppercase tracking-widest text-primary/80 block mb-1">
 					Delivered
@@ -57,8 +59,8 @@
 
 			<!-- Middle Card: Availability Status -->
 			<div
-				class="absolute -bottom-20 xs:-bottom-24 sm:-bottom-12 lg:-bottom-16 right-6 xs:right-8 sm:right-auto sm:-left-12 lg:-left-16 w-[125px] xs:w-[145px] p-3.5 xs:p-4.5 rounded-3xl bg-white border border-zinc-200/40 text-zinc-800 shadow-xl rotate-3 xs:rotate-6 z-10 group-hover/hero-card:rotate-[6deg] sm:group-hover/hero-card:rotate-[20deg] group-hover/hero-card:translate-y-6 xs:group-hover/hero-card:translate-y-8 sm:group-hover/hero-card:translate-y-12 group-hover/hero-card:translate-x-0.5 xs:group-hover/hero-card:translate-x-1 sm:group-hover/hero-card:-translate-x-20 will-change-transform pointer-events-none"
-				style="transition: transform 750ms cubic-bezier(0.34, 1.56, 0.64, 1)"
+				class="absolute -bottom-16 xs:-bottom-20 sm:-bottom-12 lg:-bottom-24 right-0 xs:-right-4 sm:right-auto sm:-left-12 lg:-left-16 w-[140px] xs:w-[160px] p-3.5 xs:p-4.5 rounded-3xl bg-white border border-zinc-200/40 text-zinc-800 shadow-xl rotate-3 xs:rotate-6 z-10 group-hover/hero-card:translate-y-3 group-hover/hero-card:rotate-[6deg] will-change-transform pointer-events-none"
+				style="transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);"
 			>
 				<div class="flex items-center gap-2 mb-2">
 					<span class="w-2 h-2 xs:w-2.5 xs:h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -77,7 +79,7 @@
 			<!-- Front Card: Interactive Developer Profile Mock -->
 			<div
 				class="w-full p-5 xs:p-6 rounded-[2rem] xs:rounded-[2.5rem] bg-white/70 backdrop-blur-xl border border-zinc-200/30 shadow-[0_20px_50px_rgba(0,0,0,0.05)] relative z-20 hover:border-zinc-300/80 hover:bg-white/90 group-hover/hero-card:-translate-y-1 group-hover/hero-card:scale-[1.02] will-change-transform"
-				style="transition: transform 750ms cubic-bezier(0.34, 1.56, 0.64, 1)"
+				style="transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);"
 			>
 				<!-- Profile Header -->
 				<div class="flex items-center gap-3.5 mb-6">
