@@ -12,6 +12,7 @@
 		linkText,
 		slug,
 		techStack = [],
+		priority = false
 	}: {
 		title: string;
 		description: string;
@@ -22,6 +23,7 @@
 		linkText: string;
 		slug?: string;
 		techStack?: string[];
+		priority?: boolean;
 	} = $props();
 
 	let containerRef = $state<HTMLDivElement | null>(null);
@@ -78,6 +80,7 @@
 					hash={imageHash}
 					alt={`${title} - App Project by Dimas Febriyanto`}
 					class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+					priority={priority}
 				/>
 			</a>
 		{:else}
@@ -86,6 +89,7 @@
 				hash={imageHash}
 				alt={`${title} - App Project by Dimas Febriyanto`}
 				class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+				priority={priority}
 			/>
 		{/if}
 	</div>

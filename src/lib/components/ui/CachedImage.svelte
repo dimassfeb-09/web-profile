@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { preloadImage, isImageCached } from '$lib/imageCache';
 	import { getProxiedImageUrl } from '$lib/utils/image-url';
+	import Shimmer from './skeletons/Shimmer.svelte';
 
 	let {
 		src,
@@ -53,6 +54,11 @@
 	}
 </script>
 
+{#if !loaded}
+	<div class="absolute inset-0 w-full h-full" aria-hidden="true">
+		<Shimmer class="w-full h-full rounded-none" />
+	</div>
+{/if}
 <img
 	src={current}
 	{alt}

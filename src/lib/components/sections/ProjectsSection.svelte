@@ -1,5 +1,6 @@
 <script lang="ts">
 	import ProjectCard from '../ui/ProjectCard.svelte';
+	import { getProxiedImageUrl } from '$lib/utils/image-url';
 
 	interface Project {
 		id?: string;
@@ -23,6 +24,9 @@
 	let hasMore = $state(true);
 	let observerTarget = $state<HTMLDivElement | null>(null);
 	const PAGE_SIZE = 6;
+
+	// ponytail: preload 2 hero project images so first paint not naked
+	const preloadUrls = $derived(projects.slice(0, 2).map((p) => getProxiedImageUrl(p.image_url, p.image_hash)));
 
 	async function loadMoreProjects() {
 		if (isLoading || !hasMore) return;
@@ -63,6 +67,12 @@
 	});
 </script>
 
+<svelte:head>
+	{#each preloadUrls as url}
+		<link rel="preload" as="image" href={url} fetchpriority="high" />
+	{/each}
+</svelte:head>
+
 <section id="projects" class="pt-8 xs:pt-12 lg:pt-16 pb-12">
 	<div class="flex flex-col md:flex-row md:items-end justify-between mb-12 xs:mb-16 gap-6">
 		<div class="max-w-2xl">
@@ -76,7 +86,7 @@
 	</div>
 
 	<div class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 4xl:grid-cols-4 gap-6 xs:gap-8">
-		{#each projects as project}
+		{#each projects as project, i}
 			<ProjectCard
 				title={project.title}
 				description={project.description}
@@ -87,6 +97,7 @@
 				linkText={project.link_text}
 				slug={project.slug}
 				techStack={project.tech_stack}
+				priority={i < 2}
 			/>
 		{/each}
 	</div>
