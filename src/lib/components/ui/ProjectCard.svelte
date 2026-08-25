@@ -32,6 +32,7 @@
 	} = $props();
 
 	let containerRef = $state<HTMLDivElement | null>(null);
+	// svelte-ignore state_referenced_locally
 	let visibleCount = $state(techStack.length);
 	let isCalculated = $state(false);
 

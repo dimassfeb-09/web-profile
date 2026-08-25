@@ -27,8 +27,11 @@
 
 	// ponytail: proxied URL = stable cache key (hash → immutable). Same src+hash → same URL → browser/SW/memory hit.
 	const proxied = $derived(getProxiedImageUrl(src, hash) || fallback);
+	// svelte-ignore state_referenced_locally
 	const initial = getProxiedImageUrl(src, hash) || fallback;
+	// svelte-ignore state_referenced_locally
 	let current = $state(initial);
+	// svelte-ignore state_referenced_locally
 	let loaded = $state(isImageCached(initial));
 
 	$effect(() => {
