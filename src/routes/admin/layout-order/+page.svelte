@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { PageProps } from './$types';
 	import { dndzone } from 'svelte-dnd-action';
+	import { flip } from 'svelte/animate';
 	import { invalidateAll } from '$app/navigation';
 	import AdminHeader from '$lib/components/admin/ui/AdminHeader.svelte';
 
@@ -19,14 +20,14 @@
 	let isSaving = $state(false);
 	let success = $state(false);
 
-	let flipDurationMs = $state(150);
+	const flipDurationMs = 150;
 
-	const handleDndEvent = (e: CustomEvent<{ items: Section[]; info: { trigger: string } }>) => {
-		const { items, info } = e.detail;
-		if (info.trigger === 'final') {
-			sections = items.map((item, index) => ({ ...item, order_index: index + 1 }));
-		}
-	};
+	function handleDndConsider(e: CustomEvent<{ items: Section[] }>) {
+		sections = e.detail.items;
+	}
+	function handleDndFinalize(e: CustomEvent<{ items: Section[] }>) {
+		sections = e.detail.items.map((item, index) => ({ ...item, order_index: index + 1 }));
+	}
 
 	const toggleVisibility = (key: string) => {
 		sections = sections.map((item) =>
@@ -115,12 +116,13 @@
 
 		<div
 			use:dndzone={{ items: sections, flipDurationMs }}
-			onconsider={handleDndEvent}
-			onfinalize={handleDndEvent}
+			onconsider={handleDndConsider}
+			onfinalize={handleDndFinalize}
 			class="space-y-4"
 		>
 			{#each sections as section (section.id)}
 				<div
+					animate:flip={{ duration: flipDurationMs }}
 					class="group flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 bg-surface-container-low rounded-2xl border border-outline-variant/10 hover:border-primary/30 transition-all duration-200"
 				>
 					<div class="flex items-start sm:items-center gap-3 sm:gap-5 w-full sm:w-auto">
