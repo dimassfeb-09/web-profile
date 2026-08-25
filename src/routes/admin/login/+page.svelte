@@ -58,128 +58,137 @@
 	}
 </script>
 
-<div class="min-h-svh flex flex-col lg:flex-row">
-	<!-- Brand panel (desktop) -->
-	<aside class="hidden lg:flex lg:w-[46%] xl:w-[42%] relative overflow-hidden bg-zinc-950 text-white flex-col justify-between p-12 xl:p-16">
-		<div class="absolute inset-0 bg-grid-pattern opacity-40"></div>
-		<div class="absolute -top-32 -right-32 w-[30rem] h-[30rem] rounded-full bg-blue-600/20 blur-[140px]"></div>
-		<div class="absolute -bottom-40 -left-24 w-[26rem] h-[26rem] rounded-full bg-indigo-600/10 blur-[140px]"></div>
+<div class="min-h-svh flex flex-col lg:flex-row bg-zinc-50">
+	<!-- Left: brand (split minimal light) -->
+	<aside class="hidden lg:flex lg:w-[46%] xl:w-[42%] bg-white border-r border-zinc-200 flex-col justify-between p-12 xl:p-14 relative overflow-hidden">
+		<!-- subtle grid -->
+		<div class="absolute inset-0 bg-[linear-gradient(to_right,#f4f4f5_1px,transparent_1px),linear-gradient(to_bottom,#f4f4f5_1px,transparent_1px)] bg-[size:32px_32px]"></div>
+		<div class="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-zinc-100 blur-3xl"></div>
 
-		<!-- Brand -->
 		<div class="relative flex items-center gap-3">
-			<div class="w-9 h-9 rounded-xl bg-white flex items-center justify-center font-headline font-black text-sm tracking-tight text-zinc-950">
+			<div class="w-9 h-9 rounded-xl bg-zinc-900 flex items-center justify-center font-headline font-black text-sm tracking-tight text-white">
 				DF
 			</div>
-			<span class="font-headline text-lg font-bold tracking-tight">Dimas Febriyanto</span>
+			<span class="font-headline text-[15px] font-semibold tracking-tight text-zinc-900">Dimas Febriyanto</span>
+			<span class="ml-2 hidden xl:inline-flex items-center rounded-full border border-zinc-200 bg-zinc-50 px-2.5 py-1 text-[11px] font-medium text-zinc-500">Admin</span>
 		</div>
 
-		<!-- Pitch -->
 		<div class="relative">
-			<h1 class="font-headline text-3xl xl:text-4xl font-bold tracking-tight leading-tight mb-4">
-				Manage your portfolio<br />from one place.
+			<p class="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1 text-[11px] font-medium tracking-wide text-zinc-600 mb-6">
+				<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+				Portfolio CMS
+			</p>
+			<h1 class="font-headline text-[30px] xl:text-[32px] font-semibold tracking-tight leading-[1.15] text-zinc-900 mb-3">
+				Manage your portfolio<br />with clarity.
 			</h1>
-			<p class="text-zinc-400 text-[15px] leading-relaxed max-w-md mb-10">
-				Update projects, publish articles, and keep your personal site up to date — all from a simple admin panel.
+			<p class="text-[14px] leading-relaxed text-zinc-500 max-w-md mb-8">
+				Update projects, publish articles, and keep your site in sync — a clean workspace built for speed.
 			</p>
 
-			<ul class="space-y-4">
-				<li class="flex items-center gap-3 text-sm text-zinc-300">
-					<span class="w-5 h-5 rounded-full bg-emerald-500/15 flex items-center justify-center">
-						<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+			<ul class="space-y-3 max-w-md">
+				<li class="flex items-center gap-3 rounded-xl border border-zinc-200 bg-zinc-50/70 px-3.5 py-3">
+					<span class="w-7 h-7 rounded-lg bg-white border border-zinc-200 flex items-center justify-center shrink-0">
+						<span class="material-symbols-outlined text-[16px] text-zinc-700">dashboard</span>
 					</span>
-					Content management made simple
+					<div class="min-w-0">
+						<p class="text-[13px] font-medium text-zinc-900 leading-none">Content management made simple</p>
+						<p class="text-xs text-zinc-500">Projects, blog & certifications</p>
+					</div>
 				</li>
-				<li class="flex items-center gap-3 text-sm text-zinc-300">
-					<span class="w-5 h-5 rounded-full bg-emerald-500/15 flex items-center justify-center">
-						<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+				<li class="flex items-center gap-3 text-sm text-zinc-600">
+					<span class="w-7 h-7 rounded-lg bg-white border border-zinc-200 flex items-center justify-center shrink-0">
+						<span class="material-symbols-outlined text-[16px] text-zinc-700">bolt</span>
 					</span>
-					Projects, blog &amp; certifications
+					Instant publishing & updates
 				</li>
-				<li class="flex items-center gap-3 text-sm text-zinc-300">
-					<span class="w-5 h-5 rounded-full bg-emerald-500/15 flex items-center justify-center">
-						<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+				<li class="flex items-center gap-3 text-sm text-zinc-600">
+					<span class="w-7 h-7 rounded-lg bg-white border border-zinc-200 flex items-center justify-center shrink-0">
+						<span class="material-symbols-outlined text-[16px] text-zinc-700">verified</span>
 					</span>
-					Instant publishing &amp; updates
+					Secure admin workspace
 				</li>
 			</ul>
 		</div>
 
-		<p class="relative text-xs text-zinc-500">&copy; {new Date().getFullYear()} Dimas Febriyanto. All rights reserved.</p>
+		<p class="relative text-xs text-zinc-400">&copy; {new Date().getFullYear()} Dimas Febriyanto. All rights reserved.</p>
 	</aside>
 
-	<!-- Form panel -->
-	<main class="flex-1 bg-white flex items-center justify-center p-4 xs:p-6 overflow-y-auto">
-		<div class="w-full max-w-sm my-auto py-8">
-			<!-- Mobile brand -->
-			<div class="lg:hidden flex flex-col items-center mb-8">
-				<div class="w-12 h-12 rounded-2xl bg-zinc-950 flex items-center justify-center font-headline font-black text-sm tracking-tight text-white mb-4">
-					DF
-				</div>
-				<h1 class="font-headline text-2xl font-bold tracking-tight text-zinc-900 mb-1.5">Welcome back</h1>
-				<p class="text-sm text-zinc-500">Sign in to your admin account</p>
+	<!-- Right: form -->
+	<main class="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-10">
+		<div class="w-full max-w-[380px]">
+			<!-- mobile brand -->
+			<div class="lg:hidden flex flex-col items-center mb-6">
+				<div class="w-11 h-11 rounded-xl bg-zinc-900 flex items-center justify-center font-headline font-black text-sm text-white mb-3">DF</div>
+				<p class="text-xs font-medium tracking-wide text-zinc-500">Admin workspace</p>
 			</div>
 
-			<!-- Desktop heading -->
-			<div class="hidden lg:block mb-8">
-				<h1 class="font-headline text-[26px] font-bold tracking-tight text-zinc-900 mb-1.5">Sign in to your account</h1>
-				<p class="text-sm text-zinc-500">Enter your credentials to continue.</p>
-			</div>
-
-			<form onsubmit={handleLogin} class="space-y-5">
-				<div>
-					<label for="email" class="block text-[13px] font-medium text-zinc-700 mb-1.5">Email address</label>
-					<input
-						id="email"
-						type="email"
-						placeholder="admin@dimassfeb.com"
-						autocomplete="email"
-						bind:value={email}
-						required
-						disabled={retryAfter > 0}
-						class="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 outline-none transition-all focus:border-zinc-900 focus:ring-4 focus:ring-zinc-900/5 disabled:bg-zinc-100 disabled:cursor-not-allowed"
-					/>
+			<div class="bg-white rounded-2xl border border-zinc-200 shadow-sm p-6 sm:p-8">
+				<div class="mb-6">
+					<h1 class="font-headline text-xl font-semibold tracking-tight text-zinc-900">Sign in to your account</h1>
+					<p class="text-sm text-zinc-500 mt-1">Enter your credentials to continue.</p>
 				</div>
 
-				<div>
-					<label for="password" class="block text-[13px] font-medium text-zinc-700 mb-1.5">Password</label>
-					<input
-						id="password"
-						type="password"
-						placeholder="Enter your password"
-						autocomplete="current-password"
-						bind:value={password}
-						required
-						disabled={retryAfter > 0}
-						class="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 outline-none transition-all focus:border-zinc-900 focus:ring-4 focus:ring-zinc-900/5 disabled:bg-zinc-100 disabled:cursor-not-allowed"
-					/>
-				</div>
-
-				{#if error}
-					<div class="rounded-xl bg-red-50 border border-red-100 px-4 py-3 text-sm text-red-600 font-medium">
-						{error}
-						{#if retryAfter > 0}
-							<span class="block mt-1 text-xs">Coba lagi dalam {formatRetry(retryAfter)}</span>
-						{/if}
+				<form onsubmit={handleLogin} class="space-y-4">
+					<div>
+						<label for="email" class="block text-[13px] font-medium text-zinc-700 mb-1.5">Email address</label>
+						<input
+							id="email"
+							type="email"
+							placeholder="admin@dimassfeb.com"
+							autocomplete="email"
+							bind:value={email}
+							required
+							disabled={retryAfter > 0}
+							class="w-full rounded-xl border border-zinc-200 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 outline-none transition-all focus:border-zinc-900 focus:ring-4 focus:ring-zinc-900/5 disabled:bg-zinc-100 disabled:cursor-not-allowed"
+						/>
 					</div>
-				{/if}
 
-				<button
-					type="submit"
-					disabled={isLoading || retryAfter > 0}
-					class="w-full py-2.5 rounded-xl bg-zinc-900 text-white text-sm font-medium tracking-wide transition-all duration-200 hover:bg-zinc-800 hover:shadow-lg hover:shadow-zinc-900/10 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-				>
-					{#if isLoading}
-						<div class="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
-						Signing in...
-					{:else if retryAfter > 0}
-						Tunggu {formatRetry(retryAfter)}
-					{:else}
-						Sign in
+					<div>
+						<div class="flex items-center justify-between mb-1.5">
+							<label for="password" class="block text-[13px] font-medium text-zinc-700">Password</label>
+							<span class="text-xs text-zinc-400 hidden sm:block">Secure login</span>
+						</div>
+						<input
+							id="password"
+							type="password"
+							placeholder="Enter your password"
+							autocomplete="current-password"
+							bind:value={password}
+							required
+							disabled={retryAfter > 0}
+							class="w-full rounded-xl border border-zinc-200 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 outline-none transition-all focus:border-zinc-900 focus:ring-4 focus:ring-zinc-900/5 disabled:bg-zinc-100 disabled:cursor-not-allowed"
+						/>
+					</div>
+
+					{#if error}
+						<div class="rounded-xl bg-red-50 border border-red-200 px-3.5 py-3 text-sm text-red-700 leading-relaxed">
+							{error}
+							{#if retryAfter > 0}
+								<span class="block mt-1 text-xs font-medium">Coba lagi dalam {formatRetry(retryAfter)}</span>
+							{/if}
+						</div>
 					{/if}
-				</button>
-			</form>
 
-			<p class="text-center text-xs text-zinc-400 mt-8">Restricted to authorized administrators only.</p>
+					<button
+						type="submit"
+						disabled={isLoading || retryAfter > 0}
+						class="w-full py-2.5 rounded-xl bg-zinc-900 text-white text-sm font-medium tracking-wide transition-all hover:bg-zinc-800 hover:shadow-md hover:shadow-zinc-900/10 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+					>
+						{#if isLoading}
+							<div class="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+							Signing in...
+						{:else if retryAfter > 0}
+							Tunggu {formatRetry(retryAfter)}
+						{:else}
+							Sign in
+						{/if}
+					</button>
+
+					<p class="text-center text-xs leading-relaxed text-zinc-400 pt-1">Restricted to authorized administrators only. Attempts are rate-limited.</p>
+				</form>
+			</div>
+
+			<p class="text-center text-xs text-zinc-400 mt-6 lg:hidden">&copy; {new Date().getFullYear()} Dimas Febriyanto</p>
 		</div>
 	</main>
 </div>
