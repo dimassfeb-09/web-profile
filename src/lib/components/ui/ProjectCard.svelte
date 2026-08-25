@@ -1,6 +1,11 @@
 <script lang="ts">
 	import { CheckCircle2 } from 'lucide-svelte';
 	import CachedImage from './CachedImage.svelte';
+	import { preloadData } from '$app/navigation';
+	// ponytail: hover preload warms +page.server.ts for instant nav
+	function warm(href: string) {
+		preloadData(href).catch(() => {});
+	}
 
 	let {
 		title,
@@ -74,7 +79,14 @@
 <div class="bg-surface-container-lowest rounded-3xl border border-outline-variant/10 overflow-hidden group hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] transition-all duration-300 hover:-translate-y-1 flex flex-col">
 	<div class="aspect-[1024/500] w-full bg-surface-container-high relative overflow-hidden">
 		{#if slug}
-			<a href={`/projects/${slug}`} class="block w-full h-full relative">
+			<a
+				href={`/projects/${slug}`}
+				class="block w-full h-full relative"
+				data-sveltekit-preload-data="hover"
+				data-sveltekit-preload-code="viewport"
+				onmouseenter={() => warm(`/projects/${slug}`)}
+				onfocus={() => warm(`/projects/${slug}`)}
+			>
 				<CachedImage
 					src={imageUrl}
 					hash={imageHash}
@@ -134,6 +146,8 @@
 				<a
 					href={`/projects/${slug}`}
 					class="text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-variant hover:text-primary transition-colors"
+					data-sveltekit-preload-data="hover"
+					onmouseenter={() => warm(`/projects/${slug}`)}
 				>
 					More Detail
 				</a>

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { ArrowRight } from 'lucide-svelte';
 	import CachedImage from './CachedImage.svelte';
+	import { preloadData } from '$app/navigation';
 
 	let {
 		slug,
@@ -25,7 +26,14 @@
 	}
 </script>
 
-<a href={`/achievements/${slug}`} class="group bg-surface-container-low border border-outline-variant/10 rounded-3xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-1 block">
+<a
+	href={`/achievements/${slug}`}
+	class="group bg-surface-container-low border border-outline-variant/10 rounded-3xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-1 block"
+	data-sveltekit-preload-data="hover"
+	data-sveltekit-preload-code="viewport"
+	onmouseenter={() => preloadData(`/achievements/${slug}`).catch(() => {})}
+	onfocus={() => preloadData(`/achievements/${slug}`).catch(() => {})}
+>
 	<div class="aspect-[1024/500] w-full bg-surface-container-high overflow-hidden relative">
 		<CachedImage
 			src={imageUrl}
