@@ -1,4 +1,6 @@
 <script lang="ts">
+	import CachedImage from '$lib/components/ui/CachedImage.svelte';
+
 	let { imageUrl, index, projectTitle, priority = false, onclick }: {
 		imageUrl: string;
 		index: number;
@@ -23,10 +25,10 @@
 	onkeydown={handleKeyDown}
 	aria-label={`View ${projectTitle} screenshot ${index + 1}`}
 >
-	<img
+	<CachedImage
 		src={imageUrl}
 		alt={`${projectTitle} screenshot ${index + 1} - Dimas Febriyanto Portfolio`}
-		loading={priority ? 'eager' : 'lazy'}
+		priority={priority}
 		class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
 	/>
 </div>

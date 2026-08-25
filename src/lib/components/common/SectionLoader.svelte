@@ -2,18 +2,43 @@
 	import { onDestroy } from 'svelte';
 	import type { Snippet } from 'svelte';
 
-	// ponytail: module-level inflight dedup so concurrent SectionLoader instances
-	// for the same endpoint share one fetch (no duplicate requests).
+	// ponytail: module cache + inflight for N+1 — when N loads, N+1 is warmed so skeleton rarely flashes.
 	const inflight = new Map<string, Promise<unknown>>();
+	const sectionCache = new Map<string, unknown>();
+
+	function fetchSection(url: string): Promise<unknown> {
+		const hit = sectionCache.get(url);
+		if (hit !== undefined) return Promise.resolve(hit);
+		let p = inflight.get(url);
+		if (!p) {
+			p = fetch(url)
+				.then(async (res) => {
+					const body = await res.json().catch(() => null);
+					if (!res.ok || body?.status !== 200) {
+						throw new Error(body?.message || 'Failed to load section');
+					}
+					return body.data;
+				})
+				.then((data) => {
+					sectionCache.set(url, data);
+					return data;
+				})
+				.finally(() => inflight.delete(url));
+			inflight.set(url, p);
+		}
+		return p;
+	}
 
 	let {
 		endpoint,
+		prefetchNext,
 		lazy = false,
 		children,
 		skeleton,
 		error
 	}: {
 		endpoint: string;
+		prefetchNext?: string;
 		lazy?: boolean;
 		children: Snippet<[unknown]>;
 		skeleton: Snippet;
@@ -27,25 +52,23 @@
 
 	async function load() {
 		if (payload) return;
-		failed = false;
-
-		let promise = inflight.get(endpoint);
-		if (!promise) {
-			promise = fetch(endpoint)
-				.then(async (res) => {
-					const body = await res.json().catch(() => null);
-					if (!res.ok || body?.status !== 200) {
-						throw new Error(body?.message || 'Failed to load section');
-					}
-					return body.data;
-				})
-				.finally(() => inflight.delete(endpoint));
-			inflight.set(endpoint, promise);
+		// cache hit → instant render + warm next
+		if (sectionCache.has(endpoint)) {
+			payload = sectionCache.get(endpoint);
+			if (prefetchNext && !sectionCache.has(prefetchNext) && !inflight.has(prefetchNext)) {
+				fetchSection(prefetchNext).catch(() => {});
+			}
+			return;
 		}
-
+		failed = false;
 		try {
-			const data = await promise;
-			if (!cancelled) payload = data;
+			const data = await fetchSection(endpoint);
+			if (!cancelled) {
+				payload = data;
+				if (prefetchNext && !sectionCache.has(prefetchNext) && !inflight.has(prefetchNext)) {
+					fetchSection(prefetchNext).catch(() => {});
+				}
+			}
 		} catch (err) {
 			console.error(`Failed to load ${endpoint}:`, err);
 			if (!cancelled) failed = true;
@@ -54,10 +77,16 @@
 
 	function retry() {
 		if (cancelled) return;
+		// ponytail: allow retry after failure; cache only holds successes
 		load();
 	}
 
 	$effect(() => {
+		// if already cached, render immediately even for lazy
+		if (sectionCache.has(endpoint)) {
+			load();
+			return;
+		}
 		if (lazy) {
 			if (!root) return;
 			const observer = new IntersectionObserver(

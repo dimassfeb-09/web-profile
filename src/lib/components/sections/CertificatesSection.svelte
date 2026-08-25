@@ -1,4 +1,6 @@
 <script lang="ts">
+	import CachedImage from '$lib/components/ui/CachedImage.svelte';
+
 	interface Certificate {
 		id?: string;
 		title: string;
@@ -119,10 +121,11 @@
 				<div
 					class="relative max-w-5xl w-full max-h-full flex items-center justify-center"
 				>
-					<img
+					<CachedImage
 						src={selectedImage}
 						alt="Certificate Preview"
 						class="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl border border-white/10"
+						priority
 					/>
 				</div>
 			</div>

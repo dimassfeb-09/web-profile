@@ -6,6 +6,7 @@
 	import JsonLd from '$lib/components/common/JsonLd.svelte';
 	import GallerySection from '$lib/components/projects/gallery/GallerySection.svelte';
 	import ProjectTracker from '$lib/components/projects/ProjectTracker.svelte';
+	import CachedImage from '$lib/components/ui/CachedImage.svelte';
 
 	let { data }: PageProps = $props();
 	const project = $derived(data.project);
@@ -70,7 +71,7 @@
 
 	{#if project.image_url}
 		<div class="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-3xl overflow-hidden mb-10 border border-outline-variant/20 shadow-xl">
-			<img src={project.image_url} alt={`${project.title} - Project by Dimas Febriyanto`} class="w-full h-full object-cover" />
+			<CachedImage src={project.image_url} hash={project.image_hash} alt={`${project.title} - Project by Dimas Febriyanto`} class="w-full h-full object-cover" priority />
 			<div class="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent"></div>
 		</div>
 	{/if}

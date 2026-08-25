@@ -2,8 +2,16 @@
 	import '../app.css';
 	import '../styles/highlight-theme.css';
 	import favicon from '$lib/assets/favicon.svg';
+	import { onMount } from 'svelte';
 
 	let { children } = $props();
+
+	// ponytail: register SW for image cross-origin cacheFirst (offline + instant repeat)
+	onMount(() => {
+		if ('serviceWorker' in navigator) {
+			navigator.serviceWorker.register('/service-worker.js').catch(() => {});
+		}
+	});
 
 	const BASE_URL = 'https://www.dimassfeb.com';
 

@@ -4,6 +4,7 @@
 	import Breadcrumb from '$lib/components/common/Breadcrumb.svelte';
 	import BackButton from '$lib/components/common/BackButton.svelte';
 	import JsonLd from '$lib/components/common/JsonLd.svelte';
+	import CachedImage from '$lib/components/ui/CachedImage.svelte';
 	import { getCachedImageUrl } from '$lib/utils/image-url';
 
 	let { data }: PageProps = $props();
@@ -53,10 +54,12 @@
 
 	{#if achievement.image_url}
 		<div class="relative w-full aspect-[16/7] rounded-3xl overflow-hidden mb-10 border border-outline-variant/10">
-			<img
-				src={getCachedImageUrl(achievement.image_url, achievement.image_hash)}
+			<CachedImage
+				src={achievement.image_url}
+				hash={achievement.image_hash}
 				alt={`${achievement.title} - Achievement by Dimas Febriyanto`}
 				class="w-full h-full object-cover"
+				priority
 			/>
 			<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
 		</div>

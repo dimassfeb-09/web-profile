@@ -15,8 +15,18 @@
 
 	let { data }: PageProps = $props();
 
-	// below-the-fold sections: fetch only when scrolled near
+	// ponytail: SSR priority = hero + about + skills (techstack). Rest is N+1 chain via prefetchNext.
+	const ssrKeys = new Set(['about', 'contact', 'skills']);
 	const lazySections = new Set(['projects', 'education', 'achievements', 'certificates', 'blog']);
+
+	function getNextEndpoint(currentKey: string): string | undefined {
+		const idx = data.visibleSections.findIndex((s) => s.section_key === currentKey);
+		for (let i = idx + 1; i < data.visibleSections.length; i++) {
+			const k = data.visibleSections[i].section_key;
+			if (!ssrKeys.has(k)) return `/api/section/${k}`;
+		}
+		return undefined;
+	}
 </script>
 
 <main class="pt-20 xs:pt-24 lg:pt-32 px-6 xs:px-8 md:px-12 lg:px-16 2xl:px-24 max-w-[1920px] mx-auto flex flex-col gap-8 xs:gap-12 lg:gap-16 pb-20 xs:pb-32">
@@ -33,9 +43,12 @@
 				{#if data.contactData}
 					<ContactSection data={data.contactData} />
 				{/if}
+			{:else if key === 'skills'}
+				<SkillsSection categories={data.skillsData as any} />
 			{:else}
 				<SectionLoader
 					endpoint={`/api/section/${key}`}
+					prefetchNext={getNextEndpoint(key)}
 					lazy={lazySections.has(key)}
 				>
 					{#snippet skeleton()}
@@ -53,9 +66,7 @@
 						</div>
 					{/snippet}
 					{#snippet children(d)}
-						{#if key === 'skills'}
-							<SkillsSection categories={d as any} />
-						{:else if key === 'experience'}
+						{#if key === 'experience'}
 							<ExperienceSection experiences={d as any} />
 						{:else if key === 'projects'}
 							<ProjectsSection initialProjects={d as any} />

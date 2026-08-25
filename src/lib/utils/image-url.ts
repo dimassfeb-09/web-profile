@@ -1,12 +1,9 @@
 /**
- * Returns the original Supabase URL for use with `next/image`.
- * next/image handles caching via minimumCacheTTL in next.config.ts.
- * The `hash` parameter is kept for API compatibility but unused here
- * since next/image uses URL-level caching automatically.
+ * Returns a proxied URL with `v=hash` for stable immutable caching.
+ * ponytail: reuse getProxiedImageUrl so same image+hash → same URL → browser + SW hit.
  */
-export function getCachedImageUrl(url: string | null | undefined, _hash?: string | null): string {
-  if (!url) return '';
-  return url;
+export function getCachedImageUrl(url: string | null | undefined, hash?: string | null): string {
+  return getProxiedImageUrl(url, hash);
 }
 
 /**

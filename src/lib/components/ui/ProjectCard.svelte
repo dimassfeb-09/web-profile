@@ -1,10 +1,12 @@
 <script lang="ts">
 	import { CheckCircle2 } from 'lucide-svelte';
+	import CachedImage from './CachedImage.svelte';
 
 	let {
 		title,
 		description,
 		imageUrl,
+		imageHash = null,
 		features,
 		linkUrl,
 		linkText,
@@ -14,6 +16,7 @@
 		title: string;
 		description: string;
 		imageUrl: string | null;
+		imageHash?: string | null;
 		features: string[];
 		linkUrl: string;
 		linkText: string;
@@ -21,12 +24,8 @@
 		techStack?: string[];
 	} = $props();
 
-	const fallbackImage = '/images/project-placeholder.jpeg';
-	const initialSnapshot = () => ({ img: imageUrl || fallbackImage, count: techStack.length });
-	let imgSrc = $state(initialSnapshot().img);
-
 	let containerRef = $state<HTMLDivElement | null>(null);
-	let visibleCount = $state(initialSnapshot().count);
+	let visibleCount = $state(techStack.length);
 	let isCalculated = $state(false);
 
 	$effect(() => {
@@ -74,19 +73,19 @@
 	<div class="aspect-[1024/500] w-full bg-surface-container-high relative overflow-hidden">
 		{#if slug}
 			<a href={`/projects/${slug}`} class="block w-full h-full relative">
-				<img
+				<CachedImage
+					src={imageUrl}
+					hash={imageHash}
 					alt={`${title} - App Project by Dimas Febriyanto`}
 					class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-					src={imgSrc}
-					onerror={() => (imgSrc = fallbackImage)}
 				/>
 			</a>
 		{:else}
-			<img
+			<CachedImage
+				src={imageUrl}
+				hash={imageHash}
 				alt={`${title} - App Project by Dimas Febriyanto`}
 				class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-				src={imgSrc}
-				onerror={() => (imgSrc = fallbackImage)}
 			/>
 		{/if}
 	</div>

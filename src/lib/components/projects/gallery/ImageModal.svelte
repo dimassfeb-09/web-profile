@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { X, ChevronLeft, ChevronRight } from 'lucide-svelte';
+	import CachedImage from '$lib/components/ui/CachedImage.svelte';
 
 	let { isOpen, onClose, imageUrl, altText, onNext, onPrev, hasMultiple = false }: {
 		isOpen: boolean;
@@ -116,7 +117,7 @@
 			}}
 		>
 			{#if displayImage}
-				<img src={displayImage} alt={displayAlt} class="w-full h-full object-contain" />
+				<CachedImage src={displayImage} alt={displayAlt} class="w-full h-full object-contain" priority />
 			{/if}
 		</div>
 	</div>

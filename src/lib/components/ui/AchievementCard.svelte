@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { ArrowRight } from 'lucide-svelte';
-	import { getCachedImageUrl } from '$lib/utils/image-url';
+	import CachedImage from './CachedImage.svelte';
 
 	let {
 		slug,
@@ -27,10 +27,12 @@
 
 <a href={`/achievements/${slug}`} class="group bg-surface-container-low border border-outline-variant/10 rounded-3xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-1 block">
 	<div class="aspect-[1024/500] w-full bg-surface-container-high overflow-hidden relative">
-		<img
-			src={getCachedImageUrl(imageUrl, imageHash) || '/placeholder.jpg'}
+		<CachedImage
+			src={imageUrl}
+			hash={imageHash}
 			alt={`${title} - Achievement by Dimas Febriyanto`}
 			class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+			fallback="/placeholder.jpg"
 		/>
 	</div>
 	<div class="p-6">

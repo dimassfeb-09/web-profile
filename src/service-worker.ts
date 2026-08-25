@@ -85,8 +85,8 @@ worker.addEventListener('fetch', (event) => {
 		return;
 	}
 
-	// static assets served straight from cache
-	if (ASSETS.includes(url.pathname)) {
+	// same-origin image proxy & static assets — cache first (instant repeat)
+	if (request.destination === 'image' || ASSETS.includes(url.pathname)) {
 		event.respondWith(cacheFirst(request));
 		return;
 	}

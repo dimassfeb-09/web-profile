@@ -6,6 +6,7 @@
 		title: string;
 		description: string;
 		image_url: string;
+		image_hash?: string | null;
 		features: string[];
 		link_url: string;
 		link_text: string;
@@ -80,6 +81,7 @@
 				title={project.title}
 				description={project.description}
 				imageUrl={project.image_url}
+				imageHash={project.image_hash}
 				features={project.features}
 				linkUrl={project.link_url}
 				linkText={project.link_text}

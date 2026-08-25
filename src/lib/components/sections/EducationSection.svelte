@@ -1,4 +1,6 @@
 <script lang="ts">
+	import CachedImage from '$lib/components/ui/CachedImage.svelte';
+
 	interface Activity {
 		title: string;
 		role: string;
@@ -76,7 +78,7 @@
 						<div class="flex items-start gap-4">
 							{#if edu.logo_url}
 								<div class="w-12 h-12 rounded-xl overflow-hidden relative bg-white border border-zinc-200 flex-shrink-0 flex items-center justify-center p-1 shadow-sm">
-									<img src={edu.logo_url} alt={edu.institution} class="object-contain p-0.5 w-full h-full" />
+									<CachedImage src={edu.logo_url} alt={edu.institution} class="object-contain p-0.5 w-full h-full" />
 								</div>
 							{/if}
 							<div>
