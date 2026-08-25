@@ -6,11 +6,18 @@ import { checkRateLimit } from '$lib/rateLimit';
 
 export async function POST({ request, cookies, getClientAddress }) {
 	try {
-		const ip = getClientAddress();
+		// ponytail: getClientAddress is enough on Vercel, fallback to x-forwarded-for for local/proxy
+		let ip = 'unknown';
+		try {
+			ip = getClientAddress();
+		} catch {}
+		if (!ip || ip === 'unknown') {
+			ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
+		}
 		if (!(await checkRateLimit(ip))) {
 			return json(
 				{ status: 429, message: 'Too many login attempts. Please try again in 15 minutes.' },
-				{ status: 429 }
+				{ status: 429, headers: { 'Retry-After': '900' } }
 			);
 		}
 

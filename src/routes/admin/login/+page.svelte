@@ -5,9 +5,30 @@
 	let password = $state('');
 	let error = $state('');
 	let isLoading = $state(false);
+	let retryAfter = $state(0);
+	let timer: ReturnType<typeof setInterval> | null = null;
+
+	function startCountdown(seconds: number) {
+		retryAfter = seconds;
+		if (timer) clearInterval(timer);
+		timer = setInterval(() => {
+			retryAfter -= 1;
+			if (retryAfter <= 0 && timer) {
+				clearInterval(timer);
+				timer = null;
+			}
+		}, 1000);
+	}
+
+	function formatRetry(seconds: number) {
+		const m = Math.floor(seconds / 60);
+		const s = seconds % 60;
+		return m > 0 ? `${m}m ${s}s` : `${s}s`;
+	}
 
 	async function handleLogin(event: SubmitEvent) {
 		event.preventDefault();
+		if (retryAfter > 0) return;
 		isLoading = true;
 		error = '';
 
@@ -23,6 +44,10 @@
 			if (res.ok) {
 				goto('/admin/dashboard');
 			} else {
+				if (res.status === 429) {
+					const headerRetry = parseInt(res.headers.get('Retry-After') ?? '900', 10);
+					startCountdown(Number.isFinite(headerRetry) ? headerRetry : 900);
+				}
 				error = data.message || 'Login failed';
 			}
 		} catch {
@@ -110,7 +135,8 @@
 						autocomplete="email"
 						bind:value={email}
 						required
-						class="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 outline-none transition-all focus:border-zinc-900 focus:ring-4 focus:ring-zinc-900/5"
+						disabled={retryAfter > 0}
+						class="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 outline-none transition-all focus:border-zinc-900 focus:ring-4 focus:ring-zinc-900/5 disabled:bg-zinc-100 disabled:cursor-not-allowed"
 					/>
 				</div>
 
@@ -123,24 +149,30 @@
 						autocomplete="current-password"
 						bind:value={password}
 						required
-						class="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 outline-none transition-all focus:border-zinc-900 focus:ring-4 focus:ring-zinc-900/5"
+						disabled={retryAfter > 0}
+						class="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 outline-none transition-all focus:border-zinc-900 focus:ring-4 focus:ring-zinc-900/5 disabled:bg-zinc-100 disabled:cursor-not-allowed"
 					/>
 				</div>
 
 				{#if error}
 					<div class="rounded-xl bg-red-50 border border-red-100 px-4 py-3 text-sm text-red-600 font-medium">
 						{error}
+						{#if retryAfter > 0}
+							<span class="block mt-1 text-xs">Coba lagi dalam {formatRetry(retryAfter)}</span>
+						{/if}
 					</div>
 				{/if}
 
 				<button
 					type="submit"
-					disabled={isLoading}
+					disabled={isLoading || retryAfter > 0}
 					class="w-full py-2.5 rounded-xl bg-zinc-900 text-white text-sm font-medium tracking-wide transition-all duration-200 hover:bg-zinc-800 hover:shadow-lg hover:shadow-zinc-900/10 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
 				>
 					{#if isLoading}
 						<div class="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
 						Signing in...
+					{:else if retryAfter > 0}
+						Tunggu {formatRetry(retryAfter)}
 					{:else}
 						Sign in
 					{/if}
