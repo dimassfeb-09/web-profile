@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { Plus } from 'lucide-svelte';
+
 	interface Props {
 		title: string;
 		description: string;
@@ -7,21 +9,21 @@
 		icon?: string;
 	}
 
-	let { title, description, buttonLabel, onButtonClick, icon = 'add' }: Props = $props();
+	let { title, description, buttonLabel, onButtonClick }: Props = $props();
 </script>
 
-<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
 	<div>
-		<h1 class="font-headline text-2xl xs:text-3xl font-bold text-on-surface">{title}</h1>
-		<p class="font-body text-sm xs:text-base text-on-surface-variant max-w-xl">{description}</p>
+		<h1 class="font-headline text-2xl font-semibold tracking-tight text-zinc-900">{title}</h1>
+		<p class="text-sm text-zinc-500 max-w-xl mt-1">{description}</p>
 	</div>
 	{#if buttonLabel && onButtonClick}
 		<button
 			type="button"
 			onclick={onButtonClick}
-			class="flex items-center gap-2 px-6 py-3 rounded-2xl bg-primary text-white font-label font-medium hover:opacity-90 active:scale-95 transition-all font-body text-sm shrink-0 shadow-lg shadow-primary/20"
+			class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-zinc-900 text-white text-sm font-medium hover:bg-zinc-800 hover:shadow-md hover:shadow-zinc-900/10 active:scale-[0.99] transition-all shrink-0"
 		>
-			<span class="material-symbols-outlined text-lg">{icon}</span>
+			<Plus size={16} />
 			{buttonLabel}
 		</button>
 	{/if}

@@ -6,6 +6,7 @@
 	import ImageUploader from '$lib/components/admin/ui/ImageUploader.svelte';
 	import ScreenshotUploader from '$lib/components/admin/ui/ScreenshotUploader.svelte';
 	import SortFilter from '$lib/components/common/SortFilter.svelte';
+	import { Pencil, Trash2 } from 'lucide-svelte';
 
 	let { data }: PageProps = $props();
 	const projects = $derived(data.projects);
@@ -243,52 +244,51 @@
 		}}
 	/>
 
-	<div class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
+	<div class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-4">
 		{#each projects as project (project.id)}
-			<div
-				class="bg-surface-container-low border border-outline-variant/10 rounded-3xl p-6 flex flex-col group h-full"
-			>
-				<div class="aspect-[1024/500] w-full rounded-2xl bg-surface-container-high mb-6 overflow-hidden relative">
+			<div class="bg-white border border-zinc-200 rounded-2xl p-5 flex flex-col group h-full hover:shadow-sm transition-all">
+				<div class="aspect-[16/9] w-full rounded-xl bg-zinc-100 mb-4 overflow-hidden relative border border-zinc-100">
 					{#if project.image_url}
 						<img
 							src={project.image_url}
 							alt={project.title}
-							class="absolute inset-0 w-full h-full object-cover transition-transform group-hover:scale-105"
+							class="absolute inset-0 w-full h-full object-cover transition-transform group-hover:scale-[1.02]"
 						/>
 					{/if}
 				</div>
-				<div class="flex items-center justify-between mb-2">
-					<h3 class="font-headline text-lg font-bold text-on-surface">{project.title}</h3>
+				<div class="flex items-center justify-between mb-1.5">
+					<h3 class="font-headline text-[15px] font-semibold tracking-tight text-zinc-900 truncate pr-2">{project.title}</h3>
 					<span
-						class={`text-[10px] font-bold px-2 py-1 rounded-full border uppercase tracking-tighter ${
+						class={`text-[11px] font-medium px-2 py-1 rounded-full border shrink-0 ${
 							project.status?.toLowerCase() === 'completed'
-								? 'bg-green-100/50 text-green-700 border-green-200'
-								: 'bg-amber-100/50 text-amber-700 border-amber-200'
+								? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+								: 'bg-amber-50 text-amber-700 border-amber-200'
 						}`}
 					>
 						{project.status || 'completed'}
 					</span>
 				</div>
-				<p class="font-body text-xs text-primary mb-2 opacity-70">slug: {project.slug || '-'}</p>
-				<p class="font-body text-sm text-on-surface-variant line-clamp-2 mb-6 flex-grow">{project.description}</p>
+				<p class="text-xs text-zinc-500 mb-2 truncate">slug: {project.slug || '-'}</p>
+				<p class="text-sm text-zinc-600 line-clamp-2 mb-4 flex-grow leading-relaxed">{project.description}</p>
 
-				<div class="flex items-center gap-3 mt-auto">
+				<div class="flex items-center gap-2 mt-auto">
 					<button
 						type="button"
 						disabled={isLoading}
 						onclick={() => handleEdit(project)}
-						class="flex-grow py-3 rounded-xl bg-surface-container-high text-on-surface font-label text-sm font-medium hover:bg-primary/10 hover:text-primary transition-all flex items-center justify-center gap-2"
+						class="flex-1 py-2.5 rounded-xl bg-zinc-900 text-white text-sm font-medium hover:bg-zinc-800 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
 					>
-						<span class="material-symbols-outlined text-sm">edit</span>
+						<Pencil size={14} />
 						Edit
 					</button>
 					<button
 						type="button"
 						disabled={isLoading}
 						onclick={() => handleDelete(project.id)}
-						class="p-3 rounded-xl bg-surface-container-high text-error hover:bg-error/10 transition-all"
+						class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-zinc-200 text-zinc-600 hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-all disabled:opacity-50"
+						aria-label="Delete"
 					>
-						<span class="material-symbols-outlined text-lg">delete</span>
+						<Trash2 size={16} />
 					</button>
 				</div>
 			</div>
