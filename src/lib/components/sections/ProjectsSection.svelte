@@ -25,8 +25,8 @@
 	let observerTarget = $state<HTMLDivElement | null>(null);
 	const PAGE_SIZE = 6;
 
-	// ponytail: preload 2 hero project images so first paint not naked
-	const preloadUrls = $derived(projects.slice(0, 2).map((p) => getProxiedImageUrl(p.image_url, p.image_hash)));
+	// ponytail: preload 2 hero project images so first paint not naked (828 avif)
+	const preloadUrls = $derived(projects.slice(0, 2).map((p) => getProxiedImageUrl(p.image_url, p.image_hash, 828)));
 
 	async function loadMoreProjects() {
 		if (isLoading || !hasMore) return;

@@ -32,5 +32,16 @@ export default defineConfig({
 	],
 	test: {
 		include: ['src/**/*.{test,spec}.{js,ts}']
+	},
+	build: {
+		rollupOptions: {
+			output: {
+				manualChunks: (id) => {
+					if (id.includes('@tiptap') || id.includes('lowlight') || id.includes('highlight.js')) return 'tiptap';
+					if (id.includes('node_modules') && id.includes('svelte-dnd-action')) return 'admin-dnd';
+					return undefined;
+				}
+			}
+		}
 	}
 });
