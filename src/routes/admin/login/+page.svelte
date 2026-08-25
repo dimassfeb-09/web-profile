@@ -86,26 +86,32 @@
 			</p>
 
 			<ul class="space-y-3 max-w-md">
-				<li class="flex items-center gap-3 rounded-xl border border-zinc-200 bg-zinc-50/70 px-3.5 py-3">
-					<span class="w-7 h-7 rounded-lg bg-white border border-zinc-200 flex items-center justify-center shrink-0">
-						<span class="material-symbols-outlined text-[16px] text-zinc-700">dashboard</span>
+				<li class="flex gap-3 rounded-xl border border-zinc-200 bg-white px-3.5 py-3.5 items-center">
+					<span class="w-8 h-8 rounded-lg bg-zinc-900 flex items-center justify-center shrink-0">
+						<span class="material-symbols-outlined text-[18px] text-white">dashboard</span>
 					</span>
 					<div class="min-w-0">
-						<p class="text-[13px] font-medium text-zinc-900 leading-none">Content management made simple</p>
-						<p class="text-xs text-zinc-500">Projects, blog & certifications</p>
+						<p class="text-[13px] font-medium text-zinc-900 leading-none">Content management</p>
+						<p class="text-xs text-zinc-500 mt-1">Projects, blog & certifications</p>
 					</div>
 				</li>
-				<li class="flex items-center gap-3 text-sm text-zinc-600">
-					<span class="w-7 h-7 rounded-lg bg-white border border-zinc-200 flex items-center justify-center shrink-0">
-						<span class="material-symbols-outlined text-[16px] text-zinc-700">bolt</span>
+				<li class="flex gap-3 rounded-xl border border-zinc-200 bg-white px-3.5 py-3.5 items-center">
+					<span class="w-8 h-8 rounded-lg bg-zinc-900 flex items-center justify-center shrink-0">
+						<span class="material-symbols-outlined text-[18px] text-white">bolt</span>
 					</span>
-					Instant publishing & updates
+					<div class="min-w-0">
+						<p class="text-[13px] font-medium text-zinc-900 leading-none">Instant publishing</p>
+						<p class="text-xs text-zinc-500 mt-1">Updates live in seconds</p>
+					</div>
 				</li>
-				<li class="flex items-center gap-3 text-sm text-zinc-600">
-					<span class="w-7 h-7 rounded-lg bg-white border border-zinc-200 flex items-center justify-center shrink-0">
-						<span class="material-symbols-outlined text-[16px] text-zinc-700">verified</span>
+				<li class="flex gap-3 rounded-xl border border-zinc-200 bg-white px-3.5 py-3.5 items-center">
+					<span class="w-8 h-8 rounded-lg bg-zinc-900 flex items-center justify-center shrink-0">
+						<span class="material-symbols-outlined text-[18px] text-white">verified</span>
 					</span>
-					Secure admin workspace
+					<div class="min-w-0">
+						<p class="text-[13px] font-medium text-zinc-900 leading-none">Secure workspace</p>
+						<p class="text-xs text-zinc-500 mt-1">Rate-limited & protected access</p>
+					</div>
 				</li>
 			</ul>
 		</div>
