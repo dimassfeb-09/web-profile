@@ -4,9 +4,11 @@ import { StorageService } from '../../../../services/storage.service';
 import { BlogImageRepository } from '../../../../repositories/blog_image.repository';
 import { BlogRepository } from '../../../../repositories/blog.repository';
 import { v4 as uuidv4 } from 'uuid';
+import sharp from 'sharp';
 
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const AVIF_QUALITY = 65;
 
 export async function POST({ request, cookies }) {
 	try {
@@ -28,20 +30,33 @@ export async function POST({ request, cookies }) {
 			return json({ message: 'File too large (max 5MB)' }, { status: 400 });
 		}
 
-		const MIME_TO_EXT: Record<string, string> = {
-			'image/jpeg': 'jpg',
-			'image/png': 'png',
-			'image/webp': 'webp',
-			'image/gif': 'gif'
-		};
-
 		const buffer = Buffer.from(await file.arrayBuffer());
-		const extension = MIME_TO_EXT[file.type] || 'webp';
 		const imageId = uuidv4();
-		const filePath = `${blogId}/${imageId}.${extension}`;
-		const contentType = file.type || 'image/webp';
 
-		const publicUrl = await StorageService.uploadFile(filePath, buffer, contentType);
+		// ── Convert to AVIF ──────────────────────────────────────
+		let avifBuffer: Buffer;
+		let extension = 'avif';
+		let contentType = 'image/avif';
+
+		try {
+			avifBuffer = await sharp(buffer)
+				.avif({ quality: AVIF_QUALITY, effort: 6, chromaSubsampling: '4:2:0' })
+				.toBuffer();
+		} catch (err) {
+			console.error('[Blog Upload] AVIF conversion failed, using original:', err);
+			avifBuffer = buffer;
+			const MIME_TO_EXT: Record<string, string> = {
+				'image/jpeg': 'jpg',
+				'image/png': 'png',
+				'image/webp': 'webp',
+				'image/gif': 'gif'
+			};
+			extension = MIME_TO_EXT[file.type] || 'webp';
+			contentType = file.type || 'image/webp';
+		}
+
+		const filePath = `${blogId}/${imageId}.${extension}`;
+		const publicUrl = await StorageService.uploadFile(filePath, avifBuffer, contentType);
 
 		const existingBlog = await BlogRepository.findById(blogId);
 		if (!existingBlog) {
@@ -61,7 +76,12 @@ export async function POST({ request, cookies }) {
 			status: 'unused'
 		});
 
-		return json({ url: publicUrl, id: imageId });
+		const originalKB = (buffer.length / 1024).toFixed(1);
+		const avifKB = (avifBuffer.length / 1024).toFixed(1);
+		const savings = ((1 - avifBuffer.length / buffer.length) * 100).toFixed(0);
+		console.log(`[Blog Upload] ${file.name} → ${extension.toUpperCase()} (${originalKB}KB → ${avifKB}KB, -${savings}%)`);
+
+		return json({ url: publicUrl, id: imageId, format: extension });
 	} catch (error) {
 		console.error('Blog Upload Error:', error);
 		return json(

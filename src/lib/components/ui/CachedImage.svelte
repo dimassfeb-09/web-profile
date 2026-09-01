@@ -25,20 +25,21 @@
 		height?: number;
 	} = $props();
 
-	// ponytail: proxied URL = stable cache key (hash → immutable). Same src+hash → same URL → browser/SW/memory hit.
-	// priority 828 / lazy 640 → Vercel avif resize saves ~70% vs original (ponytail: only remote, static stays as-is)
 	const optWidth = $derived(width ?? (priority ? 828 : 640));
-	const proxied = $derived(getProxiedImageUrl(src, hash, optWidth) || fallback);
+
+	// AVIF URL (primary) — getProxiedImageUrl now returns AVIF when available
+	const avifUrl = $derived(getProxiedImageUrl(src, hash, optWidth) || fallback);
+
+	// Original URL (fallback for browsers without AVIF support)
+	const originalUrl = $derived(getOriginalUrl(src) || fallback);
+
 	// svelte-ignore state_referenced_locally
-	const initial = getProxiedImageUrl(src, hash, width ?? (priority ? 828 : 640)) || fallback;
+	let current = $state(avifUrl);
 	// svelte-ignore state_referenced_locally
-	let current = $state(initial);
-	// svelte-ignore state_referenced_locally
-	let loaded = $state(isImageCached(initial));
+	let loaded = $state(isImageCached(avifUrl));
 
 	$effect(() => {
-		// react to src/hash change
-		const url = proxied;
+		const url = avifUrl;
 		current = url;
 		if (isImageCached(url)) {
 			loaded = true;
@@ -48,14 +49,46 @@
 		preloadImage(url)
 			.then(() => (loaded = true))
 			.catch(() => {
-				current = fallback;
-				loaded = true;
+				// AVIF failed, try original format
+				if (originalUrl !== avifUrl) {
+					current = originalUrl;
+					preloadImage(originalUrl)
+						.then(() => (loaded = true))
+						.catch(() => {
+							current = fallback;
+							loaded = true;
+						});
+				} else {
+					current = fallback;
+					loaded = true;
+				}
 			});
 	});
 
 	function onError() {
-		if (current !== fallback) current = fallback;
+		// If AVIF failed, try original format
+		if (current === avifUrl && originalUrl !== avifUrl) {
+			current = originalUrl;
+		} else if (current !== fallback) {
+			current = fallback;
+		}
 		loaded = true;
+	}
+
+	/**
+	 * Get the original format URL (without AVIF conversion).
+	 * Used as fallback for browsers that don't support AVIF.
+	 */
+	function getOriginalUrl(url: string | null | undefined): string {
+		if (!url) return '';
+		if (url.startsWith('/') || url.startsWith('data:')) return url;
+
+		// If it's an AVIF URL, convert back to original
+		if (url.endsWith('.avif')) {
+			return url.replace(/\.avif$/, '.webp');
+		}
+
+		return url;
 	}
 </script>
 

@@ -27,18 +27,25 @@
 			? { '@type': 'Organization', name: achievement.event_organizer }
 			: undefined,
 		url: canonicalUrl,
-		image: getCachedImageUrl(achievement.image_url, achievement.image_hash) || 'https://www.dimassfeb.com/og-image.png',
+		image: getCachedImageUrl(achievement.image_url, achievement.image_hash, 1200) || 'https://www.dimassfeb.com/og-image.png',
 	});
 </script>
 
 <svelte:head>
-	<title>{achievement.title}</title>
-	<meta name="description" content={achievement.description} />
+	<title>{achievement.title} | Dimas Febriyanto — Achievement</title>
+	<meta name="description" content="{achievement.description} — Achievement by Dimas Febriyanto, Fullstack & Mobile Developer." />
 	<link rel="canonical" href={canonicalUrl} />
 	<meta property="og:type" content="article" />
 	<meta property="og:url" content={canonicalUrl} />
-	<meta property="og:title" content={achievement.title} />
-	<meta property="og:description" content={achievement.description} />
+	<meta property="og:title" content="{achievement.title} | Dimas Febriyanto — Achievement" />
+	<meta property="og:description" content="{achievement.description} — Achievement by Dimas Febriyanto." />
+	<meta property="og:site_name" content="Dimas Febriyanto" />
+	<meta property="og:image" content={getCachedImageUrl(achievement.image_url, achievement.image_hash, 1200) || 'https://www.dimassfeb.com/og-image.png'} />
+	<meta property="og:image:alt" content="{achievement.title} — Achievement by Dimas Febriyanto" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="{achievement.title} | Dimas Febriyanto" />
+	<meta name="twitter:description" content="{achievement.description} — Achievement by Dimas Febriyanto." />
+	<meta name="twitter:image" content={getCachedImageUrl(achievement.image_url, achievement.image_hash, 1200) || 'https://www.dimassfeb.com/og-image.png'} />
 </svelte:head>
 
 <JsonLd schema={schema} />

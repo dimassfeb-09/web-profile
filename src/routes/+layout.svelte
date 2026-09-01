@@ -24,12 +24,13 @@
 			'@id': `${BASE_URL}/`
 		},
 		name: 'Dimas Febriyanto',
+		alternateName: ['dimassfeb', 'Dimas'],
 		givenName: 'Dimas',
 		familyName: 'Febriyanto',
 		url: BASE_URL,
 		jobTitle: 'Fullstack & Mobile Developer',
 		description:
-			'Fullstack & Mobile Developer with expertise in Golang (backend) and Flutter (mobile). Aktif sebagai Junior Mobile Developer di Sagara Technology dan Teaching Lab Assistant di Universitas Gunadarma.',
+			'Dimas Febriyanto (dimassfeb) — Fullstack & Mobile Developer with expertise in Golang (backend) and Flutter (mobile). Junior Mobile Developer at Sagara Technology and Teaching Lab Assistant at Universitas Gunadarma.',
 		email: 'dimassfeb@gmail.com',
 		image: {
 			'@type': 'ImageObject',
@@ -57,6 +58,7 @@
 			'Flutter',
 			'Dart',
 			'React.js',
+			'Next.js',
 			'REST API',
 			'Microservices',
 			'PostgreSQL',
@@ -64,7 +66,8 @@
 			'Redis',
 			'Docker',
 			'Mobile Application Development',
-			'Backend Development'
+			'Backend Development',
+			'Fullstack Development'
 		],
 		hasCredential: [
 			{
@@ -102,10 +105,12 @@
 	const websiteSchema = {
 		'@context': 'https://schema.org',
 		'@type': 'WebSite',
-		'@id': `${BASE_URL}/`,
-		name: 'Dimas Febriyanto',
+		'@id': `${BASE_URL}/#website`,
+		name: 'Dimas Febriyanto — Portfolio',
+		alternateName: 'dimassfeb',
 		url: BASE_URL,
-		author: { '@id': `${BASE_URL}/` },
+		author: { '@id': `${BASE_URL}/#person` },
+		description: 'Portfolio of Dimas Febriyanto (dimassfeb), Fullstack & Mobile Developer specializing in Golang and Flutter.',
 		potentialAction: {
 			'@type': 'SearchAction',
 			target: {

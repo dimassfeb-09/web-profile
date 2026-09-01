@@ -48,18 +48,23 @@
 </script>
 
 <svelte:head>
-	<title>{blog.title}</title>
-	<meta name="description" content={blog.excerpt ?? `Read "${blog.title}" by Dimas Febriyanto`} />
+	<title>{blog.title} | Dimas Febriyanto</title>
+	<meta name="description" content={blog.excerpt ?? `Read "${blog.title}" by Dimas Febriyanto — Fullstack & Mobile Developer specializing in Golang and Flutter.`} />
 	<link rel="canonical" href={canonicalUrl} />
 	<meta property="og:type" content="article" />
 	<meta property="og:url" content={canonicalUrl} />
-	<meta property="og:title" content={blog.title} />
-	<meta property="og:description" content={blog.excerpt ?? `Read "${blog.title}" by Dimas Febriyanto`} />
+	<meta property="og:title" content="{blog.title} | Dimas Febriyanto" />
+	<meta property="og:description" content={blog.excerpt ?? `Read "${blog.title}" by Dimas Febriyanto — Fullstack & Mobile Developer specializing in Golang and Flutter.`} />
 	<meta property="og:site_name" content="Dimas Febriyanto" />
+	<meta property="og:image" content="https://www.dimassfeb.com/og-image.png" />
+	<meta property="og:image:width" content="1200" />
+	<meta property="og:image:height" content="630" />
+	<meta property="og:image:alt" content="{blog.title} — Article by Dimas Febriyanto" />
 	{#if publishedTime}<meta property="article:published_time" content={publishedTime} />{/if}
 	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:title" content={blog.title} />
-	<meta name="twitter:description" content={blog.excerpt ?? `Read "${blog.title}" by Dimas Febriyanto`} />
+	<meta name="twitter:title" content="{blog.title} | Dimas Febriyanto" />
+	<meta name="twitter:description" content={blog.excerpt ?? `Read "${blog.title}" by Dimas Febriyanto — Fullstack & Mobile Developer specializing in Golang and Flutter.`} />
+	<meta name="twitter:image" content="https://www.dimassfeb.com/og-image.png" />
 </svelte:head>
 
 <JsonLd schema={[blogPostingSchema, breadcrumbSchema]} />

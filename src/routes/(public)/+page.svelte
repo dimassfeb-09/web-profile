@@ -12,8 +12,36 @@
 	import ContactSection from '$lib/components/sections/ContactSection.svelte';
 	import SectionLoader from '$lib/components/common/SectionLoader.svelte';
 	import SectionSkeleton from '$lib/components/ui/skeletons/SectionSkeleton.svelte';
+	import JsonLd from '$lib/components/common/JsonLd.svelte';
 
 	let { data }: PageProps = $props();
+
+	const BASE_URL = 'https://www.dimassfeb.com';
+
+	const webPageSchema = {
+		'@context': 'https://schema.org',
+		'@type': 'WebPage',
+		'@id': `${BASE_URL}/#webpage`,
+		url: BASE_URL,
+		name: 'Dimas Febriyanto — Fullstack & Mobile Developer Portfolio',
+		description:
+			'Portfolio of Dimas Febriyanto (dimassfeb), Fullstack & Mobile Developer specializing in Golang and Flutter. View projects, blog posts, and professional experience.',
+		isPartOf: { '@id': `${BASE_URL}/#website` },
+		about: { '@id': `${BASE_URL}/#person` },
+		primaryImageOfPage: {
+			'@type': 'ImageObject',
+			url: `${BASE_URL}/og-image.png`,
+			width: 1200,
+			height: 630
+		},
+		datePublished: '2024-01-01T00:00:00+07:00',
+		dateModified: new Date().toISOString(),
+		inLanguage: 'id',
+		potentialAction: {
+			'@type': 'ReadAction',
+			target: BASE_URL
+		}
+	};
 
 	// ponytail: SSR priority = hero + about + skills (techstack). Rest is N+1 chain via prefetchNext.
 	const ssrKeys = new Set(['about', 'contact', 'skills']);
@@ -28,6 +56,27 @@
 		return undefined;
 	}
 </script>
+
+<svelte:head>
+	<title>Dimas Febriyanto — Fullstack & Mobile Developer Portfolio (Golang + Flutter)</title>
+	<meta name="description" content="Portfolio of Dimas Febriyanto (dimassfeb), Fullstack & Mobile Developer specializing in Golang (backend) and Flutter (mobile). 3+ apps on Play Store. View projects, blog, and experience." />
+	<link rel="canonical" href={BASE_URL} />
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content={BASE_URL} />
+	<meta property="og:title" content="Dimas Febriyanto — Fullstack & Mobile Developer Portfolio" />
+	<meta property="og:description" content="Portfolio of Dimas Febriyanto (dimassfeb), Fullstack & Mobile Developer specializing in Golang and Flutter. View projects, blog posts, and professional experience." />
+	<meta property="og:site_name" content="Dimas Febriyanto" />
+	<meta property="og:image" content="{BASE_URL}/og-image.png" />
+	<meta property="og:image:width" content="1200" />
+	<meta property="og:image:height" content="630" />
+	<meta property="og:image:alt" content="Dimas Febriyanto — Fullstack & Mobile Developer Portfolio" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="Dimas Febriyanto — Fullstack & Mobile Developer Portfolio" />
+	<meta name="twitter:description" content="Portfolio of Dimas Febriyanto (dimassfeb), Fullstack & Mobile Developer specializing in Golang and Flutter." />
+	<meta name="twitter:image" content="{BASE_URL}/og-image.png" />
+</svelte:head>
+
+<JsonLd schema={webPageSchema} />
 
 <main class="pt-20 xs:pt-24 lg:pt-32 px-6 xs:px-8 md:px-12 lg:px-16 2xl:px-24 max-w-[1920px] mx-auto flex flex-col gap-8 xs:gap-12 lg:gap-16 pb-20 xs:pb-32">
 	<HeroSection data={data.homeData} />

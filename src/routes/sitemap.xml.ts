@@ -1,5 +1,6 @@
 import { BlogService } from '../services/blog.service';
 import { ProjectService } from '../services/project.service';
+import { AchievementService } from '../services/achievement.service';
 
 const BASE_URL = 'https://www.dimassfeb.com';
 
@@ -66,12 +67,32 @@ export async function GET() {
 		console.error('Error fetching projects for sitemap:', error);
 	}
 
+	try {
+		const achievementsRes = await AchievementService.getAllAchievements(true);
+		(achievementsRes.data || []).forEach((achievement) => {
+			if (!achievement.slug) return;
+			const updatedAt = achievement.created_at ? new Date(achievement.created_at) : new Date();
+
+			urlset.push(`
+	<url>
+		<loc>${BASE_URL}/achievements/${achievement.slug}</loc>
+		<lastmod>${updatedAt.toISOString()}</lastmod>
+		<changefreq>monthly</changefreq>
+		<priority>0.6</priority>
+	</url>`);
+		});
+	} catch (error) {
+		console.error('Error fetching achievements for sitemap:', error);
+	}
+
 	const lastMod = latestPostDate > new Date(0) ? latestPostDate : now;
 
 	const staticRoutes = [
 		{ url: BASE_URL, changeFrequency: 'monthly', priority: 1.0 },
 		{ url: `${BASE_URL}/blog`, changeFrequency: 'daily', priority: 0.85 },
-		{ url: `${BASE_URL}/projects`, changeFrequency: 'weekly', priority: 0.8 }
+		{ url: `${BASE_URL}/projects`, changeFrequency: 'weekly', priority: 0.8 },
+		{ url: `${BASE_URL}/achievements`, changeFrequency: 'weekly', priority: 0.7 },
+		{ url: `${BASE_URL}/certificates`, changeFrequency: 'weekly', priority: 0.7 }
 	];
 
 	for (const route of staticRoutes) {

@@ -1,7 +1,10 @@
 import { json } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
 import { createHash } from 'crypto';
+import sharp from 'sharp';
 import { validateUploadFile, isValidBucket } from '$lib/upload';
+
+const AVIF_QUALITY = 65;
 
 export async function POST({ request, url }) {
 	try {
@@ -34,43 +37,82 @@ export async function POST({ request, url }) {
 		const cleanUrl = SUPABASE_URL.trim().replace(/\/$/, '');
 		const cleanKey = SUPABASE_SERVICE_ROLE_KEY.trim();
 
-		const MIME_TO_EXT: Record<string, string> = {
-			'image/jpeg': 'jpg',
-			'image/png': 'png',
-			'image/webp': 'webp',
-			'image/gif': 'gif',
-		};
-		const ext = MIME_TO_EXT[file.type] || 'webp';
-		const uniqueFileName = `${Date.now()}.${ext}`;
-
 		const hash = createHash('sha256').update(Buffer.from(buffer)).digest('hex').slice(0, 8);
 
-		const uploadUrl = `${cleanUrl}/storage/v1/object/${bucketName}/${uniqueFileName}`;
-
-		const uploadRes = await fetch(uploadUrl, {
-			method: 'POST',
-			headers: {
-				apikey: cleanKey,
-				Authorization: `Bearer ${cleanKey}`,
-				'Content-Type': file.type,
-				'x-upsert': 'false',
-			},
-			body: buffer,
-		});
-
-		if (!uploadRes.ok) {
-			throw new Error('Storage upload failed');
+		// ── Convert to AVIF ──────────────────────────────────────
+		let avifBuffer: Buffer;
+		try {
+			avifBuffer = await sharp(Buffer.from(buffer))
+				.avif({ quality: AVIF_QUALITY, effort: 6, chromaSubsampling: '4:2:0' })
+				.toBuffer();
+		} catch (err) {
+			console.error('[Admin Upload] AVIF conversion failed, falling back to original:', err);
+			// Fallback: upload original format
+			const ext = getOriginalExt(file.type);
+			const fileName = `${Date.now()}.${ext}`;
+			const publicUrl = await uploadToSupabase(cleanUrl, cleanKey, bucketName, fileName, buffer, file.type);
+			return json({
+				status: 200,
+				message: 'Upload successful (original format, AVIF conversion failed)',
+				data: { url: publicUrl, hash, format: ext },
+			});
 		}
 
-		const publicUrl = `${cleanUrl}/storage/v1/object/public/${bucketName}/${uniqueFileName}`;
+		// ── Upload AVIF ──────────────────────────────────────────
+		const avifFileName = `${Date.now()}.avif`;
+		const avifUrl = await uploadToSupabase(cleanUrl, cleanKey, bucketName, avifFileName, avifBuffer, 'image/avif');
+
+		const originalKB = (buffer.length / 1024).toFixed(1);
+		const avifKB = (avifBuffer.length / 1024).toFixed(1);
+		const savings = ((1 - avifBuffer.length / buffer.length) * 100).toFixed(0);
+		console.log(`[Admin Upload] ${file.name} → AVIF (${originalKB}KB → ${avifKB}KB, -${savings}%)`);
 
 		return json({
 			status: 200,
-			message: 'Upload successful',
-			data: { url: publicUrl, hash },
+			message: 'Upload successful (AVIF)',
+			data: { url: avifUrl, hash, format: 'avif' },
 		});
 	} catch (error) {
 		console.error('[Admin Upload] Error:', error);
 		return json({ status: 500, message: 'Internal Server Error' }, { status: 500 });
 	}
+}
+
+// ── Helpers ─────────────────────────────────────────────────
+
+function getOriginalExt(mimeType: string): string {
+	const MIME_TO_EXT: Record<string, string> = {
+		'image/jpeg': 'jpg',
+		'image/png': 'png',
+		'image/webp': 'webp',
+		'image/gif': 'gif',
+		'image/avif': 'avif',
+	};
+	return MIME_TO_EXT[mimeType] || 'webp';
+}
+
+async function uploadToSupabase(
+	cleanUrl: string,
+	cleanKey: string,
+	bucket: string,
+	fileName: string,
+	body: Buffer | Uint8Array,
+	contentType: string
+): Promise<string> {
+	const uploadUrl = `${cleanUrl}/storage/v1/object/${bucket}/${fileName}`;
+	const res = await fetch(uploadUrl, {
+		method: 'POST',
+		headers: {
+			apikey: cleanKey,
+			Authorization: `Bearer ${cleanKey}`,
+			'Content-Type': contentType,
+			'x-upsert': 'true',
+		},
+		body,
+	});
+	if (!res.ok) {
+		const err = await res.json().catch(() => ({}));
+		throw new Error(`Storage upload failed: ${err.message || res.statusText}`);
+	}
+	return `${cleanUrl}/storage/v1/object/public/${bucket}/${fileName}`;
 }

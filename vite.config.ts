@@ -24,7 +24,7 @@ export default defineConfig({
 				images: {
 					sizes: [640, 828, 1200, 1920, 3840],
 					formats: ['image/avif', 'image/webp'],
-					minimumCacheTTL: 300,
+					minimumCacheTTL: 604800, // 7 days — images are immutable via hash-based cache busting
 					domains: ['atgnqunmelvquqdwkmnq.supabase.co', 'lh3.googleusercontent.com']
 				}
 			})

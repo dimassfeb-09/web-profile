@@ -33,8 +33,9 @@
 			<a
 				class="w-full sm:w-auto px-8 py-4 rounded-full bg-surface-container-highest text-on-surface font-label font-medium tracking-wide transition-all duration-300 hover:bg-surface-variant flex items-center justify-center gap-2"
 				href={data.linkedin_url}
-				rel="noopener noreferrer"
+				rel="noopener noreferrer me"
 				target="_blank"
+				aria-label="Dimas Febriyanto on LinkedIn"
 			>
 				LinkedIn Profile
 				<ExternalLink class="w-3.5 h-3.5" />
@@ -53,9 +54,10 @@
 				<a
 					href={data.linkedin_url}
 					target="_blank"
-					rel="noopener noreferrer"
+					rel="noopener noreferrer me"
 					class="p-3 rounded-2xl bg-surface-container-low border border-outline-variant/10 text-on-surface-variant hover:text-primary hover:border-primary/30 transition-all hover:-translate-y-1"
 					title="LinkedIn"
+					aria-label="Dimas Febriyanto on LinkedIn"
 				>
 					<SocialIcon platform="linkedin" className="w-6 h-6" />
 				</a>
@@ -64,9 +66,10 @@
 				<a
 					href={data.github_url}
 					target="_blank"
-					rel="noopener noreferrer"
+					rel="noopener noreferrer me"
 					class="p-3 rounded-2xl bg-surface-container-low border border-outline-variant/10 text-on-surface-variant hover:text-primary hover:border-primary/30 transition-all hover:-translate-y-1"
 					title="GitHub"
+					aria-label="Dimas Febriyanto on GitHub"
 				>
 					<SocialIcon platform="github" className="w-6 h-6" />
 				</a>
@@ -75,9 +78,10 @@
 				<a
 					href={data.instagram_url}
 					target="_blank"
-					rel="noopener noreferrer"
+					rel="noopener noreferrer me"
 					class="p-3 rounded-2xl bg-surface-container-low border border-outline-variant/10 text-on-surface-variant hover:text-primary hover:border-primary/30 transition-all hover:-translate-y-1"
 					title="Instagram"
+					aria-label="Dimas Febriyanto on Instagram"
 				>
 					<SocialIcon platform="instagram" className="w-6 h-6" />
 				</a>
@@ -86,9 +90,10 @@
 				<a
 					href={data.twitter_url}
 					target="_blank"
-					rel="noopener noreferrer"
+					rel="noopener noreferrer me"
 					class="p-3 rounded-2xl bg-surface-container-low border border-outline-variant/10 text-on-surface-variant hover:text-primary hover:border-primary/30 transition-all hover:-translate-y-1"
 					title="Twitter / X"
+					aria-label="Dimas Febriyanto on Twitter"
 				>
 					<SocialIcon platform="twitter" className="w-6 h-6" />
 				</a>

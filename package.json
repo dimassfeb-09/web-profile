@@ -15,7 +15,8 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --tsgo --watch",
 		"test": "vitest run --passWithNoTests",
 		"test:watch": "vitest",
-		"lint": "eslint ."
+		"lint": "eslint .",
+		"optimize:images": "node scripts/optimize-existing-images.mjs"
 	},
 	"devDependencies": {
 		"@eslint/js": "^10.0.1",
@@ -72,6 +73,7 @@
 		"lucide-svelte": "^1.0.1",
 		"material-symbols": "^0.46.0",
 		"pg": "^8.23.0",
+		"sharp": "^0.33.5",
 		"svelte-dnd-action": "^0.9.78",
 		"tailwind-merge": "^3.6.0",
 		"uuid": "^14.0.2",

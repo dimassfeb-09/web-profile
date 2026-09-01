@@ -7,6 +7,7 @@
 	import GallerySection from '$lib/components/projects/gallery/GallerySection.svelte';
 	import ProjectTracker from '$lib/components/projects/ProjectTracker.svelte';
 	import CachedImage from '$lib/components/ui/CachedImage.svelte';
+	import { getCachedImageUrl } from '$lib/utils/image-url';
 
 	let { data }: PageProps = $props();
 	const project = $derived(data.project);
@@ -25,7 +26,7 @@
 		name: project.title,
 		description: project.description,
 		url: canonicalUrl,
-		image: project.image_url || 'https://www.dimassfeb.com/og-image.png',
+		image: getCachedImageUrl(project.image_url, project.image_hash, 1200) || 'https://www.dimassfeb.com/og-image.png',
 		applicationCategory: 'WebApplication',
 		operatingSystem: 'Any',
 	});
@@ -48,13 +49,20 @@
 </script>
 
 <svelte:head>
-	<title>{project.title}</title>
-	<meta name="description" content={project.description} />
+	<title>{project.title} | Dimas Febriyanto — Portfolio</title>
+	<meta name="description" content="{project.description} — Project by Dimas Febriyanto, Fullstack & Mobile Developer specializing in Golang and Flutter." />
 	<link rel="canonical" href={canonicalUrl} />
 	<meta property="og:type" content="article" />
 	<meta property="og:url" content={canonicalUrl} />
-	<meta property="og:title" content={project.title} />
-	<meta property="og:description" content={project.description} />
+	<meta property="og:title" content="{project.title} | Dimas Febriyanto — Portfolio" />
+	<meta property="og:description" content="{project.description} — Project by Dimas Febriyanto, Fullstack & Mobile Developer." />
+	<meta property="og:site_name" content="Dimas Febriyanto" />
+	<meta property="og:image" content={getCachedImageUrl(project.image_url, project.image_hash, 1200) || 'https://www.dimassfeb.com/og-image.png'} />
+	<meta property="og:image:alt" content="{project.title} — Project by Dimas Febriyanto" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="{project.title} | Dimas Febriyanto — Portfolio" />
+	<meta name="twitter:description" content="{project.description} — Project by Dimas Febriyanto." />
+	<meta name="twitter:image" content={getCachedImageUrl(project.image_url, project.image_hash, 1200) || 'https://www.dimassfeb.com/og-image.png'} />
 </svelte:head>
 
 <JsonLd schema={[schema, breadcrumbSchema]} />

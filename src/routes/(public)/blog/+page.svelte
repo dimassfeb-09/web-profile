@@ -23,20 +23,28 @@
 </script>
 
 <svelte:head>
-	<title>Blog & Insights</title>
+	<title>Blog & Insights | Dimas Febriyanto — Software Engineer</title>
 	<meta
 		name="description"
-		content="Articles about Flutter, Golang, mobile development, and backend engineering by Dimas Febriyanto — Software Engineer from Bekasi, Indonesia."
+		content="Articles about Flutter, Golang, mobile development, and backend engineering by Dimas Febriyanto — Fullstack & Mobile Developer from Bekasi, Indonesia."
 	/>
 	<link rel="canonical" href="https://www.dimassfeb.com/blog" />
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content="https://www.dimassfeb.com/blog" />
-	<meta property="og:title" content="Blog & Insights | Dimas Febriyanto" />
+	<meta property="og:title" content="Blog & Insights | Dimas Febriyanto — Software Engineer" />
 	<meta
 		property="og:description"
-		content="Articles about Flutter, Golang, mobile development, and backend engineering."
+		content="Articles about Flutter, Golang, mobile development, and backend engineering by Dimas Febriyanto."
 	/>
 	<meta property="og:site_name" content="Dimas Febriyanto" />
+	<meta property="og:image" content="https://www.dimassfeb.com/og-image.png" />
+	<meta property="og:image:width" content="1200" />
+	<meta property="og:image:height" content="630" />
+	<meta property="og:image:alt" content="Blog & Insights — Dimas Febriyanto" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="Blog & Insights | Dimas Febriyanto" />
+	<meta name="twitter:description" content="Articles about Flutter, Golang, mobile development, and backend engineering by Dimas Febriyanto." />
+	<meta name="twitter:image" content="https://www.dimassfeb.com/og-image.png" />
 </svelte:head>
 
 <JsonLd schema={blogSchema} />
