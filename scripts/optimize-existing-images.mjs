@@ -62,6 +62,10 @@ if (!SUPABASE_URL || !SUPABASE_KEY) {
   process.exit(1);
 }
 
+if (!env.DATABASE_URL && !env.POSTGRES_URL) {
+  console.error('⚠️  Warning: Missing DATABASE_URL — will skip DB updates');
+}
+
 const cleanUrl = SUPABASE_URL.trim().replace(/\/$/, '');
 const cleanKey = SUPABASE_KEY.trim();
 
@@ -71,12 +75,17 @@ async function listFiles(bucket, prefix = '', offset = 0, limit = 100) {
   const res = await fetch(`${cleanUrl}/storage/v1/object/list/${bucket}`, {
     method: 'POST',
     headers: {
+      apikey: cleanKey,
       Authorization: `Bearer ${cleanKey}`,
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({ prefix, limit, offset, sortBy: { column: 'name', order: 'asc' } })
   });
-  if (!res.ok) return [];
+  if (!res.ok) {
+    const err = await res.text();
+    console.error(`   ⚠️  List failed for ${bucket}/${prefix}: ${res.status} ${err}`);
+    return [];
+  }
   const data = await res.json();
   return Array.isArray(data) ? data : [];
 }
@@ -141,27 +150,27 @@ async function convertToAvif(inputBuffer) {
 
 // ── Database helpers ──────────────────────────────────────────
 
-let _dbClient = null;
+let _dbPool = null;
 
-async function getDbClient() {
-  if (_dbClient) return _dbClient;
-  const { Client } = await import('pg');
-  _dbClient = new Client({
-    connectionString: env.DATABASE_URL || env.POSTGRES_URL
+async function getDbPool() {
+  if (_dbPool) return _dbPool;
+  const { Pool } = await import('pg');
+  _dbPool = new Pool({
+    connectionString: env.DATABASE_URL || env.POSTGRES_URL,
+    max: 5
   });
-  await _dbClient.connect();
-  return _dbClient;
+  return _dbPool;
 }
 
 async function queryDatabase(sql, params = []) {
-  const client = await getDbClient();
-  return client.query(sql, params);
+  const pool = await getDbPool();
+  return pool.query(sql, params);
 }
 
 async function closeDb() {
-  if (_dbClient) {
-    await _dbClient.end();
-    _dbClient = null;
+  if (_dbPool) {
+    await _dbPool.end();
+    _dbPool = null;
   }
 }
 

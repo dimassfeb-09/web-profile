@@ -4,6 +4,7 @@
 	import AdminHeader from '$lib/components/admin/ui/AdminHeader.svelte';
 	import AdminModal from '$lib/components/admin/ui/AdminModal.svelte';
 	import ImageUploader from '$lib/components/admin/ui/ImageUploader.svelte';
+	import CachedImage from '$lib/components/ui/CachedImage.svelte';
 	import { slugify } from '$lib/utils/slugify';
 
 	let { data }: PageProps = $props();
@@ -300,7 +301,7 @@
 				<div class="flex items-start gap-4 mb-4">
 					{#if edu.logo_url}
 						<div class="w-12 h-12 rounded-lg overflow-hidden relative bg-white border border-outline-variant/10 flex-shrink-0">
-							<img src={edu.logo_url} alt={edu.institution} class="absolute inset-0 w-full h-full object-contain p-1.5" />
+							<CachedImage src={edu.logo_url} alt={edu.institution} class="absolute inset-0 w-full h-full object-contain p-1.5" />
 						</div>
 					{:else}
 						<div
