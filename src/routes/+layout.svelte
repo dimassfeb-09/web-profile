@@ -3,11 +3,13 @@
 	import '../styles/highlight-theme.css';
 	import favicon from '$lib/assets/favicon.svg';
 	import { onMount } from 'svelte';
+	import { theme } from '$lib/theme.svelte';
 
 	let { children } = $props();
 
 	// ponytail: register SW for image cross-origin cacheFirst (offline + instant repeat)
 	onMount(() => {
+		theme.init();
 		if ('serviceWorker' in navigator) {
 			navigator.serviceWorker.register('/service-worker.js').catch(() => {});
 		}

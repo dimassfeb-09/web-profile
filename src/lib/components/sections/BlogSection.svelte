@@ -12,10 +12,10 @@
 	<section class="pt-8 xs:pt-12 lg:pt-16 pb-12">
 		<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 xs:mb-16">
 			<div class="max-w-2xl">
-				<h2 class="font-headline text-4xl xs:text-5xl lg:text-6xl font-bold tracking-tight text-zinc-900 leading-[1.1] text-pretty">
+				<h2 class="font-headline text-4xl xs:text-5xl lg:text-6xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 leading-[1.1] text-pretty">
 					Latest Stories
 				</h2>
-				<p class="font-body text-zinc-500 text-base xs:text-lg leading-relaxed font-light mt-4">
+				<p class="font-body text-zinc-500 dark:text-zinc-400 text-base xs:text-lg leading-relaxed font-light mt-4">
 					Exploring technology, design, and my journey as a software developer.
 				</p>
 			</div>

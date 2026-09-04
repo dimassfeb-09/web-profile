@@ -17,7 +17,7 @@
 
 <section class="pt-8 xs:pt-12 lg:pt-16 pb-12 text-center relative overflow-hidden">
 	<div class="max-w-3xl mx-auto px-6">
-		<h2 class="font-headline text-4xl xs:text-5xl lg:text-6xl font-bold tracking-tight text-zinc-900 leading-[1.1] mb-6">
+		<h2 class="font-headline text-4xl xs:text-5xl lg:text-6xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 leading-[1.1] mb-6">
 			{data.headline}
 		</h2>
 		<p class="font-body text-base xs:text-lg md:text-xl text-on-surface-variant mb-12 leading-relaxed font-light">

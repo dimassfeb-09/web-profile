@@ -76,10 +76,10 @@
 <section id="projects" class="pt-8 xs:pt-12 lg:pt-16 pb-12">
 	<div class="flex flex-col md:flex-row md:items-end justify-between mb-12 xs:mb-16 gap-6">
 		<div class="max-w-2xl">
-			<h2 class="font-headline text-4xl xs:text-5xl lg:text-6xl font-bold tracking-tight text-zinc-900 leading-[1.1] text-pretty">
+			<h2 class="font-headline text-4xl xs:text-5xl lg:text-6xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 leading-[1.1] text-pretty">
 				Projects
 			</h2>
-			<p class="font-body text-zinc-500 text-base xs:text-lg leading-relaxed font-light mt-4">
+			<p class="font-body text-zinc-500 dark:text-zinc-400 text-base xs:text-lg leading-relaxed font-light mt-4">
 				A selection of my recent work and applications.
 			</p>
 		</div>
@@ -106,15 +106,15 @@
 		{#if isLoading}
 			<div class="flex flex-col items-center gap-3">
 				<div class="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
-				<p class="text-xs font-medium text-zinc-400 animate-pulse uppercase tracking-widest">
+				<p class="text-xs font-medium text-zinc-400 dark:text-zinc-500 animate-pulse uppercase tracking-widest">
 					Loading More Projects
 				</p>
 			</div>
 		{/if}
 		{#if !hasMore && projects.length > 0}
 			<div class="flex flex-col items-center gap-2 py-8">
-				<div class="h-px w-12 bg-zinc-200"></div>
-				<p class="text-zinc-400 text-sm font-medium">
+				<div class="h-px w-12 bg-zinc-200 dark:bg-zinc-800"></div>
+				<p class="text-zinc-400 dark:text-zinc-500 text-sm font-medium">
 					You've reached the end
 				</p>
 			</div>

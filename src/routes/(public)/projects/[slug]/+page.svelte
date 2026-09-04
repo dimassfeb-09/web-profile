@@ -32,8 +32,8 @@
 	});
 
 	const getStatusColor = (status: string | undefined) => {
-		if (status?.toLowerCase() === 'completed') return 'text-green-700 bg-green-100 border-green-200';
-		if (status?.toLowerCase() === 'in progress') return 'text-amber-700 bg-amber-100 border-amber-200';
+		if (status?.toLowerCase() === 'completed') return 'text-green-700 bg-green-100 border-green-200 dark:text-green-300 dark:bg-green-900/40 dark:border-green-800';
+		if (status?.toLowerCase() === 'in progress') return 'text-amber-700 bg-amber-100 border-amber-200 dark:text-amber-300 dark:bg-amber-900/40 dark:border-amber-800';
 		return 'text-on-surface-variant bg-surface-container-high border-outline-variant/20';
 	};
 </script>

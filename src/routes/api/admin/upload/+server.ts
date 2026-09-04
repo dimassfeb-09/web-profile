@@ -100,6 +100,8 @@ async function uploadToSupabase(
 	contentType: string
 ): Promise<string> {
 	const uploadUrl = `${cleanUrl}/storage/v1/object/${bucket}/${fileName}`;
+	// ponytail: copy ke Uint8Array backed-ArrayBuffer — view union Buffer|Uint8Array (ArrayBufferLike) ditolak BodyInit fetch
+	const payload = new Uint8Array(body);
 	const res = await fetch(uploadUrl, {
 		method: 'POST',
 		headers: {
@@ -108,7 +110,7 @@ async function uploadToSupabase(
 			'Content-Type': contentType,
 			'x-upsert': 'true',
 		},
-		body,
+		body: payload,
 	});
 	if (!res.ok) {
 		const err = await res.json().catch(() => ({}));

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto, pushState } from '$app/navigation';
 	import { page } from '$app/state';
+	import ThemeToggle from '$lib/components/common/ThemeToggle.svelte';
 
 	let {
 		cvUrl,
@@ -192,19 +193,19 @@
 </script>
 
 <nav
-	class="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-xl border-b border-zinc-200/50 {isVisible ? 'translate-y-0' : '-translate-y-full'}"
+	class="fixed top-0 w-full z-50 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-xl border-b border-zinc-200/50 dark:border-zinc-800/60 {isVisible ? 'translate-y-0' : '-translate-y-full'}"
 	style="transition: transform 500ms cubic-bezier(0.16, 1, 0.3, 1)"
 >
 	<div class="flex justify-between items-center px-4 xs:px-6 py-4 xs:py-5 max-w-screen-2xl mx-auto relative z-50">
 		<a
-			class="text-lg xs:text-xl font-black tracking-tighter text-zinc-900 font-headline transition-all duration-300 ease-in-out hover:opacity-80 scale-95 active:scale-90 transition-transform"
+			class="text-lg xs:text-xl font-black tracking-tighter text-zinc-900 dark:text-zinc-100 font-headline transition-all duration-300 ease-in-out hover:opacity-80 scale-95 active:scale-90 transition-transform"
 			href="/"
 			onclick={() => (isMobileMenuOpen = false)}
 		>
 			{#if isHome && activeHash && activeHash !== '#hero'}
 				<span class="flex items-center gap-1.5">
-					<span class="text-zinc-400 font-normal">Dimas</span>
-					<span class="text-zinc-300 font-normal">/</span>
+					<span class="text-zinc-400 dark:text-zinc-500 font-normal">Dimas</span>
+					<span class="text-zinc-300 dark:text-zinc-600 font-normal">/</span>
 					<span class="text-primary font-black">
 						{navLinks.find((l) => l.href === activeHash)?.name || ''}
 					</span>
@@ -221,7 +222,7 @@
 				<a
 					class="transition-all duration-300 ease-in-out hover:opacity-80 border-b-2 py-1 {active
 						? 'text-primary border-primary'
-						: 'text-zinc-500 border-transparent hover:text-zinc-900 hover:border-primary/30'}"
+						: 'text-zinc-500 dark:text-zinc-400 border-transparent hover:text-zinc-900 dark:hover:text-zinc-100 hover:border-primary/30'}"
 					href={getHref(link.href)}
 					onclick={(e) => onNavClick(e, link)}
 				>
@@ -231,27 +232,33 @@
 		</div>
 
 		<!-- Desktop Resume Button -->
-		<a
-			class="hidden lg:flex items-center justify-center px-4 xs:px-6 py-2 xs:py-2.5 rounded-full bg-primary text-white font-label font-medium text-xs xs:text-sm tracking-wide transition-all duration-300 ease-in-out hover:opacity-90 scale-95 active:scale-90 transition-transform hover:shadow-[0_8px_24px_rgb(0,62,199,0.22)]"
-			href={cvUrl}
-			target="_blank"
-			rel="noopener noreferrer"
-		>
-			Resume
-		</a>
+		<div class="hidden lg:flex items-center gap-2">
+			<ThemeToggle />
+			<a
+				class="flex items-center justify-center px-4 xs:px-6 py-2 xs:py-2.5 rounded-full bg-primary text-white font-label font-medium text-xs xs:text-sm tracking-wide transition-all duration-300 ease-in-out hover:opacity-90 scale-95 active:scale-90 transition-transform hover:shadow-[0_8px_24px_rgb(0,62,199,0.22)]"
+				href={cvUrl}
+				target="_blank"
+				rel="noopener noreferrer"
+			>
+				Resume
+			</a>
+		</div>
 
-		<!-- Mobile Hamburger Button -->
-		<button
-			onclick={() => (isMobileMenuOpen = !isMobileMenuOpen)}
-			class="lg:hidden flex flex-col justify-center items-center w-10 h-10 rounded-full hover:bg-zinc-100 transition-colors focus:outline-none relative z-50"
-			aria-label="Toggle Menu"
-		>
-			<div class="w-5 flex flex-col gap-1.5">
-				<span class="h-0.5 w-full bg-zinc-800 rounded transition-all duration-300 origin-center {isMobileMenuOpen ? 'rotate-45 translate-y-[8px]' : ''}"></span>
-				<span class="h-0.5 w-full bg-zinc-800 rounded transition-all duration-300 origin-center {isMobileMenuOpen ? 'w-0 opacity-0' : ''}"></span>
-				<span class="h-0.5 w-full bg-zinc-800 rounded transition-all duration-300 origin-center {isMobileMenuOpen ? '-rotate-45 -translate-y-[8px]' : ''}"></span>
-			</div>
-		</button>
+		<div class="lg:hidden flex items-center gap-1">
+			<ThemeToggle />
+			<!-- Mobile Hamburger Button -->
+			<button
+				onclick={() => (isMobileMenuOpen = !isMobileMenuOpen)}
+				class="flex flex-col justify-center items-center w-10 h-10 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors focus:outline-none relative z-50"
+				aria-label="Toggle Menu"
+			>
+				<div class="w-5 flex flex-col gap-1.5">
+					<span class="h-0.5 w-full bg-zinc-800 dark:bg-zinc-200 rounded transition-all duration-300 origin-center {isMobileMenuOpen ? 'rotate-45 translate-y-[8px]' : ''}"></span>
+					<span class="h-0.5 w-full bg-zinc-800 dark:bg-zinc-200 rounded transition-all duration-300 origin-center {isMobileMenuOpen ? 'w-0 opacity-0' : ''}"></span>
+					<span class="h-0.5 w-full bg-zinc-800 dark:bg-zinc-200 rounded transition-all duration-300 origin-center {isMobileMenuOpen ? '-rotate-45 -translate-y-[8px]' : ''}"></span>
+				</div>
+			</button>
+		</div>
 	</div>
 </nav>
 
@@ -260,7 +267,7 @@
 	class="fixed inset-x-0 bottom-0 top-[61px] xs:top-[69px] z-40 overflow-hidden lg:hidden {isMobileMenuOpen ? 'pointer-events-auto' : 'pointer-events-none'}"
 >
 	<div
-		class="w-full h-full bg-white/98 backdrop-blur-3xl flex flex-col justify-between px-6 py-6 xs:px-8 xs:py-8 {isMobileMenuOpen ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}"
+		class="w-full h-full bg-white/98 dark:bg-zinc-950/98 backdrop-blur-3xl flex flex-col justify-between px-6 py-6 xs:px-8 xs:py-8 {isMobileMenuOpen ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}"
 		style="transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1), opacity 500ms cubic-bezier(0.16, 1, 0.3, 1)"
 	>
 		<!-- Spacious Center Navigation Link Stack -->
@@ -270,7 +277,7 @@
 				<a
 					class="text-xl xs:text-2xl font-bold font-headline tracking-tight transition-all duration-300 flex items-center gap-4 {active
 						? 'text-primary translate-x-2'
-						: 'text-zinc-400 hover:text-zinc-950 hover:translate-x-1'}"
+						: 'text-zinc-400 dark:text-zinc-500 hover:text-zinc-950 dark:hover:text-zinc-50 hover:translate-x-1'}"
 					href={getHref(link.href)}
 					onclick={(e) => {
 						isMobileMenuOpen = false;
@@ -286,10 +293,10 @@
 		</div>
 
 		<!-- Bottom Call-To-Action & Status -->
-		<div class="flex flex-col gap-5 border-t border-zinc-100 pt-6">
+		<div class="flex flex-col gap-5 border-t border-zinc-100 dark:border-zinc-800 pt-6">
 			<div class="flex items-center gap-2 px-1">
 				<span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-				<span class="text-xs font-semibold text-zinc-500 tracking-wide">
+				<span class="text-xs font-semibold text-zinc-500 dark:text-zinc-400 tracking-wide">
 					Available for opportunities
 				</span>
 			</div>

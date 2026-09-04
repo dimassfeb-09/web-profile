@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-primary: #003ec7;
   --color-primary-container: #0052ff;
@@ -106,6 +108,46 @@
   .animate-drift-main {
     animation: none;
   }
+}
+
+/* ponytail: dark mode = override token semantik saja; class zinc/white hardcoded ditangani per-file via dark: */
+.dark {
+  --color-primary: #5b8cff;
+  --color-primary-container: #003ec7;
+  --color-on-primary: #0a0f24;
+  --color-on-primary-container: #dfe3ff;
+
+  --color-background: #09090b;
+  --color-on-background: #fafafa;
+
+  --color-surface: #09090b;
+  --color-surface-variant: #27272a;
+  --color-on-surface: #fafafa;
+  --color-on-surface-variant: #a1a1aa;
+
+  --color-outline: #8e8e99;
+  --color-outline-variant: #27272a;
+
+  --color-surface-container-lowest: #101013;
+  --color-surface-container-low: #151518;
+  --color-surface-container: #1b1b1f;
+  --color-surface-container-high: #232328;
+  --color-surface-container-highest: #2c2c33;
+
+  color-scheme: dark;
+}
+
+/* circular reveal antar tema — animasi WAAPI dari titik klik, bukan dari CSS */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) {
+  z-index: 1;
+}
+::view-transition-new(root) {
+  z-index: 2;
 }
 
 @layer base {

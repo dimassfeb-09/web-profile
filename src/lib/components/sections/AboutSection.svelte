@@ -4,7 +4,7 @@
 
 <section class="pt-8 xs:pt-12 lg:pt-16">
 	<div class="max-w-3xl">
-		<h2 class="font-headline text-4xl xs:text-5xl lg:text-6xl font-bold tracking-tight text-zinc-900 leading-[1.1] text-pretty">
+		<h2 class="font-headline text-4xl xs:text-5xl lg:text-6xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 leading-[1.1] text-pretty">
 			{data.headline}
 		</h2>
 
@@ -13,8 +13,8 @@
 				<p
 					class="font-body leading-relaxed text-pretty
 					{index === 0
-						? 'text-xl xs:text-2xl text-zinc-800 font-normal'
-						: 'text-base xs:text-lg text-zinc-500 font-light'}"
+						? 'text-xl xs:text-2xl text-zinc-800 dark:text-zinc-200 font-normal'
+						: 'text-base xs:text-lg text-zinc-500 dark:text-zinc-400 font-light'}"
 				>
 					{para}
 				</p>

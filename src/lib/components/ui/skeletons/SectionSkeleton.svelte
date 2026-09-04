@@ -37,7 +37,7 @@
 	{#if variant === 'skills'}
 		<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 xs:gap-8">
 			{#each Array(3) as _}
-				<div class="bg-white/60 border border-zinc-200/30 rounded-[2.5rem] p-8 flex flex-col gap-6">
+				<div class="bg-white/60 dark:bg-zinc-900/60 border border-zinc-200/30 dark:border-zinc-700/30 rounded-[2.5rem] p-8 flex flex-col gap-6">
 					<div class="flex items-center gap-4">
 						<Shimmer class="w-14 h-14 rounded-2xl flex-shrink-0" />
 						<div class="flex-1 min-w-0">
@@ -107,7 +107,7 @@
 			{/each}
 		</div>
 	{:else if variant === 'education'}
-		<div class="relative border-l border-zinc-200 pl-8 ml-3 space-y-16 py-2">
+		<div class="relative border-l border-zinc-200 dark:border-zinc-700 pl-8 ml-3 space-y-16 py-2">
 			{#each Array(2) as _}
 				<div class="relative">
 					<Shimmer class="absolute -left-[37px] top-1 w-6 h-6 rounded-full" />
