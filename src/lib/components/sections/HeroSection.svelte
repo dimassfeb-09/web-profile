@@ -49,9 +49,9 @@
 				<span class="text-[9px] font-black uppercase tracking-widest text-primary/80 block mb-1">
 					Delivered
 				</span>
-				<h4 class="text-2xl xs:text-3xl font-headline font-bold mb-1">
+				<p class="text-2xl xs:text-3xl font-headline font-bold mb-1">
 					5+
-				</h4>
+				</p>
 				<p class="text-[9px] xs:text-[10px] text-zinc-400 font-light leading-normal">
 					Production-ready digital projects completed.
 				</p>
@@ -87,9 +87,9 @@
 						DF
 					</div>
 					<div>
-						<h4 class="font-headline font-bold text-zinc-900 text-sm leading-tight">
+						<p class="font-headline font-bold text-zinc-900 text-sm leading-tight">
 							Dimas Febriyanto
-						</h4>
+						</p>
 						<span class="text-zinc-500 font-body text-[11px] font-light">
 							Software Engineer
 						</span>
