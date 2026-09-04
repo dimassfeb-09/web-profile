@@ -42,45 +42,50 @@
 		<div class="relative w-full max-w-[300px] xs:max-w-[340px] lg:max-w-[360px] mx-auto lg:mr-16 lg:ml-auto animate-fade-up"
 			style="animation-fill-mode: both;"
 		>
-			<div
-				class="absolute -top-16 xs:-top-20 sm:-top-14 lg:-top-24 left-0 xs:-left-4 sm:left-auto sm:-left-18 lg:-left-28 w-[140px] xs:w-[160px] p-3.5 xs:p-4.5 rounded-3xl bg-zinc-900 text-white shadow-2xl -rotate-3 xs:-rotate-6 z-10 group-hover/hero-card:-translate-y-3 group-hover/hero-card:-rotate-[6deg] will-change-transform pointer-events-none"
-				style="transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);"
-			>
-				<span class="text-[9px] font-black uppercase tracking-widest text-primary/80 block mb-1">
-					Delivered
-				</span>
-				<p class="text-2xl xs:text-3xl font-headline font-bold mb-1">
-					5+
-				</p>
-				<p class="text-[9px] xs:text-[10px] text-zinc-400 font-light leading-normal">
-					Production-ready digital projects completed.
-				</p>
+			<div class="absolute -top-16 xs:-top-20 sm:-top-14 lg:-top-24 left-0 xs:-left-4 sm:left-auto sm:-left-18 lg:-left-28 w-[140px] xs:w-[160px] z-10 animate-drift-a">
+				<div
+					class="p-3.5 xs:p-4.5 rounded-3xl bg-zinc-900 text-white shadow-2xl -rotate-3 xs:-rotate-6 group-hover/hero-card:-translate-y-3 group-hover/hero-card:-rotate-[6deg] will-change-transform pointer-events-none"
+					style="transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);"
+				>
+					<span class="text-[9px] font-black uppercase tracking-widest text-primary/80 block mb-1">
+						Delivered
+					</span>
+					<p class="text-2xl xs:text-3xl font-headline font-bold mb-1">
+						5+
+					</p>
+					<p class="text-[9px] xs:text-[10px] text-zinc-400 font-light leading-normal">
+						Production-ready digital projects completed.
+					</p>
+				</div>
 			</div>
 
 			<!-- Middle Card: Availability Status -->
-			<div
-				class="absolute -bottom-16 xs:-bottom-20 sm:-bottom-12 lg:-bottom-24 right-0 xs:-right-4 sm:right-auto sm:-left-12 lg:-left-16 w-[140px] xs:w-[160px] p-3.5 xs:p-4.5 rounded-3xl bg-white border border-zinc-200/40 text-zinc-800 shadow-xl rotate-3 xs:rotate-6 z-10 group-hover/hero-card:translate-y-3 group-hover/hero-card:rotate-[6deg] will-change-transform pointer-events-none"
-				style="transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);"
-			>
-				<div class="flex items-center gap-2 mb-2">
-					<span class="w-2 h-2 xs:w-2.5 xs:h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-					<span class="text-[8px] xs:text-[9px] font-black uppercase tracking-widest text-zinc-400">
-						Available
-					</span>
+			<div class="absolute -bottom-16 xs:-bottom-20 sm:-bottom-12 lg:-bottom-24 right-0 xs:-right-4 sm:right-auto sm:-left-12 lg:-left-16 w-[140px] xs:w-[160px] z-10 animate-drift-b">
+				<div
+					class="p-3.5 xs:p-4.5 rounded-3xl bg-white border border-zinc-200/40 text-zinc-800 shadow-xl rotate-3 xs:rotate-6 group-hover/hero-card:translate-y-3 group-hover/hero-card:rotate-[6deg] will-change-transform pointer-events-none"
+					style="transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);"
+				>
+					<div class="flex items-center gap-2 mb-2">
+						<span class="w-2 h-2 xs:w-2.5 xs:h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+						<span class="text-[8px] xs:text-[9px] font-black uppercase tracking-widest text-zinc-400">
+							Available
+						</span>
+					</div>
+					<p class="text-[10px] xs:text-xs font-bold leading-snug mb-1">
+						Full-time, Freelance
+					</p>
+					<p class="text-[8px] xs:text-[9px] text-zinc-400 font-light leading-normal">
+						Ready for opportunities.
+					</p>
 				</div>
-				<p class="text-[10px] xs:text-xs font-bold leading-snug mb-1">
-					Full-time, Freelance
-				</p>
-				<p class="text-[8px] xs:text-[9px] text-zinc-400 font-light leading-normal">
-					Ready for opportunities.
-				</p>
 			</div>
 
 			<!-- Front Card: Interactive Developer Profile Mock -->
-			<div
-				class="w-full p-5 xs:p-6 rounded-[2rem] xs:rounded-[2.5rem] bg-white/70 backdrop-blur-xl border border-zinc-200/30 shadow-[0_20px_50px_rgba(0,0,0,0.05)] relative z-20 hover:border-zinc-300/80 hover:bg-white/90 group-hover/hero-card:-translate-y-1 group-hover/hero-card:scale-[1.02] will-change-transform"
-				style="transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);"
-			>
+			<div class="w-full relative z-20 animate-drift-main">
+				<div
+					class="p-5 xs:p-6 rounded-[2rem] xs:rounded-[2.5rem] bg-white/70 backdrop-blur-xl border border-zinc-200/30 shadow-[0_20px_50px_rgba(0,0,0,0.05)] hover:border-zinc-300/80 hover:bg-white/90 group-hover/hero-card:-translate-y-1 group-hover/hero-card:scale-[1.02] will-change-transform"
+					style="transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);"
+				>
 				<!-- Profile Header -->
 				<div class="flex items-center gap-3.5 mb-6">
 					<div class="w-11 h-11 rounded-2xl bg-primary/10 flex items-center justify-center text-primary font-bold text-base shadow-sm">
@@ -132,6 +137,7 @@
 					<span class="px-2.5 py-1 text-[10px] font-bold bg-zinc-50 border border-zinc-100 text-zinc-500 rounded-lg">
 						PostgreSQL
 					</span>
+				</div>
 				</div>
 			</div>
 		</div>

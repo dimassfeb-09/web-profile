@@ -72,11 +72,40 @@
     100% { background-position: 200% 0; }
   }
 
+  /* ponytail: ambient hero orbit — amplitudo kecil (±10px, ±1.5deg), periode beda biar fase hanyut natural */
+  @keyframes drift-a {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    33% { transform: translate(7px, -10px) rotate(1.2deg); }
+    66% { transform: translate(-5px, -4px) rotate(-1deg); }
+  }
+
+  @keyframes drift-b {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    40% { transform: translate(-8px, 8px) rotate(-1.2deg); }
+    70% { transform: translate(5px, 3px) rotate(1deg); }
+  }
+
+  @keyframes drift-main {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-7px); }
+  }
+
   --animate-slide-right: slide-right 0.3s cubic-bezier(0, 0, 0.2, 1);
   --animate-fade-in: fade-in 0.2s ease-out;
   --animate-scale-up: scale-up 0.2s cubic-bezier(0, 0, 0.2, 1);
   --animate-fade-up: fade-up 0.7s ease-out;
   --animate-shimmer: shimmer 2s infinite linear;
+  --animate-drift-a: drift-a 11s ease-in-out infinite;
+  --animate-drift-b: drift-b 13s ease-in-out infinite;
+  --animate-drift-main: drift-main 9s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-drift-a,
+  .animate-drift-b,
+  .animate-drift-main {
+    animation: none;
+  }
 }
 
 @layer base {
