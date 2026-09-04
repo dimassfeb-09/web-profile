@@ -5,12 +5,9 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="text-scale" content="scale" />
 		<script>
-			// ponytail: set .dark sebelum paint biar tidak kedip (diselaraskan dengan src/lib/theme.svelte.ts)
+			// ponytail: set .dark sebelum paint biar tidak kedip — default light, hanya yang pernah pilih dark (diselaraskan dengan src/lib/theme.svelte.ts)
 			try {
-				if (
-					localStorage.getItem('theme') === 'dark' ||
-					(!localStorage.getItem('theme') && matchMedia('(prefers-color-scheme: dark)').matches)
-				) {
+				if (localStorage.getItem('theme') === 'dark') {
 					document.documentElement.classList.add('dark');
 				}
 			} catch (e) {}

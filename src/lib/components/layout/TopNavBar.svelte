@@ -13,6 +13,19 @@
 	let lastScrollY = $state(0);
 	let isMobileMenuOpen = $state(false);
 	let isInitialJumping = $state(false);
+	let navEl = $state<HTMLElement | null>(null);
+	// ponytail: tinggi navbar diukur runtime — hardcode 61/69px pecah saat text-scale/font device beda
+	let navH = $state(61);
+
+	$effect(() => {
+		if (!navEl) return;
+		const measure = () => {
+			navH = Math.ceil(navEl!.getBoundingClientRect().height);
+		};
+		measure();
+		window.addEventListener('resize', measure);
+		return () => window.removeEventListener('resize', measure);
+	});
 
 	const pathname = $derived(page.url.pathname);
 	const isHome = $derived(pathname === '/');
@@ -193,6 +206,7 @@
 </script>
 
 <nav
+	bind:this={navEl}
 	class="fixed top-0 w-full z-50 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-xl border-b border-zinc-200/50 dark:border-zinc-800/60 {isVisible ? 'translate-y-0' : '-translate-y-full'}"
 	style="transition: transform 500ms cubic-bezier(0.16, 1, 0.3, 1)"
 >
@@ -264,51 +278,57 @@
 
 <!-- Premium Under-Navbar Mobile Menu Overlay with Clipping Boundary -->
 <div
-	class="fixed inset-x-0 bottom-0 top-[61px] xs:top-[69px] z-40 overflow-hidden lg:hidden {isMobileMenuOpen ? 'pointer-events-auto' : 'pointer-events-none'}"
+	class="fixed inset-x-0 bottom-0 z-40 overflow-hidden lg:hidden {isMobileMenuOpen ? 'pointer-events-auto' : 'pointer-events-none'}"
+	style="top: {navH}px"
 >
 	<div
-		class="w-full h-full bg-white/98 dark:bg-zinc-950/98 backdrop-blur-3xl flex flex-col justify-between px-6 py-6 xs:px-8 xs:py-8 {isMobileMenuOpen ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}"
+		class="h-full overflow-y-auto overscroll-contain bg-white/98 dark:bg-zinc-950/98 backdrop-blur-3xl {isMobileMenuOpen ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}"
 		style="transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1), opacity 500ms cubic-bezier(0.16, 1, 0.3, 1)"
 	>
-		<!-- Spacious Center Navigation Link Stack -->
-		<div class="flex flex-col gap-6 xs:gap-8 my-auto pl-2">
-			{#each navLinks as link}
-				{@const active = isActive(link.href)}
-				<a
-					class="text-xl xs:text-2xl font-bold font-headline tracking-tight transition-all duration-300 flex items-center gap-4 {active
-						? 'text-primary translate-x-2'
-						: 'text-zinc-400 dark:text-zinc-500 hover:text-zinc-950 dark:hover:text-zinc-50 hover:translate-x-1'}"
-					href={getHref(link.href)}
-					onclick={(e) => {
-						isMobileMenuOpen = false;
-						onNavClick(e, link);
-					}}
-				>
-					{#if active}
-						<span class="w-2 h-2 rounded-full bg-primary"></span>
-					{/if}
-					{link.name}
-				</a>
-			{/each}
-		</div>
-
-		<!-- Bottom Call-To-Action & Status -->
-		<div class="flex flex-col gap-5 border-t border-zinc-100 dark:border-zinc-800 pt-6">
-			<div class="flex items-center gap-2 px-1">
-				<span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-				<span class="text-xs font-semibold text-zinc-500 dark:text-zinc-400 tracking-wide">
-					Available for opportunities
-				</span>
+		<div
+			class="min-h-full flex flex-col justify-between px-6 py-6 xs:px-8 xs:py-8"
+			style="padding-bottom: calc(1.5rem + env(safe-area-inset-bottom))"
+		>
+			<!-- Spacious Center Navigation Link Stack -->
+			<div class="flex flex-col gap-5 xs:gap-6 my-auto pl-2 py-4">
+				{#each navLinks as link}
+					{@const active = isActive(link.href)}
+					<a
+						class="text-xl xs:text-2xl font-bold font-headline tracking-tight transition-all duration-300 flex items-center gap-4 {active
+							? 'text-primary translate-x-2'
+							: 'text-zinc-400 dark:text-zinc-500 hover:text-zinc-950 dark:hover:text-zinc-50 hover:translate-x-1'}"
+						href={getHref(link.href)}
+						onclick={(e) => {
+							isMobileMenuOpen = false;
+							onNavClick(e, link);
+						}}
+					>
+						{#if active}
+							<span class="w-2 h-2 rounded-full bg-primary"></span>
+						{/if}
+						{link.name}
+					</a>
+				{/each}
 			</div>
-			<a
-				class="w-full py-4 rounded-full bg-primary text-white font-label font-bold text-center tracking-wide shadow-[0_8px_24px_rgb(0,62,199,0.2)] active:scale-95 transition-transform duration-200"
-				href={cvUrl}
-				target="_blank"
-				rel="noopener noreferrer"
-				onclick={() => (isMobileMenuOpen = false)}
-			>
-				Resume
-			</a>
+
+			<!-- Bottom Call-To-Action & Status -->
+			<div class="flex flex-col gap-5 border-t border-zinc-100 dark:border-zinc-800 pt-6 mt-4">
+				<div class="flex items-center gap-2 px-1">
+					<span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+					<span class="text-xs font-semibold text-zinc-500 dark:text-zinc-400 tracking-wide">
+						Available for opportunities
+					</span>
+				</div>
+				<a
+					class="w-full py-4 rounded-full bg-primary text-white font-label font-bold text-center tracking-wide shadow-[0_8px_24px_rgb(0,62,199,0.2)] active:scale-95 transition-transform duration-200"
+					href={cvUrl}
+					target="_blank"
+					rel="noopener noreferrer"
+					onclick={() => (isMobileMenuOpen = false)}
+				>
+					Resume
+				</a>
+			</div>
 		</div>
 	</div>
 </div>

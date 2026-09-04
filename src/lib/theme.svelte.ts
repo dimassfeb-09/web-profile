@@ -6,12 +6,13 @@ class ThemeState {
 	init() {
 		if (this.inited) return;
 		this.inited = true;
-		try {
-			const saved = localStorage.getItem('theme');
-			this.dark = saved ? saved === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
-		} catch {
-			this.dark = false;
-		}
+	try {
+		const saved = localStorage.getItem('theme');
+		// ponytail: default selalu light — pilihan tersimpan user yang menang, OS preference diabaikan
+		this.dark = saved === 'dark';
+	} catch {
+		this.dark = false;
+	}
 		document.documentElement.classList.toggle('dark', this.dark);
 	}
 
