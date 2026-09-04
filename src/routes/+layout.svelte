@@ -135,8 +135,8 @@
 		rel="stylesheet"
 	/>
 
-	<title>Dimas Febriyanto — Fullstack & Mobile Developer (Golang + Flutter)</title>
-	<meta name="description" content="Portfolio of Dimas Febriyanto, Fullstack & Mobile Developer (Golang + Flutter). 3 apps live on Play Store. Berpengalaman di bidang backend microservices dan mobile development lintas platform. Certified Junior Mobile Programmer BNSP." />
+	<title>Dimas Febriyanto — Golang & Flutter Developer</title>
+	<meta name="description" content="Portfolio Dimas Febriyanto — Golang Backend & Flutter Developer Bekasi. 3 apps di Play Store, BNSP Certified Junior Mobile Programmer." />
 	<meta name="keywords" content="Dimas Febriyanto,Dimas Febriyanto Software Engineer,Dimas Febriyanto Gunadarma,Fullstack Developer,Mobile Developer Indonesia,Flutter Developer,Golang Backend Engineer,Jasa Pembuatan Website,Jasa Pembuatan Aplikasi Mobile,Freelance Developer Bekasi,Software Engineer Portfolio" />
 	<meta name="author" content="Dimas Febriyanto" />
 	<meta name="creator" content="Dimas Febriyanto" />
@@ -162,7 +162,7 @@
 	<meta name="twitter:description" content="Portfolio of Dimas Febriyanto, Fullstack & Mobile Developer specializing in Golang & Flutter. Berpengalaman membangun backend dan aplikasi mobile." />
 	<meta name="twitter:image" content={`${BASE_URL}/og-image.png`} />
 
-	<script type="application/ld+json">{jsonLd}</script>
+	{@html `<script type="application/ld+json">${jsonLd}</script>`}
 </svelte:head>
 
 {@render children()}

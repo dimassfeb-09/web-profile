@@ -14,6 +14,7 @@
 
 	const canonicalUrl = $derived(`https://www.dimassfeb.com/blog/${blog.slug}`);
 	const publishedTime = $derived(blog.published_at ? new Date(blog.published_at).toISOString() : undefined);
+	const ogImage = $derived(data.ogImage ?? 'https://www.dimassfeb.com/og-image.png');
 
 	const blogPostingSchema = $derived({
 		'@context': 'https://schema.org',
@@ -30,7 +31,7 @@
 				: undefined,
 		author: { '@type': 'Person', '@id': 'https://www.dimassfeb.com/#person', name: 'Dimas Febriyanto', url: 'https://www.dimassfeb.com' },
 		publisher: { '@type': 'Person', '@id': 'https://www.dimassfeb.com/#person', name: 'Dimas Febriyanto', url: 'https://www.dimassfeb.com' },
-		image: { '@type': 'ImageObject', url: 'https://www.dimassfeb.com/og-image.png', width: 1200, height: 630 },
+		image: { '@type': 'ImageObject', url: ogImage, width: 1200, height: 630 },
 		mainEntityOfPage: { '@type': 'WebPage', '@id': canonicalUrl },
 		isPartOf: { '@type': 'Blog', '@id': 'https://www.dimassfeb.com/blog#blog' },
 		inLanguage: 'id-ID',
@@ -56,7 +57,7 @@
 	<meta property="og:title" content="{blog.title} | Dimas Febriyanto" />
 	<meta property="og:description" content={blog.excerpt ?? `Read "${blog.title}" by Dimas Febriyanto — Fullstack & Mobile Developer specializing in Golang and Flutter.`} />
 	<meta property="og:site_name" content="Dimas Febriyanto" />
-	<meta property="og:image" content="https://www.dimassfeb.com/og-image.png" />
+	<meta property="og:image" content={ogImage} />
 	<meta property="og:image:width" content="1200" />
 	<meta property="og:image:height" content="630" />
 	<meta property="og:image:alt" content="{blog.title} — Article by Dimas Febriyanto" />
@@ -64,7 +65,7 @@
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:title" content="{blog.title} | Dimas Febriyanto" />
 	<meta name="twitter:description" content={blog.excerpt ?? `Read "${blog.title}" by Dimas Febriyanto — Fullstack & Mobile Developer specializing in Golang and Flutter.`} />
-	<meta name="twitter:image" content="https://www.dimassfeb.com/og-image.png" />
+	<meta name="twitter:image" content={ogImage} />
 </svelte:head>
 
 <JsonLd schema={[blogPostingSchema, breadcrumbSchema]} />
@@ -86,6 +87,9 @@
 
 		<header class="space-y-6">
 			<div class="flex flex-wrap items-center gap-6 text-sm font-bold text-on-surface-variant">
+				<a href="/" rel="author" class="text-primary hover:text-primary/80 transition-colors">
+					By Dimas Febriyanto
+				</a>
 				<div class="flex items-center gap-2">
 					<Calendar class="w-4 h-4 text-primary" />
 					{blog.published_at

@@ -1,6 +1,6 @@
-import { BlogService } from '../services/blog.service';
-import { ProjectService } from '../services/project.service';
-import { AchievementService } from '../services/achievement.service';
+import { BlogService } from '../../services/blog.service';
+import { ProjectService } from '../../services/project.service';
+import { AchievementService } from '../../services/achievement.service';
 
 const BASE_URL = 'https://www.dimassfeb.com';
 

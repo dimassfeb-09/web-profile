@@ -44,6 +44,8 @@ export const getBaseExtensions = () => [
   Image.configure({
     HTMLAttributes: {
       class: 'rounded-xl mx-auto my-8 border border-outline-variant/10',
+      loading: 'lazy',
+      decoding: 'async',
     },
   }),
   TextStyle,
