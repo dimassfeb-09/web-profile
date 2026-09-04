@@ -31,16 +31,6 @@
 		operatingSystem: 'Any',
 	});
 
-	const breadcrumbSchema = $derived({
-		'@context': 'https://schema.org',
-		'@type': 'BreadcrumbList',
-		itemListElement: [
-			{ '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.dimassfeb.com' },
-			{ '@type': 'ListItem', position: 2, name: 'Projects', item: 'https://www.dimassfeb.com/projects' },
-			{ '@type': 'ListItem', position: 3, name: project.title, item: canonicalUrl },
-		],
-	});
-
 	const getStatusColor = (status: string | undefined) => {
 		if (status?.toLowerCase() === 'completed') return 'text-green-700 bg-green-100 border-green-200';
 		if (status?.toLowerCase() === 'in progress') return 'text-amber-700 bg-amber-100 border-amber-200';
@@ -65,7 +55,7 @@
 	<meta name="twitter:image" content={getCachedImageUrl(project.image_url, project.image_hash, 1200) || 'https://www.dimassfeb.com/og-image.png'} />
 </svelte:head>
 
-<JsonLd schema={[schema, breadcrumbSchema]} />
+<JsonLd schema={schema} />
 <ProjectTracker title={project.title} slug={project.slug || ''} />
 
 <main class="pt-24 lg:pt-32 px-6 md:px-12 lg:px-16 2xl:px-24 max-w-5xl mx-auto pb-24 relative">

@@ -4,6 +4,7 @@
 	import BlogPreviewModal from '$lib/components/admin/blog/BlogPreviewModal.svelte';
 	import { v4 as uuidv4 } from 'uuid';
 	import { ArrowLeft, FileText, Globe, Eye } from 'lucide-svelte';
+	import { confirmSeoPublish } from '$lib/seo-check';
 
 	const blogId = $state(uuidv4());
 	let isSaving = $state(false);
@@ -34,6 +35,10 @@
 		isSaving = true;
 		try {
 			const finalIsPublished = publishOverride !== undefined ? publishOverride : formData.is_published;
+			if (finalIsPublished && !confirmSeoPublish(formData.content)) {
+				isSaving = false;
+				return;
+			}
 			const res = await fetch('/api/blog', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },

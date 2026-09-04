@@ -51,7 +51,8 @@
 
 		const base = getTiptapExtensions().filter((ext: any) => ext.name !== 'bubbleMenu');
 
-		const editor = new Editor({
+		// ponytail: assign ke outer state — `const` di sini dulu bikin seluruh toolbar mati (null selamanya)
+		editor = new Editor({
 			element: editorEl,
 			extensions: [
 				...base,
@@ -79,7 +80,20 @@
 			activeVersion++;
 		});
 
-		return () => editor.destroy();
+		return () => {
+			editor?.destroy();
+			editor = null;
+		};
+	});
+
+	// ponytail: konten edit-page datang async SETELAH editor mount — sync sekali saat beda (banding JSON cegah loop)
+	$effect(() => {
+		if (!editor || editor.isDestroyed) return;
+		const incoming = JSON.stringify(content ?? {});
+		if (incoming === '{}') return;
+		if (JSON.stringify(editor.getJSON()) !== incoming) {
+			editor.commands.setContent(JSON.parse(incoming));
+		}
 	});
 
 	const handleSetLink = () => {
@@ -118,7 +132,9 @@
 
 	const handleInsertMedia = (url: string) => {
 		if (editor) {
-			editor.chain().focus().setImage({ src: url }).run();
+			// ponytail: minta alt saat insert — og:image + aksesibilitas gratis, tanpa tebak-tebakan mesin
+			const alt = window.prompt('Alt text gambar (deskripsi singkat untuk SEO & screen reader):', '') ?? '';
+			editor.chain().focus().setImage({ src: url, alt }).run();
 		}
 	};
 </script>

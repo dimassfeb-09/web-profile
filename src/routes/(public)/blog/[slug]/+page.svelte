@@ -8,6 +8,7 @@
 	import BackButton from '$lib/components/common/BackButton.svelte';
 	import QuoteShare from '$lib/components/blog/QuoteShare.svelte';
 	import BlogTracker from '$lib/components/blog/BlogTracker.svelte';
+	import TableOfContents from '$lib/components/blog/TableOfContents.svelte';
 
 	let { data }: PageProps = $props();
 	const blog = $derived(data.blog);
@@ -37,15 +38,6 @@
 		inLanguage: 'id-ID',
 	});
 
-	const breadcrumbSchema = $derived({
-		'@context': 'https://schema.org',
-		'@type': 'BreadcrumbList',
-		itemListElement: [
-			{ '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.dimassfeb.com' },
-			{ '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://www.dimassfeb.com/blog' },
-			{ '@type': 'ListItem', position: 3, name: blog.title, item: canonicalUrl },
-		],
-	});
 </script>
 
 <svelte:head>
@@ -68,7 +60,7 @@
 	<meta name="twitter:image" content={ogImage} />
 </svelte:head>
 
-<JsonLd schema={[blogPostingSchema, breadcrumbSchema]} />
+<JsonLd schema={blogPostingSchema} />
 <BlogTracker title={blog.title} slug={blog.slug} />
 <QuoteShare authorName="Dimas Febriyanto" />
 
@@ -129,6 +121,8 @@
 			{/if}
 		</header>
 
+		<TableOfContents items={data.toc} />
+
 		<TiptapHTML html={data.contentHtml} className="tiptap-content w-full max-w-none focus:outline-none" />
 
 		<div
@@ -172,3 +166,10 @@
 		</footer>
 	</div>
 </article>
+
+<style>
+	article :global(h2[id]),
+	article :global(h3[id]) {
+		scroll-margin-top: 7rem;
+	}
+</style>
