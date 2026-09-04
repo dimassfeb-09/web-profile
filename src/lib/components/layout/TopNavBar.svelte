@@ -290,11 +290,11 @@
 			style="padding-bottom: calc(1.5rem + env(safe-area-inset-bottom))"
 		>
 			<!-- Spacious Center Navigation Link Stack -->
-			<div class="flex flex-col gap-5 xs:gap-6 my-auto pl-2 py-4">
+			<div class="flex flex-col gap-4 xs:gap-5 my-auto pl-2 py-3">
 				{#each navLinks as link}
 					{@const active = isActive(link.href)}
 					<a
-						class="text-xl xs:text-2xl font-bold font-headline tracking-tight transition-all duration-300 flex items-center gap-4 {active
+						class="text-lg xs:text-xl font-bold font-headline tracking-tight transition-all duration-300 flex items-center gap-4 {active
 							? 'text-primary translate-x-2'
 							: 'text-zinc-400 dark:text-zinc-500 hover:text-zinc-950 dark:hover:text-zinc-50 hover:translate-x-1'}"
 						href={getHref(link.href)}
@@ -312,7 +312,7 @@
 			</div>
 
 			<!-- Bottom Call-To-Action & Status -->
-			<div class="flex flex-col gap-5 border-t border-zinc-100 dark:border-zinc-800 pt-6 mt-4">
+			<div class="flex flex-col gap-4 border-t border-zinc-100 dark:border-zinc-800 pt-5 mt-3">
 				<div class="flex items-center gap-2 px-1">
 					<span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
 					<span class="text-xs font-semibold text-zinc-500 dark:text-zinc-400 tracking-wide">
