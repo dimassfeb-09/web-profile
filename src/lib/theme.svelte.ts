@@ -15,7 +15,7 @@ class ThemeState {
 		document.documentElement.classList.toggle('dark', this.dark);
 	}
 
-	toggle(e?: MouseEvent) {
+	toggle(e?: MouseEvent, anchor?: Element | null) {
 		const next = !this.dark;
 		const apply = () => {
 			this.dark = next;
@@ -35,8 +35,16 @@ class ThemeState {
 			apply();
 			return;
 		}
-		const x = e.clientX;
-		const y = e.clientY;
+		const x0 = e?.clientX ?? 0;
+		const y0 = e?.clientY ?? 0;
+		// ponytail: klik keyboard/sintetis tidak bawa koordinat (0,0) — kunci ke tengah tombol biar selalu mulai dari bulan
+		let x = x0;
+		let y = y0;
+		if ((!x0 || !y0) && anchor) {
+			const box = anchor.getBoundingClientRect();
+			x = box.x + box.width / 2;
+			y = box.y + box.height / 2;
+		}
 		const r = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
 		try {
 			const t = startTransition.call(document, apply);

@@ -7,7 +7,7 @@
 
 <button
 	type="button"
-	onclick={(e) => theme.toggle(e)}
+	onclick={(e) => theme.toggle(e, e.currentTarget)}
 	class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-800 dark:text-zinc-200 transition-colors focus:outline-none {className}"
 	aria-label={theme.dark ? 'Switch to light mode' : 'Switch to dark mode'}
 	title={theme.dark ? 'Light mode' : 'Dark mode'}
