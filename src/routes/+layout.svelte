@@ -1,5 +1,6 @@
 <script lang="ts">
 	import '../app.css';
+	import '../styles/fonts.css';
 	import '../styles/highlight-theme.css';
 	import favicon from '$lib/assets/favicon.svg';
 	import { onMount } from 'svelte';
@@ -130,11 +131,19 @@
 	<link rel="icon" href={favicon} />
 
 	<link rel="preconnect" href="https://atgnqunmelvquqdwkmnq.supabase.co" crossorigin="anonymous" />
-	<link rel="preconnect" href="https://fonts.googleapis.com" />
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
 	<link
-		href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap"
-		rel="stylesheet"
+		rel="preload"
+		href="/fonts/plus-jakarta-sans-variable-latin.woff2"
+		as="font"
+		type="font/woff2"
+		crossorigin="anonymous"
+	/>
+	<link
+		rel="preload"
+		href="/fonts/inter-variable-latin.woff2"
+		as="font"
+		type="font/woff2"
+		crossorigin="anonymous"
 	/>
 
 	<title>Dimas Febriyanto — Golang & Flutter Developer</title>

@@ -77,7 +77,8 @@ worker.addEventListener('fetch', (event) => {
 	// admin routes: network only, never cached
 	if (url.pathname.startsWith('/admin')) return;
 
-	// cross-origin images, stylesheets & fonts (Supabase, Google Fonts) — cache first, offline fallback
+	// cross-origin images & stylesheets (Supabase) — cache first, offline fallback
+	// note: fonts are self-hosted now (same-origin, precached in ASSETS via `files`)
 	if (url.origin !== location.origin) {
 		if (request.destination === 'image' || request.destination === 'style' || request.destination === 'font') {
 			event.respondWith(cacheFirstOpaque(request));

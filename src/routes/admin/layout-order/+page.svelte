@@ -4,7 +4,6 @@
 	import { flip } from 'svelte/animate';
 	import { invalidateAll } from '$app/navigation';
 	import AdminHeader from '$lib/components/admin/ui/AdminHeader.svelte';
-	import { GripVertical, Eye, EyeOff, Info, CheckCircle2 } from 'lucide-svelte';
 
 	let { data }: PageProps = $props();
 
@@ -73,43 +72,44 @@
 	};
 </script>
 
-<div class="max-w-4xl space-y-6">
+<div class="max-w-4xl space-y-10">
 	<AdminHeader
 		title="Layout & Section Order"
 		description="Atur urutan tampilan section pada halaman portfolio Anda dengan drag and drop."
 	/>
 
-	<div class="bg-white p-6 sm:p-8 rounded-2xl border border-zinc-200 shadow-sm space-y-6">
+	<div class="bg-surface-container-low p-8 lg:p-10 rounded-[2.5rem] border border-outline-variant/10 space-y-8">
 		<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-			<div class="inline-flex items-center gap-2 px-3 py-1.5 bg-zinc-50 border border-zinc-200 rounded-xl text-xs font-medium text-zinc-600">
-				<Info size={14} class="text-zinc-500" />
-				Geser handle untuk merubah urutan
+			<div class="flex items-center gap-2 px-4 py-2 bg-primary/5 border border-primary/10 rounded-xl text-xs font-label font-bold text-primary">
+				<span class="material-symbols-outlined text-sm">info</span>
+				Geser handle (⠿) untuk merubah urutan
 			</div>
 
-			<div class="flex items-center gap-2">
+			<div class="flex items-center gap-3">
 				<button
 					onclick={handleReset}
 					disabled={isSaving}
-					class="px-5 py-2.5 rounded-xl border border-zinc-200 text-zinc-700 hover:bg-zinc-50 transition-all text-xs font-medium disabled:opacity-50"
+					class="px-6 py-3 rounded-xl border border-outline-variant/20 text-on-surface-variant hover:bg-surface-container-high transition-all text-xs font-label font-medium"
 				>
 					Reset Perubahan
 				</button>
 				<button
 					onclick={handleSave}
 					disabled={isSaving}
-					class="px-6 py-2.5 rounded-xl bg-zinc-900 text-white font-medium text-xs tracking-wide hover:bg-zinc-800 disabled:opacity-50 transition-all flex items-center gap-2"
+					class="px-8 py-3 rounded-xl bg-primary text-white font-label font-medium text-xs tracking-wide shadow-lg shadow-primary/20 hover:opacity-90 disabled:opacity-50 transition-all flex items-center gap-2"
 				>
 					{#if isSaving}
 						<div class="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+					{:else}
+						Simpan Urutan
 					{/if}
-					Simpan Urutan
 				</button>
 			</div>
 		</div>
 
 		{#if success}
-			<div class="flex items-center gap-2 text-emerald-600 text-sm font-medium bg-emerald-50 border border-emerald-200 rounded-xl px-3.5 py-2.5">
-				<CheckCircle2 size={16} />
+			<div class="flex items-center gap-2 text-emerald-500 font-label text-sm animate-fade-in">
+				<span class="material-symbols-outlined text-lg">check_circle</span>
 				Urutan section berhasil disimpan!
 			</div>
 		{/if}
@@ -118,49 +118,47 @@
 			use:dndzone={{ items: sections, flipDurationMs }}
 			onconsider={handleDndConsider}
 			onfinalize={handleDndFinalize}
-			class="space-y-3"
+			class="space-y-4"
 		>
 			{#each sections as section (section.id)}
 				<div
 					animate:flip={{ duration: flipDurationMs }}
-					class="group flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 bg-zinc-50 rounded-xl border border-zinc-200 hover:bg-white hover:shadow-sm transition-all"
+					class="group flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 bg-surface-container-low rounded-2xl border border-outline-variant/10 hover:border-primary/30 transition-all duration-200"
 				>
-					<div class="flex items-start sm:items-center gap-3 w-full sm:w-auto">
-						<div class="p-1.5 -ml-1 mt-1 sm:mt-0 text-zinc-400 hover:text-zinc-700 transition-colors cursor-grab active:cursor-grabbing touch-none shrink-0">
-							<GripVertical size={18} />
+					<div class="flex items-start sm:items-center gap-3 sm:gap-5 w-full sm:w-auto">
+						<div class="p-2 -ml-2 mt-1 sm:mt-0 text-on-surface-variant hover:text-primary transition-colors cursor-grab active:cursor-grabbing touch-none shrink-0">
+							<span class="material-symbols-outlined text-2xl select-none">drag_indicator</span>
 						</div>
 
-						<div class="flex items-center gap-3 flex-1 min-w-0">
+						<div class="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
 							<div
-								class="w-9 h-9 shrink-0 rounded-xl bg-white border border-zinc-200 flex items-center justify-center font-semibold text-xs text-zinc-700"
+								class="w-10 h-10 shrink-0 rounded-xl bg-surface-container-high flex items-center justify-center font-headline font-black text-sm text-secondary"
 							>
 								{section.order_index}
 							</div>
 							<div class="flex-1 min-w-0">
-								<h4 class="font-medium text-zinc-900 tracking-tight truncate text-sm">
+								<h4 class="font-headline font-bold text-on-surface tracking-tight truncate">
 									{section.section_label}
 								</h4>
-								<p class="text-xs text-zinc-500 truncate">
+								<p class="text-xs font-body text-on-surface-variant tracking-wide truncate">
 									Key: {section.section_key}
 								</p>
 							</div>
 						</div>
 					</div>
 
-					<div class="flex items-center max-sm:w-full max-sm:pl-9">
+					<div class="flex items-center max-sm:w-full max-sm:pl-[3.25rem]">
 						<button
 							onclick={() => toggleVisibility(section.section_key)}
-							class={`flex items-center justify-center sm:justify-start gap-2 px-3.5 py-2 w-full sm:w-auto rounded-xl text-xs font-medium transition-all border ${
+							class={`flex items-center justify-center sm:justify-start gap-2 px-4 py-2 sm:py-2.5 w-full sm:w-auto rounded-xl text-xs font-label font-medium transition-all ${
 								section.is_visible
-									? 'bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-50'
-									: 'bg-red-50 border-red-200 text-red-600 hover:bg-red-100'
+									? 'bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20'
+									: 'bg-error/10 text-error hover:bg-error/20'
 							}`}
 						>
-							{#if section.is_visible}
-								<Eye size={14} />
-							{:else}
-								<EyeOff size={14} />
-							{/if}
+							<span class="material-symbols-outlined text-[1.125rem]">
+								{section.is_visible ? 'visibility' : 'visibility_off'}
+							</span>
 							{section.is_visible ? 'Ditampilkan' : 'Disembunyikan'}
 						</button>
 					</div>
