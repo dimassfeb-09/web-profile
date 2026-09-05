@@ -47,13 +47,13 @@
 					class="p-3.5 xs:p-4.5 rounded-3xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 shadow-2xl -rotate-3 xs:-rotate-6 group-hover/hero-card:-translate-y-3 group-hover/hero-card:-rotate-[6deg] will-change-transform pointer-events-none"
 					style="transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);"
 				>
-					<span class="text-[9px] font-black uppercase tracking-widest text-primary/80 block mb-1">
+					<span class="text-[9px] font-black uppercase tracking-widest text-blue-300 dark:text-blue-700 block mb-1">
 						Delivered
 					</span>
 					<p class="text-2xl xs:text-3xl font-headline font-bold mb-1">
 						5+
 					</p>
-					<p class="text-[9px] xs:text-[10px] text-zinc-400 dark:text-zinc-500 font-light leading-normal">
+					<p class="text-[9px] xs:text-[10px] text-zinc-300 dark:text-zinc-600 font-light leading-normal">
 						Production-ready digital projects completed.
 					</p>
 				</div>
@@ -67,14 +67,14 @@
 				>
 					<div class="flex items-center gap-2 mb-2">
 						<span class="w-2 h-2 xs:w-2.5 xs:h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-						<span class="text-[8px] xs:text-[9px] font-black uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
+						<span class="text-[8px] xs:text-[9px] font-black uppercase tracking-widest text-zinc-600 dark:text-zinc-400">
 							Available
 						</span>
 					</div>
 					<p class="text-[10px] xs:text-xs font-bold leading-snug mb-1">
 						Full-time, Freelance
 					</p>
-					<p class="text-[8px] xs:text-[9px] text-zinc-400 dark:text-zinc-500 font-light leading-normal">
+					<p class="text-[8px] xs:text-[9px] text-zinc-600 dark:text-zinc-400 font-light leading-normal">
 						Ready for opportunities.
 					</p>
 				</div>
