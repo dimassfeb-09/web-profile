@@ -12,16 +12,25 @@
 
 	$effect(() => {
 		if (!isValid || window.dataLayer) return;
-		window.dataLayer = window.dataLayer || [];
-		window.gtag = function gtag() {
-			window.dataLayer!.push(arguments);
+		const idle = (cb: () => void) => {
+			const ric = (window as unknown as { requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number }).requestIdleCallback;
+			if (ric) ric(cb, { timeout: 2000 });
+			else setTimeout(cb, 1800);
 		};
-		const s = document.createElement('script');
-		s.async = true;
-		s.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
-		document.head.appendChild(s);
-		window.gtag('js', new Date());
-		window.gtag('config', measurementId, { send_page_view: false });
+		idle(() => {
+			if (window.dataLayer) return;
+			window.dataLayer = window.dataLayer || [];
+			window.gtag = function gtag() {
+				// @ts-ignore
+				window.dataLayer!.push(arguments);
+			};
+			const s = document.createElement('script');
+			s.async = true;
+			s.src = `https://www.googletagmanager.com/gtag/js?id=` + measurementId;
+			document.head.appendChild(s);
+			window.gtag('js', new Date());
+			window.gtag('config', measurementId, { send_page_view: false });
+		});
 	});
 </script>
 
