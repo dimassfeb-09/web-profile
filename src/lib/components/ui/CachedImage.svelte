@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { preloadImage, isImageCached } from '$lib/imageCache';
+	import { preloadImage, isImageCached, markCached } from '$lib/imageCache';
 	import { getProxiedImageUrl } from '$lib/utils/image-url';
 	import Shimmer from './skeletons/Shimmer.svelte';
 
@@ -33,46 +33,100 @@
 	// Original URL (fallback for browsers without AVIF support)
 	const originalUrl = $derived(getOriginalUrl(src) || fallback);
 
+	// sync cache check on first render — if already decoded in this SPA session, no skeleton at all
 	// svelte-ignore state_referenced_locally
 	let current = $state(avifUrl);
 	// svelte-ignore state_referenced_locally
 	let loaded = $state(isImageCached(avifUrl));
+	let everLoaded = $state(isImageCached(avifUrl));
+
+	// generation guard — kalau src ganti cepat, hasil preload lama diabaikan
+	let seq = 0;
 
 	$effect(() => {
 		const url = avifUrl;
-		current = url;
+		const orig = originalUrl;
+		const fb = fallback;
+		const mySeq = ++seq;
+
+		// cache hit → instant, tanpa skeleton walau discroll / remount
 		if (isImageCached(url)) {
+			current = url;
 			loaded = true;
+			everLoaded = true;
 			return;
 		}
-		loaded = false;
+
+		// belum pernah load di session ini → skeleton hanya di sini
+		// jangan set loaded=false kalau url sama & sudah pernah loaded (scroll remount)
+		if (current !== url) {
+			current = url;
+			loaded = false;
+		} else if (everLoaded) {
+			// url sama tapi remount — tetap tampil tanpa skeleton
+			loaded = true;
+			return;
+		} else {
+			loaded = false;
+		}
+
 		preloadImage(url)
-			.then(() => (loaded = true))
+			.then(() => {
+				if (mySeq !== seq) return;
+				loaded = true;
+				everLoaded = true;
+			})
 			.catch(() => {
-				// AVIF failed, try original format
-				if (originalUrl !== avifUrl) {
-					current = originalUrl;
-					preloadImage(originalUrl)
-						.then(() => (loaded = true))
-						.catch(() => {
-							current = fallback;
+				if (mySeq !== seq) return;
+				// AVIF failed, try original format (sekali aja)
+				if (orig !== url) {
+					current = orig;
+					if (isImageCached(orig)) {
+						loaded = true;
+						everLoaded = true;
+						return;
+					}
+					loaded = false;
+					preloadImage(orig)
+						.then(() => {
+							if (mySeq !== seq) return;
 							loaded = true;
+							everLoaded = true;
+						})
+						.catch(() => {
+							if (mySeq !== seq) return;
+							current = fb;
+							loaded = true;
+							everLoaded = true;
 						});
 				} else {
-					current = fallback;
+					current = fb;
 					loaded = true;
+					everLoaded = true;
 				}
 			});
 	});
+
+	function onLoad() {
+		markCached(current);
+		loaded = true;
+		everLoaded = true;
+	}
 
 	function onError() {
 		// If AVIF failed, try original format
 		if (current === avifUrl && originalUrl !== avifUrl) {
 			current = originalUrl;
+			// kalau original sudah cached, langsung tampil
+			if (isImageCached(originalUrl)) {
+				loaded = true;
+				everLoaded = true;
+			}
 		} else if (current !== fallback) {
 			current = fallback;
+			loaded = true;
+			everLoaded = true;
 		}
-		loaded = true;
 	}
 
 	/**
@@ -106,8 +160,9 @@
 	loading={priority ? 'eager' : loading}
 	decoding="async"
 	fetchpriority={priority ? 'high' : 'auto'}
+	onload={onLoad}
 	onerror={onError}
 	style:opacity={loaded ? '1' : '0'}
-	class:transition-opacity={true}
-	class:duration-300={true}
-/>
+	class:transition-opacity={everLoaded ? false : true}
+	class:duration-300={!everLoaded}
+ />

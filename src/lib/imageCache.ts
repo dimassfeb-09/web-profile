@@ -10,20 +10,40 @@ export function preloadImage(src: string): Promise<void> {
 	const p = new Promise<void>((resolve, reject) => {
 		const img = new Image();
 		img.decoding = 'async';
-		img.onload = () => {
+		let settled = false;
+		const onResolve = () => {
+			if (settled) return;
+			settled = true;
 			done.add(src);
 			resolve();
 		};
-		img.onerror = reject;
+		const onReject = (e: unknown) => {
+			if (settled) return;
+			settled = true;
+			reject(e);
+		};
+		img.onload = onResolve;
+		img.onerror = onReject;
 		img.src = src;
+		// memory/http cache hit → complete sync, resolve tanpa nunggu onload
+		if (img.complete && img.naturalWidth > 0) {
+			onResolve();
+		}
 	});
 	inflight.set(src, p);
-	p.catch(() => inflight.delete(src)).finally(() => inflight.delete(src));
+	p.then(
+		() => inflight.delete(src),
+		() => inflight.delete(src)
+	);
 	return p;
 }
 
 export function isImageCached(src: string): boolean {
 	return done.has(src);
+}
+
+export function markCached(src: string) {
+	if (src) done.add(src);
 }
 
 // ponytail: warm N+1 images fire-and-forget
