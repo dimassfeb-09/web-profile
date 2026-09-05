@@ -43,15 +43,25 @@
 		}
 	};
 
-	// ponytail: SSR priority = hero + about + skills (techstack). Rest is N+1 chain via prefetchNext.
+	// ponytail: SSR priority = hero + about + skills (techstack). experience loads on mount.
+	// Lazy (below-fold) sections are NEVER prefetch targets — they load via IntersectionObserver
+	// when scrolled near. Eagerly chaining them (N+1 prefetch) put /api/section/* fetches on the
+	// critical path and competed with LCP (Lighthouse: avoid chaining critical requests).
 	const ssrKeys = new Set(['about', 'contact', 'skills']);
 	const lazySections = new Set(['projects', 'education', 'achievements', 'certificates', 'blog']);
+	const nonLazyNonSsrKeys = new Set(['experience']);
 
 	function getNextEndpoint(currentKey: string): string | undefined {
+		// ponytail: prefetch only the next NON-LAZY section (currently: experience only).
+		// Returning undefined for lazy keys breaks the N+1 chain so below-fold /api/section/*
+		// requests never sit on the critical path competing with LCP.
 		const idx = data.visibleSections.findIndex((s) => s.section_key === currentKey);
 		for (let i = idx + 1; i < data.visibleSections.length; i++) {
 			const k = data.visibleSections[i].section_key;
-			if (!ssrKeys.has(k)) return `/api/section/${k}`;
+			if (ssrKeys.has(k) || lazySections.has(k)) continue;
+			if (nonLazyNonSsrKeys.has(k)) return `/api/section/${k}`;
+			// Unknown future section: treat as lazy (safe default — loads on scroll).
+			continue;
 		}
 		return undefined;
 	}

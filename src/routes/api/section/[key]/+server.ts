@@ -67,13 +67,16 @@ const handlers: Record<string, () => Promise<{ data: unknown }>> = {
 	}
 };
 
-export async function GET({ params }) {
+export async function GET({ params, setHeaders }) {
 	const handler = handlers[params.key];
 	if (!handler) {
 		return json({ status: 404, message: 'Unknown section', data: null }, { status: 404 });
 	}
 	try {
 		const { data } = await handler();
+		// ponytail: section payloads are ISR-cached server-side (1h TTL) — mark them public so
+		// repeat visits + the SW networkFirst layer serve them without re-download.
+		setHeaders({ 'cache-control': 'public, max-age=3600, stale-while-revalidate=86400' });
 		return json({ status: 200, message: 'OK', data });
 	} catch (err) {
 		console.error(`Error loading section "${params.key}":`, err);

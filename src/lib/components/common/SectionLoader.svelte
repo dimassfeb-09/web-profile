@@ -2,9 +2,24 @@
 	import { onDestroy } from 'svelte';
 	import type { Snippet } from 'svelte';
 
-	// ponytail: module cache + inflight for N+1 — when N loads, N+1 is warmed so skeleton rarely flashes.
+	// ponytail: module cache + inflight for the next-section warmup below.
 	const inflight = new Map<string, Promise<unknown>>();
 	const sectionCache = new Map<string, unknown>();
+
+	// ponytail: prefetch is deferred to browser idle so the chained request never competes
+	// with LCP-critical resources (Lighthouse: avoid chaining critical requests). Falls back to
+	// a short timeout where requestIdleCallback is unavailable (Safari).
+	function prefetchIdle(url: string) {
+		if (sectionCache.has(url) || inflight.has(url)) return;
+		const run = () => {
+			fetchSection(url).catch(() => {});
+		};
+		if (typeof requestIdleCallback !== 'undefined') {
+			requestIdleCallback(run, { timeout: 4000 });
+		} else {
+			setTimeout(run, 1500);
+		}
+	}
 
 	function fetchSection(url: string): Promise<unknown> {
 		const hit = sectionCache.get(url);
@@ -52,12 +67,10 @@
 
 	async function load() {
 		if (payload) return;
-		// cache hit → instant render + warm next
+		// cache hit → instant render + warm next (idle-deferred, off the critical path)
 		if (sectionCache.has(endpoint)) {
 			payload = sectionCache.get(endpoint);
-			if (prefetchNext && !sectionCache.has(prefetchNext) && !inflight.has(prefetchNext)) {
-				fetchSection(prefetchNext).catch(() => {});
-			}
+			if (prefetchNext) prefetchIdle(prefetchNext);
 			return;
 		}
 		failed = false;
@@ -65,9 +78,7 @@
 			const data = await fetchSection(endpoint);
 			if (!cancelled) {
 				payload = data;
-				if (prefetchNext && !sectionCache.has(prefetchNext) && !inflight.has(prefetchNext)) {
-					fetchSection(prefetchNext).catch(() => {});
-				}
+				if (prefetchNext) prefetchIdle(prefetchNext);
 			}
 		} catch (err) {
 			console.error(`Failed to load ${endpoint}:`, err);
