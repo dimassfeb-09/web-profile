@@ -132,16 +132,19 @@ export class BlogRepository {
         updated_at = CURRENT_TIMESTAMP
       RETURNING *
     `;
+    const rawContent = typeof data.content === 'string' ? data.content : JSON.stringify(data.content ?? {});
     const values = [
       data.id,
       data.title,
       data.slug,
       data.excerpt || null,
-      data.content,
+      rawContent,
       data.is_published,
       data.is_published ? new Date() : null
     ];
-    const { rows } = await pool.query(query, values);
+    // ponytail: explicit ::jsonb agar pg tidak simpan "[object Object]"
+    const castQuery = query.replace(/\$5(?![0-9])/, '$5::jsonb');
+    const { rows } = await pool.query(castQuery, values);
     return rows[0];
   }
 
@@ -157,7 +160,7 @@ export class BlogRepository {
     if (data.title !== undefined) { fields.push(`title = $${i++}`); values.push(data.title); }
     if (data.slug !== undefined) { fields.push(`slug = $${i++}`); values.push(data.slug); }
     if (data.excerpt !== undefined) { fields.push(`excerpt = $${i++}`); values.push(data.excerpt); }
-    if (data.content !== undefined) { fields.push(`content = $${i++}`); values.push(data.content); }
+    if (data.content !== undefined) { fields.push(`content = $${i++}::jsonb`); values.push(typeof data.content === 'string' ? data.content : JSON.stringify(data.content)); }
     if (data.is_published !== undefined) { 
       fields.push(`is_published = $${i++}`); 
       values.push(data.is_published);
@@ -168,6 +171,9 @@ export class BlogRepository {
     }
 
     if (fields.length === 0) return this.findById(id);
+
+    // ponytail: selalu bump updated_at agar cache & sort konsisten tanpa trigger DB
+    fields.push(`updated_at = CURRENT_TIMESTAMP`);
 
     values.push(id);
     const query = `

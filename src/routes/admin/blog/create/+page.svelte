@@ -17,14 +17,10 @@
 		content: {} as Record<string, unknown>,
 		is_published: false
 	});
-
-	$effect(() => {
-		const slug = formData.title
-			.toLowerCase()
-			.replace(/[^\w ]+/g, '')
-			.replace(/ +/g, '-');
-		formData = { ...formData, slug };
-	});
+	let slugTouched = $state(false);
+	function toSlug(s: string) {
+		return s.toLowerCase().replace(/[^\w ]+/g, '').replace(/ +/g, '-');
+	}
 
 	const handleSubmit = async (publishOverride?: boolean) => {
 		if (!formData.title || !formData.slug || !formData.content.type) {
@@ -86,7 +82,10 @@
 						required
 						placeholder="Post Title"
 						value={formData.title}
-						oninput={(e) => (formData.title = (e.currentTarget as HTMLInputElement).value)}
+						oninput={(e) => {
+							formData.title = (e.currentTarget as HTMLInputElement).value;
+							if (!slugTouched) formData.slug = toSlug(formData.title);
+						}}
 					/>
 				</div>
 
@@ -103,7 +102,10 @@
 							required
 							placeholder="post-url-slug"
 							value={formData.slug}
-							oninput={(e) => (formData.slug = (e.currentTarget as HTMLInputElement).value)}
+							oninput={(e) => {
+								slugTouched = true;
+								formData.slug = (e.currentTarget as HTMLInputElement).value;
+							}}
 							class="border-none px-0 focus:ring-0"
 						/>
 					</div>

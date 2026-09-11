@@ -22,8 +22,8 @@ const SECURITY_HEADERS: Record<string, string> = {
 		...(dev ? ["worker-src 'self' blob:"] : []),
 		"style-src 'self' 'unsafe-inline'",
 		"font-src 'self'",
-		"img-src 'self' data: blob: https://atgnqunmelvquqdwkmnq.supabase.co https://lh3.googleusercontent.com",
-		"connect-src 'self' https://atgnqunmelvquqdwkmnq.supabase.co https://www.google-analytics.com https://*.giphy.com",
+		"img-src 'self' data: blob: https://atgnqunmelvquqdwkmnq.supabase.co https://*.supabase.co https://*.supabase.in https://lh3.googleusercontent.com",
+		"connect-src 'self' https://atgnqunmelvquqdwkmnq.supabase.co https://*.supabase.co https://www.google-analytics.com https://*.giphy.com",
 		"frame-ancestors 'none'"
 	].join('; ')
 };

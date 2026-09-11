@@ -20,11 +20,18 @@
 		content: {} as Record<string, unknown>,
 		is_published: false
 	});
+	let hasFetched = $state(false);
 
+	// ponytail: fetch sekali saja — $effect lama tanpa guard ke-trigger tiap formData write (overwrite edit user)
 	$effect(() => {
-		const fetchBlog = async () => {
+		if (hasFetched) return;
+		// track blogId explicitly
+		const id = blogId;
+		if (!id) return;
+		hasFetched = true;
+		(async () => {
 			try {
-				const res = await fetch(`/api/blog/${blogId}`);
+				const res = await fetch(`/api/blog/${id}`);
 				const json = await res.json();
 				if (json.status === 200) {
 					formData = {
@@ -43,9 +50,7 @@
 			} finally {
 				isLoading = false;
 			}
-		};
-
-		fetchBlog();
+		})();
 	});
 
 	const handleSubmit = async (publishOverride?: boolean) => {

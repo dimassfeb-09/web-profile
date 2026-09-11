@@ -44,8 +44,8 @@ export class ImageService {
    * Delete all images associated with a blog from storage and DB
    */
   static async deleteAllBlogImages(blogId: string): Promise<void> {
-    // 1. Delete folder from Supabase Storage
-    await StorageService.deleteFolder(`blogs/${blogId}`);
+    // ponytail: bucket sudah `blogs`, prefix cukup blogId (bug lama: `blogs/${id}` jadi `blogs/blogs/...`)
+    await StorageService.deleteFolder(blogId);
     
     // 2. Database records will be deleted via ON DELETE CASCADE in SQL
     // But we'll call repo just in case or if manual control is needed

@@ -4,7 +4,11 @@ import { checkRateLimit } from '$lib/rateLimit';
 
 export async function POST({ request, getClientAddress }) {
 	try {
-		if (!(await checkRateLimit(getClientAddress()))) {
+		// ponytail: getClientAddress throws on some adapters — fallback to x-forwarded-for like login route
+		let ip = 'unknown';
+		try { ip = getClientAddress(); } catch {}
+		if (!ip || ip === 'unknown') ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
+		if (!(await checkRateLimit(ip))) {
 			return json({ error: 'Rate limit exceeded' }, { status: 429 });
 		}
 		const { content } = await request.json();
