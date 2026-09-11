@@ -1,5 +1,5 @@
 <script lang="ts">
-	import "$lib/styles/highlight-theme.css";
+	import "../../../../styles/highlight-theme.css";
 	import type { PageProps } from './$types';
 	import { Calendar, Clock, ArrowLeft } from 'lucide-svelte';
 	import TiptapHTML from '$lib/components/shared/TiptapHTML.svelte';
