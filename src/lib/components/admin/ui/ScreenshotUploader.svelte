@@ -155,7 +155,7 @@
 		type="file"
 		multiple
 		onchange={handleFileChange}
-		accept="image/jpeg,image/png,image/webp"
+		accept="image/jpeg,image/png,image/webp,image/avif,image/gif"
 		class="hidden"
 	/>
 </div>

@@ -6,6 +6,7 @@
 	import ImageUploader from '$lib/components/admin/ui/ImageUploader.svelte';
 	import ScreenshotUploader from '$lib/components/admin/ui/ScreenshotUploader.svelte';
 	import SortFilter from '$lib/components/common/SortFilter.svelte';
+	import CachedImage from '$lib/components/ui/CachedImage.svelte';
 
 	let { data }: PageProps = $props();
 	const projects = $derived(data.projects);
@@ -250,7 +251,7 @@
 			>
 				<div class="aspect-[1024/500] w-full rounded-2xl bg-surface-container-high mb-6 overflow-hidden relative">
 					{#if project.image_url}
-						<img
+						<CachedImage
 							src={project.image_url}
 							alt={project.title}
 							class="absolute inset-0 w-full h-full object-cover transition-transform group-hover:scale-105"

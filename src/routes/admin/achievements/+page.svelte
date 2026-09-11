@@ -5,6 +5,7 @@
 	import AdminModal from '$lib/components/admin/ui/AdminModal.svelte';
 	import ImageUploader from '$lib/components/admin/ui/ImageUploader.svelte';
 	import SortFilter from '$lib/components/common/SortFilter.svelte';
+	import CachedImage from '$lib/components/ui/CachedImage.svelte';
 	import { slugify } from '$lib/utils/slugify';
 
 	let { data }: PageProps = $props();
@@ -224,7 +225,7 @@
 			>
 				{#if achievement.image_url}
 					<div class="aspect-video w-full rounded-2xl bg-surface-container-high mb-6 overflow-hidden relative">
-						<img
+						<CachedImage
 							src={achievement.image_url}
 							alt={achievement.title}
 							class="absolute inset-0 w-full h-full object-cover"

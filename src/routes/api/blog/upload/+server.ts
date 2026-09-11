@@ -6,7 +6,7 @@ import { BlogRepository } from '../../../../repositories/blog.repository';
 import { v4 as uuidv4 } from 'uuid';
 import sharp from 'sharp';
 
-const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif'];
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const AVIF_QUALITY = 65;
 
@@ -49,7 +49,8 @@ export async function POST({ request, cookies }) {
 				'image/jpeg': 'jpg',
 				'image/png': 'png',
 				'image/webp': 'webp',
-				'image/gif': 'gif'
+				'image/gif': 'gif',
+				'image/avif': 'avif'
 			};
 			extension = MIME_TO_EXT[file.type] || 'webp';
 			contentType = file.type || 'image/webp';

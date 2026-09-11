@@ -5,6 +5,7 @@
 	import AdminModal from '$lib/components/admin/ui/AdminModal.svelte';
 	import ImageUploader from '$lib/components/admin/ui/ImageUploader.svelte';
 	import SortFilter from '$lib/components/common/SortFilter.svelte';
+	import CachedImage from '$lib/components/ui/CachedImage.svelte';
 
 	let { data }: PageProps = $props();
 	const certificates = $derived(data.certificates);
@@ -160,7 +161,7 @@
 			>
 				<div class="aspect-[4/3] w-full rounded-2xl bg-surface-container-high mb-6 overflow-hidden relative">
 					{#if cert.image_url}
-						<img
+						<CachedImage
 							src={cert.image_url}
 							alt={cert.title}
 							class="absolute inset-0 w-full h-full object-cover"
