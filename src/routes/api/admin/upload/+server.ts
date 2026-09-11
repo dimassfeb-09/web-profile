@@ -3,11 +3,17 @@ import { env } from '$env/dynamic/private';
 import { createHash } from 'crypto';
 import sharp from 'sharp';
 import { validateUploadFile, isValidBucket } from '$lib/upload';
+import { requireAuth } from '$lib/auth';
 
 const AVIF_QUALITY = 65;
 
-export async function POST({ request, url }) {
+export async function POST({ request, url, cookies }) {
 	try {
+		try {
+			await requireAuth(cookies);
+		} catch {
+			return json({ status: 401, message: 'Unauthorized' }, { status: 401 });
+		}
 		const formData = await request.formData();
 		const file = formData.get('file') as File | null;
 

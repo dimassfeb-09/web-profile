@@ -34,8 +34,13 @@ export const getBaseExtensions = () => [
   Underline,
   Link.configure({
     openOnClick: false,
+    defaultProtocol: 'https',
+    protocols: ['http', 'https', 'mailto'],
+    isAllowedUri: (url, ctx) => ctx.defaultValidate(url) && !url.startsWith('./'),
     HTMLAttributes: {
       class: 'text-primary font-bold underline hover:no-underline transition-all',
+      rel: 'noopener noreferrer',
+      target: '_blank',
     },
   }),
   TextAlign.configure({

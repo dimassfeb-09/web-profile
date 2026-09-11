@@ -7,10 +7,13 @@ async function handleCleanup(request: Request) {
 		const authHeader = request.headers.get('authorization');
 		const cronSecret = env.CRON_SECRET;
 
-		if (cronSecret || env.NODE_ENV === 'production') {
-			if (authHeader !== `Bearer ${cronSecret}`) {
-				return json({ message: 'Unauthorized' }, { status: 401 });
+		if (!cronSecret) {
+			if (env.NODE_ENV === 'production') {
+				console.error('CRON_SECRET not configured');
+				return json({ message: 'Server misconfigured' }, { status: 500 });
 			}
+		} else if (authHeader !== `Bearer ${cronSecret}`) {
+			return json({ message: 'Unauthorized' }, { status: 401 });
 		}
 
 		const result = await ImageService.cleanupOrphanImages();

@@ -83,6 +83,9 @@ export async function POST({ request, cookies }) {
 
 		return json({ url: publicUrl, id: imageId, format: extension });
 	} catch (error) {
+		if (error instanceof Error && error.message === 'UNAUTHORIZED') {
+			return json({ message: 'Unauthorized' }, { status: 401 });
+		}
 		console.error('Blog Upload Error:', error);
 		return json(
 			{ message: error instanceof Error ? error.message : 'Internal Server Error' },
