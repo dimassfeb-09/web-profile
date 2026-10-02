@@ -245,30 +245,47 @@
 				<p class="text-xs text-on-surface-variant ml-1">Use the client or trust level as the name.</p>
 			</div>
 
-			<fieldset class="space-y-3">
+			<fieldset class="space-y-2">
 				<legend class="font-label text-xs text-on-surface-variant ml-1">Scope</legend>
-				{#each [{ value: 'read', label: 'Read only', hint: 'get_content only.' }, { value: 'read_write', label: 'Read and write', hint: 'Full CRUD, including delete.' }] as const as option (option.value)}
-					<label
-						class={`flex items-start gap-3 p-4 rounded-xl cursor-pointer border transition-all ${
-							formScope === option.value
-								? 'border-primary bg-primary/5'
-								: 'border-outline-variant/20 bg-surface-container-high'
+				<div
+					role="radiogroup"
+					aria-label="Scope"
+					class="grid grid-cols-2 gap-1 p-1 rounded-2xl bg-surface-container-high border border-outline-variant/20"
+				>
+					<button
+						type="button"
+						role="radio"
+						aria-checked={formScope === 'read'}
+						onclick={() => (formScope = 'read')}
+						class={`flex items-center justify-center gap-1.5 py-2.5 rounded-xl font-label text-sm font-medium transition-all ${
+							formScope === 'read'
+								? 'bg-surface shadow-sm border border-outline-variant/10 text-on-surface'
+								: 'text-on-surface-variant hover:text-on-surface'
 						}`}
 					>
-						<input
-							type="radio"
-							name="scope"
-							value={option.value}
-							checked={formScope === option.value}
-							onchange={() => (formScope = option.value)}
-							class="mt-0.5 accent-primary"
-						/>
-						<span>
-							<span class="block text-sm font-medium text-on-surface">{option.label}</span>
-							<span class="block text-xs text-on-surface-variant mt-0.5">{option.hint}</span>
-						</span>
-					</label>
-				{/each}
+						<span class="material-symbols-outlined text-base">visibility</span>
+						Read only
+					</button>
+					<button
+						type="button"
+						role="radio"
+						aria-checked={formScope === 'read_write'}
+						onclick={() => (formScope = 'read_write')}
+						class={`flex items-center justify-center gap-1.5 py-2.5 rounded-xl font-label text-sm font-medium transition-all ${
+							formScope === 'read_write'
+								? 'bg-surface shadow-sm border border-outline-variant/10 text-on-surface'
+								: 'text-on-surface-variant hover:text-on-surface'
+						}`}
+					>
+						<span class="material-symbols-outlined text-base">edit</span>
+						Read &amp; write
+					</button>
+				</div>
+				<p class="text-xs text-on-surface-variant ml-1">
+					{formScope === 'read'
+						? 'Can call get_content only — writes are blocked.'
+						: 'Full access — can create, update, and delete content.'}
+				</p>
 			</fieldset>
 
 			{#if errorMessage}
