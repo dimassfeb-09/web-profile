@@ -27,10 +27,20 @@ const DOMAIN_TABLE = DOMAINS.map(
 	(domain) => `- ${domain} [${REGISTRY[domain].kind}]: ${REGISTRY[domain].fields}`
 ).join('\n');
 
-const SINGLETONS_NOTE = `Singletons that always exist and hold exactly one row: ${SINGLETONS.join(', ')}. For those use update_content (never create_content or delete_content) and do not pass an id.`;
+const SINGLETONS_NOTE = `Singletons (${SINGLETONS.join(', ')}) hold exactly one row: use update_content with no id (or id omitted) and never create/delete. Collections hold many rows and require an id for get/update/delete.`;
 
-const describe = (verb: string) =>
-	`${verb} content on a personal profile site.\n\nDomains and their fields (? = optional):\n${DOMAIN_TABLE}\n\n${SINGLETONS_NOTE}`;
+const WORKFLOW = `Workflow: get_content (list) to discover ids -> create/update/delete with the right id -> get_content (by id) to verify. Always read before you write or delete.`;
+
+const EXAMPLES = [
+	`Example get:  {"type":"projects","limit":5} or {"type":"projects","id":"<uuid>"} or {"type":"home"}`,
+	`Example create (projects): {"type":"projects","data":{"title":"My App","description":"Short blurb","image_url":"https://.../cover.jpg","features":["Fast","Offline"],"link_url":"https://example.com","link_text":"Visit"}}`,
+	`Example update (home singleton, no id): {"type":"home","data":{"headline":"New headline"}}`,
+	`Example update (collection): {"type":"certificates","id":"<uuid>","data":{"title":"New title"}}`,
+	`Example delete: {"type":"blog","id":"<uuid>"}`
+].join('\n');
+
+const describe = (verb: string, extra: string) =>
+	`${verb} content on dimassfeb.com (personal profile CMS).\n\nDomains and fields (? = optional):\n${DOMAIN_TABLE}\n\n${SINGLETONS_NOTE}\n${WORKFLOW}\n\n${EXAMPLES}\n\n${extra}`;
 
 /** Field-level validation errors so the model can correct itself without extra round trips. */
 const zodDetail = (error: z.ZodError): string =>
@@ -74,19 +84,22 @@ export function registerTools(server: McpServer, auth: McpAuth): void {
 		'get_content',
 		{
 			title: 'Get profile content',
-			description:
-				describe('Read') +
-				'\n\nPass id for a single record, omit it for a list, and limit to cap list size.',
+			description: describe(
+				'Read',
+				'Pass id for a single collection record, omit id for a list. For singletons omit id (limit is ignored). `limit` caps list size (max 200). `experience` and `skills` ids are numeric strings.'
+			),
 			inputSchema: {
-				type: domainShape,
-				id: z.string().optional(),
-				limit: z.number().int().positive().max(200).optional()
-			}
+				type: domainShape.describe('Domain to read. Singletons: home, about, contact. Collections: projects, achievements, educations, experience, skills, certificates, blog.'),
+				id: z.string().optional().describe('Record id. Omit for list/singleton. For experience/skills use numeric string like "3".'),
+				limit: z.number().int().positive().max(200).optional().describe('Max rows for list. Ignored for singleton or single-record fetch.')
+			},
+			annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false }
 		},
 		async ({ type, id, limit }) =>
 			attempt(async () => {
 				const entry = entryFor(type);
-				if (id !== undefined && entry.kind === 'collection') {
+				if (entry.kind === 'single') return await entry.list(limit);
+				if (id !== undefined) {
 					const record = await entry.get(id);
 					if (record === null) notFound(resolve(type), id);
 					return record;
@@ -99,16 +112,21 @@ export function registerTools(server: McpServer, auth: McpAuth): void {
 		'create_content',
 		{
 			title: 'Create profile content',
-			description:
-				describe('Create') +
-				'\n\ndata is validated against the domain schema before insert. Returns the stored record including its generated id.',
-			inputSchema: { type: domainShape, data: z.record(z.string(), z.unknown()) }
+			description: describe(
+				'Create',
+				'Only for collections. `data` is validated against the domain schema before insert. Returns the stored record with its generated id. Singletons reject create — use update_content.'
+			),
+			inputSchema: {
+				type: domainShape.describe('Collection domain to insert into.'),
+				data: z.record(z.string(), z.unknown()).describe('Fields for the new record. Must satisfy the domain schema shown above.')
+			},
+			annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false }
 		},
 		async ({ type, data }) =>
 			attempt(async () => {
 				const entry = entryFor(type);
 				if (entry.kind === 'single') {
-					throw new ToolError(`${resolve(type)} is a singleton - use update_content.`);
+					throw new ToolError(`${resolve(type)} is a singleton — use update_content without an id.`);
 				}
 				allowWrite('create', resolve(type));
 				return await entry.create(entry.schema ? (entry.schema.parse(data) as McpData) : data);
@@ -119,15 +137,27 @@ export function registerTools(server: McpServer, auth: McpAuth): void {
 		'update_content',
 		{
 			title: 'Update profile content',
-			description:
-				describe('Update') +
-				'\n\nSend only the fields you want changed; the rest are left untouched.',
-			inputSchema: { type: domainShape, id: z.string(), data: z.record(z.string(), z.unknown()) }
+			description: describe(
+				'Update',
+				'For singletons omit id (or pass any string, it is ignored). For collections id is required. `data` is a partial patch — only the fields you send are changed, the rest are left untouched. Validated against the domain schema.'
+			),
+			inputSchema: {
+				type: domainShape,
+				id: z.string().optional().describe('Record id. Required for collections, omit for singletons (home/about/contact).'),
+				data: z.record(z.string(), z.unknown()).describe('Partial fields to patch.')
+			},
+			annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false }
 		},
 		async ({ type, id, data }) =>
 			attempt(async () => {
+				const domain = resolve(type);
 				const entry = entryFor(type);
-				allowWrite('update', `${resolve(type)}/${id}`);
+				if (entry.kind === 'single') {
+					allowWrite('update', domain);
+					return await entry.update(id ?? '1', entry.schema ? (entry.schema.parse(data) as McpData) : data);
+				}
+				if (!id) throw new ToolError(`Missing id for ${domain}. Call get_content first to list valid ids.`);
+				allowWrite('update', `${domain}/${id}`);
 				return await entry.update(id, entry.schema ? (entry.schema.parse(data) as McpData) : data);
 			})
 	);
@@ -136,10 +166,15 @@ export function registerTools(server: McpServer, auth: McpAuth): void {
 		'delete_content',
 		{
 			title: 'Delete profile content',
-			description:
-				describe('Delete') +
-				'\n\nIrreversible. Read the record with get_content first and confirm with the user before calling this.',
-			inputSchema: { type: domainShape, id: z.string() }
+			description: describe(
+				'Delete',
+				'Only for collections. Irreversible. Read the record with get_content first and confirm with the user before calling this.'
+			),
+			inputSchema: {
+				type: domainShape.describe('Collection domain to delete from.'),
+				id: z.string().describe('Record id to delete. For experience/skills use numeric string.')
+			},
+			annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: true, openWorldHint: false }
 		},
 		async ({ type, id }) =>
 			attempt(async () => {
