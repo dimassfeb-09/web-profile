@@ -2,6 +2,8 @@ import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { REGISTRY, DOMAINS, SINGLETONS, isDomain, type McpData, type McpDomain } from './registry';
 import type { McpAuth } from './auth';
+import { ALLOWED_BUCKETS } from '$lib/upload';
+import { MediaService } from '../../services/media.service';
 
 type ToolResult = {
 	content: { type: 'text'; text: string }[];
@@ -159,6 +161,25 @@ export function registerTools(server: McpServer, auth: McpAuth): void {
 				if (!id) throw new ToolError(`Missing id for ${domain}. Call get_content first to list valid ids.`);
 				allowWrite('update', `${domain}/${id}`);
 				return await entry.update(id, entry.schema ? (entry.schema.parse(data) as McpData) : data);
+			})
+	);
+
+	server.registerTool(
+		'upload_image',
+		{
+			title: 'Re-host an image to Supabase',
+			description:
+				`Fetch a remote image_url server-side, validate (${ALLOWED_BUCKETS.join(', ')} buckets, 5MB, magic bytes), convert to AVIF (65q) and store to Supabase. Returns {url, hash, format}. Use the returned url as image_url in create/update_content. No base64 in JSON — avoids token bloat.\n\nBuckets: ${ALLOWED_BUCKETS.join(', ')}.\n\nExample: {"image_url":"https://example.com/photo.jpg","bucket":"projects"} -> {"url":"https://.../projects/123.avif","hash":"a1b2c3d4","format":"avif"}`,
+			inputSchema: {
+				image_url: z.string().url().describe('Remote image URL to fetch and re-host. Must be http/https and point to a valid image (jpeg/png/webp/gif/avif, max 5MB).'),
+				bucket: z.enum(ALLOWED_BUCKETS as [string, ...string[]]).describe(`Storage bucket: ${ALLOWED_BUCKETS.join(' | ')}.`)
+			},
+			annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true }
+		},
+		async ({ image_url, bucket }) =>
+			attempt(async () => {
+				allowWrite('upload_image', bucket);
+				return await MediaService.rehost(image_url, bucket);
 			})
 	);
 

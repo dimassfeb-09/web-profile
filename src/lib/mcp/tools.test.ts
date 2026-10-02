@@ -2,10 +2,14 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import pool from '$lib/db';
 import { ProjectService } from '../../services/project.service';
+import { MediaService } from '../../services/media.service';
 import { registerTools } from './tools';
 import type { McpAuth } from './auth';
 
 vi.mock('$lib/db', () => ({ default: { query: vi.fn().mockResolvedValue({ rows: [] }) } }));
+vi.mock('../../services/media.service', () => ({
+	MediaService: { uploadBuffer: vi.fn(), rehost: vi.fn() }
+}));
 
 vi.mock('../../services/project.service', () => ({
 	ProjectService: {
@@ -66,12 +70,13 @@ describe('registerTools', () => {
 		(pool.query as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({ rows: [] });
 	});
 
-	it('registers exactly the four CRUD tools', () => {
+	it('registers exactly the CRUD + upload tools', () => {
 		expect([...toolsFor(WRITE).keys()].sort()).toEqual([
 			'create_content',
 			'delete_content',
 			'get_content',
-			'update_content'
+			'update_content',
+			'upload_image'
 		]);
 	});
 
@@ -119,7 +124,8 @@ describe('registerTools', () => {
 		for (const [tool, args] of [
 			['create_content', { type: 'projects', data: validProject }],
 			['update_content', { type: 'projects', id: 'p1', data: { title: 'x' } }],
-			['delete_content', { type: 'projects', id: 'p1' }]
+			['delete_content', { type: 'projects', id: 'p1' }],
+			['upload_image', { image_url: 'https://example.com/a.jpg', bucket: 'projects' }]
 		] as const) {
 			const result = await call(READ, tool, args);
 			expect(result.isError, `${tool} should be blocked`).toBe(true);
@@ -168,5 +174,22 @@ describe('registerTools', () => {
 		expect(result.isError).toBe(true);
 		expect(text(result)).toContain('image_url');
 		expect(service.updateProject).not.toHaveBeenCalled();
+	});
+
+	it('rehosts an image via MediaService and returns the public url', async () => {
+		const media = MediaService as unknown as { rehost: ReturnType<typeof vi.fn> };
+		media.rehost.mockResolvedValue({ url: 'https://cdn.example.com/projects/1.avif', hash: 'a1b2c3d4', format: 'avif' });
+		const result = await call(WRITE, 'upload_image', { image_url: 'https://example.com/photo.jpg', bucket: 'projects' });
+		expect(result.isError).toBeUndefined();
+		expect(JSON.parse(text(result)).url).toContain('avif');
+		expect(media.rehost).toHaveBeenCalledWith('https://example.com/photo.jpg', 'projects');
+	});
+
+	it('blocks upload_image for a read-scoped key before fetching', async () => {
+		const media = MediaService as unknown as { rehost: ReturnType<typeof vi.fn> };
+		const result = await call(READ, 'upload_image', { image_url: 'https://example.com/photo.jpg', bucket: 'projects' });
+		expect(result.isError).toBe(true);
+		expect(text(result)).toContain('read-only');
+		expect(media.rehost).not.toHaveBeenCalled();
 	});
 });

@@ -97,7 +97,7 @@ describe('POST /mcp', () => {
 		expect(body.result.protocolVersion).toBe(PROTOCOL);
 	});
 
-	it('lists the four CRUD tools on a fresh stateless request', async () => {
+	it('lists the CRUD + upload tools on a fresh stateless request', async () => {
 		authorizedRow();
 		// No initialize on this request: the server is rebuilt per request, so tools/list has
 		// to work on its own. If the SDK demanded a handshake first, this would fail here.
@@ -108,7 +108,8 @@ describe('POST /mcp', () => {
 			'create_content',
 			'delete_content',
 			'get_content',
-			'update_content'
+			'update_content',
+			'upload_image'
 		]);
 	});
 
