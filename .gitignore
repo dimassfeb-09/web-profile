@@ -22,3 +22,13 @@ Thumbs.db
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .env*
+
+# Credentials: GA service account key downloaded from GCP. Contains a real private key.
+*-*.json
+!package.json
+!package-lock.json
+!bun.lock
+!tsconfig*.json
+
+# TS incremental build cache
+*.tsbuildinfo
