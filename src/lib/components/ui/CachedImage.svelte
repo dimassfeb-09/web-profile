@@ -38,6 +38,7 @@
 	let current = $state(avifUrl);
 	// svelte-ignore state_referenced_locally
 	let loaded = $state(isImageCached(avifUrl));
+	// svelte-ignore state_referenced_locally
 	let everLoaded = $state(isImageCached(avifUrl));
 
 	// generation guard — kalau src ganti cepat, hasil preload lama diabaikan

@@ -13,7 +13,7 @@
 	} = $props();
 </script>
 
-<footer class="w-full mt-12 xs:mt-16 lg:mt-24 bg-white dark:bg-zinc-900 border-t border-zinc-200/20 dark:border-zinc-700/20" role="contentinfo">
+<footer class="w-full mt-12 xs:mt-16 lg:mt-24 bg-white dark:bg-zinc-900 border-t border-zinc-200/20 dark:border-zinc-700/20">
 	<div class="flex flex-col md:flex-row justify-between items-center px-8 xs:px-12 py-10 xs:py-12 lg:py-16 max-w-7xl mx-auto gap-8">
 		<div class="flex flex-col md:flex-row items-center gap-6 md:gap-12">
 			<p class="font-space-grotesk text-xs uppercase tracking-widest text-zinc-600 dark:text-zinc-300 duration-500">
