@@ -49,6 +49,7 @@
 		"cookie": "0.7.2"
 	},
 	"dependencies": {
+		"@modelcontextprotocol/sdk": "^1.31.0",
 		"@tiptap/core": "3.31.3",
 		"@tiptap/extension-bubble-menu": "3.31.3",
 		"@tiptap/extension-code-block-lowlight": "3.31.3",

@@ -17,7 +17,8 @@
 		{ name: 'Achievements', href: '/admin/achievements', icon: 'workspace_premium' },
 		{ name: 'Certificates', href: '/admin/certificates', icon: 'card_membership' },
 		{ name: 'Blog', href: '/admin/blog', icon: 'article' },
-		{ name: 'Contact', href: '/admin/contact', icon: 'mail' }
+		{ name: 'Contact', href: '/admin/contact', icon: 'mail' },
+		{ name: 'MCP Keys', href: '/admin/mcp-keys', icon: 'key' }
 	];
 
 	let isMobileMenuOpen = $state(false);
