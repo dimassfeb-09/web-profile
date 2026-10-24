@@ -1,5 +1,5 @@
-import { redirect, type Handle } from '@sveltejs/kit';
-import { dev } from '$app/environment';
+import { redirect } from '@sveltejs/kit';
+import type { Handle } from '@sveltejs/kit/hooks';
 import { COOKIE_NAME, decrypt } from '$lib/auth';
 
 const AUTH_ROUTES = ['/admin/login'];
@@ -19,7 +19,7 @@ const SECURITY_HEADERS: Record<string, string> = {
 		"default-src 'self'",
 		// Note: 'unsafe-inline' required for SSR/JS bundle injection - can be hardened with nonce in future
 		"script-src 'self' 'unsafe-inline' https://www.googletagmanager.com",
-		...(dev ? ["worker-src 'self' blob:"] : []),
+		...(import.meta.env.DEV ? ["worker-src 'self' blob:"] : []),
 		"style-src 'self' 'unsafe-inline'",
 		"font-src 'self'",
 		"img-src 'self' data: blob: https://atgnqunmelvquqdwkmnq.supabase.co https://*.supabase.co https://*.supabase.in https://lh3.googleusercontent.com https://*.giphy.com",

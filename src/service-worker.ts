@@ -1,10 +1,12 @@
 /// <reference lib="webworker" />
-import { build, files, version } from '$service-worker';
+import { immutable, assets } from '$app/manifest';
+import { version } from '$app/env';
 
 const worker = self as unknown as ServiceWorkerGlobalScope;
 
+const ASSETS = [...immutable.map((a) => a.path), ...assets.map((a) => a.path)];
+
 const CACHE_NAME = `offline-${version}`;
-const ASSETS = [...build, ...files];
 
 async function openCache() {
 	return caches.open(CACHE_NAME);

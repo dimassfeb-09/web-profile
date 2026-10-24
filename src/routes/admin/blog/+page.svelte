@@ -17,7 +17,7 @@
 	const debouncedSearch = (value: string) => {
 		clearTimeout(searchTimeout);
 		searchTimeout = setTimeout(() => {
-			const params = new URLSearchParams(page.url.searchParams);
+			const params = new URLSearchParams(page.url.searchParams.toString());
 			if (value) {
 				params.set('search', value);
 			} else {

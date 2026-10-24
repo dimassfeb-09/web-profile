@@ -11,6 +11,9 @@ export default defineConfig({
 		enhancedImages(),
 		tailwindcss(),
 		sveltekit({
+			alias: {
+				'$lib': 'src/lib'
+			},
 			compilerOptions: {
 				// Force runes mode for the project, except for libraries. Can be removed in svelte 6.
 				runes: ({ filename }) =>
@@ -32,16 +35,5 @@ export default defineConfig({
 	],
 	test: {
 		include: ['src/**/*.{test,spec}.{js,ts}']
-	},
-	build: {
-		rollupOptions: {
-			output: {
-				manualChunks: (id) => {
-					if (id.includes('@tiptap') || id.includes('lowlight') || id.includes('highlight.js')) return 'tiptap';
-					if (id.includes('node_modules') && id.includes('svelte-dnd-action')) return 'admin-dnd';
-					return undefined;
-				}
-			}
-		}
 	}
 });

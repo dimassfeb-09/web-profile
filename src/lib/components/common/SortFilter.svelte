@@ -8,7 +8,7 @@
 
 	async function handleSortChange(e: Event) {
 		const newSort = (e.currentTarget as HTMLSelectElement).value;
-		const params = new URLSearchParams(page.url.searchParams);
+		const params = new URLSearchParams(page.url.searchParams.toString());
 		if (newSort === 'newest') {
 			params.delete('sort');
 		} else {
