@@ -33,7 +33,13 @@ export const handle: Handle = async ({ event, resolve }) => {
 	const cookie = event.cookies.get(COOKIE_NAME);
 
 	if (event.url.host === 'dimassfeb.com') {
-		throw redirect(301, `https://www.dimassfeb.com${event.url.pathname}${event.url.search}`);
+		// SvelteKit's `redirect()` does not allow external destinations.
+		return new Response(null, {
+			status: 301,
+			headers: {
+				Location: `https://www.dimassfeb.com${event.url.pathname}${event.url.search}`
+			}
+		});
 	}
 
 	if (isProtectedPage(path) || isProtectedApi(path)) {
