@@ -13,6 +13,7 @@
 		link_text: string;
 		slug?: string;
 		tech_stack?: string[];
+		date?: string | Date | null;
 	}
 
 	let { initialProjects }: { initialProjects: Project[] } = $props();
@@ -97,6 +98,7 @@
 				linkText={project.link_text}
 				slug={project.slug}
 				techStack={project.tech_stack}
+				date={project.date}
 				priority={i < 2}
 			/>
 		{/each}

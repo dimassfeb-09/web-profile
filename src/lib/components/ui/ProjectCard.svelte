@@ -1,11 +1,17 @@
 <script lang="ts">
-	import { CheckCircle2 } from 'lucide-svelte';
+	import { CheckCircle2, Calendar } from 'lucide-svelte';
 	import CachedImage from './CachedImage.svelte';
 	import { preloadData } from '$app/navigation';
 	// ponytail: hover preload warms +page.server.ts for instant nav
 	function warm(href: string) {
 		preloadData(href).catch(() => {});
 	}
+
+	// Same format as the project detail page: "August 2026".
+	const formatDate = (d: string | Date | null | undefined) => {
+		if (!d) return '';
+		return new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(new Date(d));
+	};
 
 	let {
 		title,
@@ -17,6 +23,7 @@
 		linkText,
 		slug,
 		techStack = [],
+		date = null,
 		priority = false
 	}: {
 		title: string;
@@ -28,6 +35,7 @@
 		linkText: string;
 		slug?: string;
 		techStack?: string[];
+		date?: string | Date | null;
 		priority?: boolean;
 	} = $props();
 
@@ -124,9 +132,15 @@
 				</span>
 			{/if}
 		</div>
-		<h3 class="font-headline text-xl font-bold text-on-surface mb-2">
+		<h3 class="font-headline text-xl font-bold text-on-surface mb-1">
 			{title}
 		</h3>
+		{#if date}
+			<p class="flex items-center gap-1.5 text-xs font-medium text-on-surface-variant/70 mb-2">
+				<Calendar class="w-3.5 h-3.5" />
+				{formatDate(date)}
+			</p>
+		{/if}
 		<p class="text-on-surface-variant font-body text-sm mb-4 line-clamp-2">
 			{description}
 		</p>

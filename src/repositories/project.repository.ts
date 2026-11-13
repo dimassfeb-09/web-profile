@@ -23,7 +23,10 @@ export interface ProjectData {
 export class ProjectRepository {
   static async findAll(sort: 'newest' | 'oldest' = 'newest', limit?: number, offset?: number): Promise<ProjectData[]> {
     const order = sort === 'oldest' ? 'ASC' : 'DESC';
-    let query = `SELECT * FROM projects ORDER BY created_at ${order}, id ${order}`;
+    // "Newest" means latest completion date, not latest CMS entry: a project
+    // entered today (e.g. eFilm, completed 2022) must not outrank one
+    // finished in 2026. Rows without a date fall back to created_at.
+    let query = `SELECT * FROM projects ORDER BY COALESCE(date, created_at) ${order}, id ${order}`;
     const values = [];
 
     if (limit !== undefined) {
