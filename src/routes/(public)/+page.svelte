@@ -10,8 +10,6 @@
 	import CertificatesSection from '$lib/components/sections/CertificatesSection.svelte';
 	import BlogSection from '$lib/components/sections/BlogSection.svelte';
 	import ContactSection from '$lib/components/sections/ContactSection.svelte';
-	import SectionLoader from '$lib/components/common/SectionLoader.svelte';
-	import SectionSkeleton from '$lib/components/ui/skeletons/SectionSkeleton.svelte';
 	import JsonLd from '$lib/components/common/JsonLd.svelte';
 
 	let { data }: PageProps = $props();
@@ -43,28 +41,11 @@
 		}
 	};
 
-	// ponytail: SSR priority = hero + about + skills (techstack). experience loads on mount.
-	// Lazy (below-fold) sections are NEVER prefetch targets — they load via IntersectionObserver
-	// when scrolled near. Eagerly chaining them (N+1 prefetch) put /api/section/* fetches on the
-	// critical path and competed with LCP (Lighthouse: avoid chaining critical requests).
-	const ssrKeys = new Set(['about', 'contact', 'skills']);
-	const lazySections = new Set(['projects', 'education', 'achievements', 'certificates', 'blog']);
-	const nonLazyNonSsrKeys = new Set(['experience']);
-
-	function getNextEndpoint(currentKey: string): string | undefined {
-		// ponytail: prefetch only the next NON-LAZY section (currently: experience only).
-		// Returning undefined for lazy keys breaks the N+1 chain so below-fold /api/section/*
-		// requests never sit on the critical path competing with LCP.
-		const idx = data.visibleSections.findIndex((s) => s.section_key === currentKey);
-		for (let i = idx + 1; i < data.visibleSections.length; i++) {
-			const k = data.visibleSections[i].section_key;
-			if (ssrKeys.has(k) || lazySections.has(k)) continue;
-			if (nonLazyNonSsrKeys.has(k)) return `/api/section/${k}`;
-			// Unknown future section: treat as lazy (safe default — loads on scroll).
-			continue;
-		}
-		return undefined;
-	}
+	// SSR homepage: all sections arrive in `data.sections` from +page.server.ts,
+	// so the initial HTML already contains the full content — no client-side
+	// /api/section/* fetch, no shimmer placeholders for crawlers / agents.
+	// (The old SectionLoader + IntersectionObserver lazy load is gone on purpose:
+	// that is what made curl / search indexers only see Hero + About + Skills.)
 </script>
 
 <svelte:head>
@@ -104,42 +85,28 @@
 				{/if}
 			{:else if key === 'skills'}
 				<SkillsSection categories={data.skillsData as any} />
-			{:else}
-				<SectionLoader
-					endpoint={`/api/section/${key}`}
-					prefetchNext={getNextEndpoint(key)}
-					lazy={lazySections.has(key)}
-				>
-					{#snippet skeleton()}
-						<SectionSkeleton variant={key as any} />
-					{/snippet}
-					{#snippet error(retry)}
-						<div class="flex flex-col items-center justify-center gap-4 rounded-xl border border-neutral-800 bg-neutral-900/40 px-6 py-12 text-center">
-							<p class="text-neutral-400">Gagal memuat bagian ini. Coba lagi.</p>
-							<button
-								onclick={retry}
-								class="rounded-lg bg-neutral-800 px-4 py-2 text-sm font-medium text-white transition hover:bg-neutral-700"
-							>
-								Coba lagi
-							</button>
-						</div>
-					{/snippet}
-					{#snippet children(d)}
-						{#if key === 'experience'}
-							<ExperienceSection experiences={d as any} />
-						{:else if key === 'projects'}
-							<ProjectsSection initialProjects={d as any} />
-						{:else if key === 'education'}
-							<EducationSection educations={d as any} />
-						{:else if key === 'achievements'}
-							<AchievementSection achievements={d as any} />
-						{:else if key === 'certificates'}
-							<CertificatesSection certificates={d as any} />
-						{:else if key === 'blog'}
-							<BlogSection blogs={d as any} />
-						{/if}
-					{/snippet}
-				</SectionLoader>
+			{:else if data.failedSections.includes(key)}
+				<div class="flex flex-col items-center justify-center gap-4 rounded-xl border border-neutral-800 bg-neutral-900/40 px-6 py-12 text-center">
+					<p class="text-neutral-400">Gagal memuat bagian ini. Coba lagi.</p>
+					<button
+						onclick={() => location.reload()}
+						class="rounded-lg bg-neutral-800 px-4 py-2 text-sm font-medium text-white transition hover:bg-neutral-700"
+					>
+						Coba lagi
+					</button>
+				</div>
+			{:else if key === 'experience'}
+				<ExperienceSection experiences={data.sections.experience as any} />
+			{:else if key === 'projects'}
+				<ProjectsSection initialProjects={data.sections.projects as any} />
+			{:else if key === 'education'}
+				<EducationSection educations={data.sections.education as any} />
+			{:else if key === 'achievements'}
+				<AchievementSection achievements={data.sections.achievements as any} />
+			{:else if key === 'certificates'}
+				<CertificatesSection certificates={data.sections.certificates as any} />
+			{:else if key === 'blog'}
+				<BlogSection blogs={data.sections.blog as any} />
 			{/if}
 		</div>
 	{/each}
