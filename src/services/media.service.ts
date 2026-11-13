@@ -4,6 +4,18 @@ import { env } from '$env/dynamic/private';
 import { ALLOWED_BUCKETS, validateUploadFile, isValidBucket } from '$lib/upload';
 
 const AVIF_QUALITY = 65;
+const AVIF_EFFORT = 2;
+// Effort 2, not 4: measured on a photo-like 4000x3000 (963KB) — effort 4 at
+// 1920px took 7.1s (too close to the 10s limit), effort 2 takes 1.9s with a
+// slightly larger file (209KB vs 154KB). Visual quality at quality 65 is
+// unaffected; effort only trades encoder time for compression efficiency.
+// Project cards render at ~1024px wide; anything bigger only burns encode time.
+// A <2MB phone photo can still be 4000x3000 (12MP), and AVIF encoding that at
+// effort 6 took >10s on a 1-vCPU Hobby function — Vercel kills it at 10s
+// ("Task timed out after 10 seconds", 5x on POST /api/admin/upload,
+// 2026-11-13 20:57-21:01 WIB). Resize first + lower effort keeps the encode
+// at ~1-2s. withoutEnlargement leaves small images untouched.
+const MAX_DIMENSION = 1920;
 
 function getOriginalExt(mimeType: string): string {
 	const MIME_TO_EXT: Record<string, string> = {
@@ -65,10 +77,18 @@ export class MediaService {
 		const cleanKey = SUPABASE_SERVICE_ROLE_KEY.trim();
 		const hash = createHash('sha256').update(Buffer.from(buffer)).digest('hex').slice(0, 8);
 
+		// Log BEFORE the encode: on a timeout Vercel kills the function with no
+		// further output, so without this line the logs show nothing at all.
+		const meta = await sharp(Buffer.from(buffer)).metadata().catch(() => null);
+		console.log(
+			`[MediaService] upload start: ${mimeType}, ${(buffer.length / 1024).toFixed(0)}KB, ${meta?.width ?? '?'}x${meta?.height ?? '?'}px, bucket=${bucket}`
+		);
+
 		let avifBuffer: Buffer;
 		try {
 			avifBuffer = await sharp(Buffer.from(buffer))
-				.avif({ quality: AVIF_QUALITY, effort: 6, chromaSubsampling: '4:2:0' })
+				.resize(MAX_DIMENSION, MAX_DIMENSION, { fit: 'inside', withoutEnlargement: true })
+				.avif({ quality: AVIF_QUALITY, effort: AVIF_EFFORT, chromaSubsampling: '4:2:0' })
 				.toBuffer();
 		} catch (err) {
 			console.error('[MediaService] AVIF conversion failed, falling back to original:', err);

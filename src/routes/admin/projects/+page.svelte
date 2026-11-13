@@ -98,7 +98,7 @@
 		isLoading = true;
 		try {
 			const res = await fetch(`/api/admin/projects/${id}`, { method: 'DELETE' });
-			const result = await res.json();
+			const result = await readJson(res);
 			if (res.ok) {
 				await invalidateAll();
 			} else {
@@ -108,6 +108,20 @@
 			alert('Failed to delete project');
 		} finally {
 			isLoading = false;
+		}
+	};
+
+	// Upload/save endpoints are supposed to return JSON, but the platform can
+	// answer with plain text / HTML instead (e.g. Vercel 413
+	// FUNCTION_PAYLOAD_TOO_LARGE, gateway 504). A bare res.json() then throws
+	// the cryptic "Unexpected token 'X' ... is not valid JSON" and hides the
+	// real cause — so parse defensively and surface status + body instead.
+	const readJson = async (res: Response) => {
+		const text = await res.text();
+		try {
+			return JSON.parse(text);
+		} catch {
+			throw new Error(`Server returned HTTP ${res.status} (not JSON): ${text.slice(0, 200).trim() || '(empty response)'}`);
 		}
 	};
 
@@ -163,7 +177,7 @@
 				const fd = new FormData();
 				fd.append('file', selectedFile);
 				const uploadRes = await fetch('/api/admin/upload', { method: 'POST', body: fd });
-				const uploadJson = await uploadRes.json();
+				const uploadJson = await readJson(uploadRes);
 				if (uploadRes.ok) {
 					finalImageUrl = uploadJson.data.url;
 				} else {
@@ -176,7 +190,7 @@
 				const fd = new FormData();
 				fd.append('file', file);
 				const res = await fetch('/api/admin/upload?bucket=project-screenshots', { method: 'POST', body: fd });
-				const json = await res.json();
+				const json = await readJson(res);
 				if (!res.ok) {
 					throw new Error(json.message || 'Screenshot upload failed');
 				}
@@ -212,7 +226,7 @@
 						body: JSON.stringify(payload)
 					});
 
-			const result = await res.json();
+			const result = await readJson(res);
 
 			if (res.ok) {
 				isModalOpen = false;
