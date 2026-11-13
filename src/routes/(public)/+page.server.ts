@@ -1,14 +1,14 @@
-import { HomeService } from ../../services/home.service;
-import { SectionOrderService } from ../../services/section_order.service;
-import { AboutService } from ../../services/about.service;
-import { ContactService } from ../../services/contact.service;
-import { SkillService } from ../../services/skill.service;
-import { ExperienceService } from ../../services/experience.service;
-import { ProjectService } from ../../services/project.service;
-import { EducationService } from ../../services/education.service;
-import { AchievementService } from ../../services/achievement.service;
-import { CertificateService } from ../../services/certificate.service;
-import { BlogService } from ../../services/blog.service;
+import { HomeService } from '../../services/home.service';
+import { SectionOrderService } from '../../services/section_order.service';
+import { AboutService } from '../../services/about.service';
+import { ContactService } from '../../services/contact.service';
+import { SkillService } from '../../services/skill.service';
+import { ExperienceService } from '../../services/experience.service';
+import { ProjectService } from '../../services/project.service';
+import { EducationService } from '../../services/education.service';
+import { AchievementService } from '../../services/achievement.service';
+import { CertificateService } from '../../services/certificate.service';
+import { BlogService } from '../../services/blog.service';
 
 export const config = {
 	isr: {
