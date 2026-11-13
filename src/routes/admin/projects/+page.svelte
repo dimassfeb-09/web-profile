@@ -7,6 +7,7 @@
 	import ScreenshotUploader from '$lib/components/admin/ui/ScreenshotUploader.svelte';
 	import SortFilter from '$lib/components/common/SortFilter.svelte';
 	import CachedImage from '$lib/components/ui/CachedImage.svelte';
+	import { PROJECT_CATEGORIES } from '$lib/project-categories';
 
 	let { data }: PageProps = $props();
 	const projects = $derived(data.projects);
@@ -26,6 +27,7 @@
 		status?: string;
 		date?: string | Date | null;
 		external_links?: Record<string, string> | null;
+		categories?: string[] | null;
 	}
 
 	let isModalOpen = $state(false);
@@ -45,6 +47,7 @@
 		screenshots: [] as string[],
 		status: 'completed',
 		date: '',
+		categories: [] as string[],
 		external_links: [{ label: '', url: '' }]
 	});
 
@@ -79,6 +82,7 @@
 			screenshots: project.screenshots || [],
 			status: project.status || 'completed',
 			date: formatDateForInput(project.date),
+			categories: project.categories ? [...project.categories] : [],
 			external_links: linksArray.length > 0 ? linksArray : [{ label: '', url: '' }]
 		};
 		selectedFile = null;
@@ -129,6 +133,17 @@
 		const updated = [...formData[field]];
 		updated[index] = value;
 		formData = { ...formData, [field]: updated };
+	};
+
+	// Categories are multi-select: a project can sit in more than one
+	// (e.g. Foto In Aja is both AI and Web App).
+	const toggleCategory = (category: string) => {
+		formData = {
+			...formData,
+			categories: formData.categories.includes(category)
+				? formData.categories.filter((c) => c !== category)
+				: [...formData.categories, category]
+		};
 	};
 
 	const addRow = (field: 'features' | 'screenshots') => {
@@ -380,6 +395,27 @@
 						oninput={(e) => (formData.date = (e.currentTarget as HTMLInputElement).value)}
 						class="w-full px-4 py-3 rounded-xl bg-surface-container-high border border-outline-variant/20 focus:outline-none focus:border-primary transition-all text-sm font-body"
 					/>
+				</div>
+			</div>
+
+			<div class="space-y-2">
+				<span class="font-label text-xs text-on-surface-variant ml-1 font-body">Categories</span>
+				<div class="flex flex-wrap gap-2">
+					{#each PROJECT_CATEGORIES as category}
+						<label
+							class="inline-flex items-center gap-2 px-3 py-2 rounded-full border text-sm font-body cursor-pointer transition-all {formData.categories.includes(category)
+								? 'bg-on-surface text-surface border-on-surface'
+								: 'bg-surface-container-high border-outline-variant/20 text-on-surface-variant hover:border-primary'}"
+						>
+							<input
+								type="checkbox"
+								checked={formData.categories.includes(category)}
+								onchange={() => toggleCategory(category)}
+								class="sr-only"
+							/>
+							{category}
+						</label>
+					{/each}
 				</div>
 			</div>
 

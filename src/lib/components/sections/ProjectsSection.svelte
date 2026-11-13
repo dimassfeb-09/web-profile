@@ -1,6 +1,7 @@
 <script lang="ts">
 	import ProjectCard from '../ui/ProjectCard.svelte';
 	import { getProxiedImageUrl } from '$lib/utils/image-url';
+	import { PROJECT_CATEGORIES } from '$lib/project-categories';
 
 	interface Project {
 		id?: string;
@@ -14,6 +15,7 @@
 		slug?: string;
 		tech_stack?: string[];
 		date?: string | Date | null;
+		categories?: string[] | null;
 	}
 
 	let { initialProjects }: { initialProjects: Project[] } = $props();
@@ -25,6 +27,20 @@
 	let hasMore = $state(true);
 	let observerTarget = $state<HTMLDivElement | null>(null);
 	const PAGE_SIZE = 6;
+
+	// Curated category filter. One chip active at a time; a project with
+	// several categories shows up under each of them. Filtering is
+	// client-side over the loaded projects, which already covers the whole
+	// list (SSR loads all of them); load-more keeps appending underneath.
+	let selectedCategory = $state<string | null>(null);
+	const categoryCount = $derived(
+		(category: string) => projects.filter((p) => (p.categories || []).includes(category)).length
+	);
+	let filteredProjects = $derived.by(() => {
+		const category = selectedCategory;
+		if (category === null) return projects;
+		return projects.filter((p) => (p.categories || []).includes(category));
+	});
 
 	// ponytail: preload 2 hero project images so first paint not naked (828 avif)
 	const preloadUrls = $derived(projects.slice(0, 2).map((p) => getProxiedImageUrl(p.image_url, p.image_hash, 828)));
@@ -86,23 +102,50 @@
 		</div>
 	</div>
 
-	<div class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 4xl:grid-cols-4 gap-6 xs:gap-8">
-		{#each projects as project, i}
-			<ProjectCard
-				title={project.title}
-				description={project.description}
-				imageUrl={project.image_url}
-				imageHash={project.image_hash}
-				features={project.features}
-				linkUrl={project.link_url}
-				linkText={project.link_text}
-				slug={project.slug}
-				techStack={project.tech_stack}
-				date={project.date}
-				priority={i < 2}
-			/>
+	<div class="flex flex-wrap gap-2 mb-8">
+		<button
+			onclick={() => (selectedCategory = null)}
+			class="px-4 py-2 rounded-full text-sm font-medium border transition-all {selectedCategory === null
+				? 'bg-zinc-900 text-zinc-50 border-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 dark:border-zinc-100'
+				: 'bg-surface-container-high text-on-surface-variant border-outline-variant/20 hover:border-primary'}"
+		>
+			All ({projects.length})
+		</button>
+		{#each PROJECT_CATEGORIES as category}
+			<button
+				onclick={() => (selectedCategory = selectedCategory === category ? null : category)}
+				class="px-4 py-2 rounded-full text-sm font-medium border transition-all {selectedCategory === category
+					? 'bg-zinc-900 text-zinc-50 border-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 dark:border-zinc-100'
+					: 'bg-surface-container-high text-on-surface-variant border-outline-variant/20 hover:border-primary'}"
+			>
+				{category} ({categoryCount(category)})
+			</button>
 		{/each}
 	</div>
+
+	{#if filteredProjects.length === 0}
+		<p class="text-on-surface-variant font-body text-sm py-8 text-center">
+			No projects in this category yet.
+		</p>
+	{:else}
+		<div class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 4xl:grid-cols-4 gap-6 xs:gap-8">
+			{#each filteredProjects as project, i}
+				<ProjectCard
+					title={project.title}
+					description={project.description}
+					imageUrl={project.image_url}
+					imageHash={project.image_hash}
+					features={project.features}
+					linkUrl={project.link_url}
+					linkText={project.link_text}
+					slug={project.slug}
+					techStack={project.tech_stack}
+					date={project.date}
+					priority={i < 2}
+				/>
+			{/each}
+		</div>
+	{/if}
 
 	<div bind:this={observerTarget} class="h-20 flex items-center justify-center mt-8">
 		{#if isLoading}

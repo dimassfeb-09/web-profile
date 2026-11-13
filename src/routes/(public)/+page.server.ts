@@ -46,7 +46,7 @@ export async function load() {
 		await Promise.allSettled([
 			ExperienceService.getAllExperiences().then((r) => r.data || []),
 			ProjectService.getAllProjects(false, sort).then((r) =>
-				(r.data || []).map((p) => ({ ...p, tech_stack: p.tech_stack || [] }))
+				(r.data || []).map((p) => ({ ...p, tech_stack: p.tech_stack || [], categories: p.categories || [] }))
 			),
 			EducationService.getAllEducations(false, sort).then((r) =>
 				(r.data || []).map((edu) => ({

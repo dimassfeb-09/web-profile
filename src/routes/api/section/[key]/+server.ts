@@ -26,7 +26,7 @@ const handlers: Record<string, () => Promise<{ data: unknown }>> = {
 	projects: async () => {
 		const r = await ProjectService.getAllProjects(false, sort);
 		return {
-			data: (r.data || []).map((p) => ({ ...p, tech_stack: p.tech_stack || [] }))
+			data: (r.data || []).map((p) => ({ ...p, tech_stack: p.tech_stack || [], categories: p.categories || [] }))
 		};
 	},
 	education: async () => {

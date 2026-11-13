@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { PROJECT_CATEGORIES } from '../project-categories';
 
 export const ProjectSchema = z.object({
 	title: z.string().min(1).max(255),
@@ -14,6 +15,7 @@ export const ProjectSchema = z.object({
 	status: z.string().optional(),
 	date: z.string().nullable().optional(),
 	external_links: z.record(z.string(), z.string()).nullable().optional(),
+	categories: z.array(z.enum(PROJECT_CATEGORIES)).optional(),
 });
 
 export const CertificateSchema = z.object({

@@ -17,6 +17,7 @@ export interface ProjectData {
   date?: string | Date | null;
   external_links?: Record<string, string> | null;
   image_hash?: string | null;
+  categories?: string[] | null;
   created_at?: Date;
 }
 
@@ -58,9 +59,9 @@ export class ProjectRepository {
     const query = `
       INSERT INTO projects (
         title, description, image_url, features, link_url, link_text,
-        slug, long_description, tech_stack, screenshots, status, date, external_links, image_hash
+        slug, long_description, tech_stack, screenshots, status, date, external_links, image_hash, categories
       )
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
       RETURNING *
     `;
     const values = [
@@ -78,6 +79,7 @@ export class ProjectRepository {
       data.date || null,
       data.external_links ? JSON.stringify(data.external_links) : null,
       data.image_hash || null,
+      data.categories || [],
     ];
     const { rows } = await pool.query(query, values);
     return rows[0];
@@ -90,8 +92,8 @@ export class ProjectRepository {
         title = $1, description = $2, image_url = $3, features = $4,
         link_url = $5, link_text = $6, slug = $7, long_description = $8,
         tech_stack = $9, screenshots = $10, status = $11, date = $12,
-        external_links = $13, image_hash = $14
-      WHERE id = $15
+        external_links = $13, image_hash = $14, categories = $15
+      WHERE id = $16
       RETURNING *
     `;
     const values = [
@@ -109,6 +111,7 @@ export class ProjectRepository {
       data.date || null,
       data.external_links ? JSON.stringify(data.external_links) : null,
       data.image_hash || null,
+      data.categories || [],
       id,
     ];
     const { rows } = await pool.query(query, values);
